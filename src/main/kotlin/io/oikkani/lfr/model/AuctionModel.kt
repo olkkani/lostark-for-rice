@@ -2,8 +2,6 @@ package io.oikkani.lfr.model
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
-import kotlinx.serialization.Serializable
-
 
 @JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
 data class AuctionItem(

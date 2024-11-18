@@ -1,15 +1,14 @@
 package io.oikkani.lfr.service
 
-import io.oikkani.lfr.LostArkApiClient
+import io.oikkani.lfr.api.LostarkAPIClient
 import io.oikkani.lfr.model.AuctionRequest
-import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Service
 
 @Service
 class AuctionService {
 
     private val apiKey = ""
-    private val apiClient = LostArkApiClient(apiKey)
+    private val apiClient = LostarkAPIClient(apiKey)
 
     private val auctionRequests = listOf(
         "lv10Annihilation" to AuctionRequest(itemTier = 3, itemGrade = "유물", itemName = "10레벨 멸화의 보석"),
@@ -29,8 +28,15 @@ class AuctionService {
         }
     }
 
-    @Scheduled(cron = "0 0 1-23/2 * * *", zone = "Asia/Seoul")
-    fun auctionItemScheduler() {
+    fun getGemOpenPricesScheduler() {
+
+    }
+
+    fun saveGemClosePricesScheduler() {
+
+    }
+
+    fun getGemPricesScheduler() {
         auctionRequests.forEach { (key, request) ->
             apiClient.getAuctionItems(request)
                 .subscribe(

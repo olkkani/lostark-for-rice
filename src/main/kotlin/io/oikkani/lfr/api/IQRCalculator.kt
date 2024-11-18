@@ -26,16 +26,4 @@ class IQRCalculator(private val data: List<Double>) {
     // 이상치를 제거한 데이터의 최대값을 반환
     fun getMax(): Double? = filteredData.maxOrNull()
 
-    // 이상치를 제거한 데이터의 평균값을 반환
-    fun getAverage(): Double = if (filteredData.isNotEmpty()) filteredData.average() else Double.NaN
-}
-
-fun main() {
-    val data = listOf(10.0, 12.0, 14.0, 15.0, 16.0, 18.0, 19.0, 21.0, 50.0, 100.0)
-    val iqrCalculator = IQRCalculator(data)
-
-    println("Filtered Data Statistics:")
-    println("Min: ${iqrCalculator.getMin()}")
-    println("Max: ${iqrCalculator.getMax()}")
-    println("Average: ${iqrCalculator.getAverage()}")
 }
