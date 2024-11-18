@@ -16,9 +16,10 @@ java {
 }
 
 configurations {
-    compileOnly {
-        extendsFrom(configurations.annotationProcessor.get())
-    }
+//    val annotationProcessor by getting
+//    val compileOnly by getting {
+//        extendsFrom(annotationProcessor)
+//    }
 }
 
 repositories {
