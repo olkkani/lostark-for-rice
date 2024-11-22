@@ -40,7 +40,7 @@ dependencies {
     implementation("org.springframework.data:spring-data-rest-hal-explorer")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+//    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     // Database
     implementation("org.springframework.boot:spring-boot-starter-data-r2dbc")
