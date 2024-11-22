@@ -70,7 +70,13 @@ jobs:
             docker rm green || true
 
             # 3. 새로운 green 컨테이너 실행
-            docker run -d -p 8082:8080 --name green ghcr.io/${{ github.repository }}:latest
+            docker run -d -p 8082:8080 \
+            --name green \
+            -e API_KEY=${{ secrets.API_KEY}}
+            -e DB_CUNNECTION_URL=${{ secrets.DB_CONNECTION_URL}}
+            -e DB_USER=${{ secrets.DB_USER}}
+            -e DB_PASSWORD=${{ secrets.DB_PASSWORD}}
+            ghcr.io/${{ github.repository }}:latest
 
             # 4. Nginx 설정 업데이트
             sudo sed -i 's/blue/green/g' /etc/nginx/sites-available/default

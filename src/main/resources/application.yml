@@ -1,8 +1,8 @@
 spring:
   r2dbc:
-    url: r2dbc:postgresql://43.201.2.177:55432/postgres
-    username: postgres
-    password: poql1oicomeTlin!
+    url: ${DB_CONNECTION_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
     properties:
       spring:
         r2dbc:
