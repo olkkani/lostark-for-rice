@@ -1,3 +1,6 @@
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
+import org.springframework.boot.gradle.tasks.bundling.BootJar
+
 plugins {
     kotlin("jvm") version "1.9.25"
     kotlin("plugin.spring") version "1.9.25"
@@ -7,7 +10,7 @@ plugins {
 }
 
 group = "io.oikkani"
-version = "0.0.1-SNAPSHOT"
+//version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
@@ -27,7 +30,7 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-hateoas")
+//    implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -63,3 +66,11 @@ kotlin {
 tasks.withType<Test> {
     useJUnitPlatform()
 }
+
+tasks.getByName<Jar>("jar") {
+    enabled = false
+}
+tasks.getByName<BootJar>("bootJar") {
+    enabled = true
+}
+
