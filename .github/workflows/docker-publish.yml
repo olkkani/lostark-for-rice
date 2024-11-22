@@ -70,7 +70,7 @@ jobs:
             docker rm green || true
 
             # 3. 새로운 green 컨테이너 실행
-            docker run -d -p 8082:8080 \
+            docker run -d -p 18082:8080 \
             --name green \
             -e API_KEY=${{ secrets.API_KEY}} \ 
             -e DB_CUNNECTION_URL=${{ secrets.DB_CONNECTION_URL}} \
