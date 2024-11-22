@@ -66,12 +66,12 @@ jobs:
             docker pull ghcr.io/${{ github.repository }}:latest
 
             # 2. 기존 green 컨테이너 중지 및 삭제
-            docker stop green || true
-            docker rm green || true
+            docker stop lfr-green || true
+            docker rm lfr-green || true
 
             # 3. 새로운 green 컨테이너 실행
             docker run -d -p 18082:8080 \
-            --name green \
+            --name lfr-green \
             -e API_KEY=${{ secrets.API_KEY}} \ 
             -e DB_CUNNECTION_URL=${{ secrets.DB_CONNECTION_URL}} \
             -e DB_USER=${{ secrets.DB_USER}} \
