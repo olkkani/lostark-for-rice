@@ -34,7 +34,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
-        run: ./gradlew build
+        run: ./gradlew build -Pprofile=prod
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3

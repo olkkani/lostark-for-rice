@@ -1,4 +1,15 @@
 spring:
+  profiles:
+    group:
+      local:
+        - common
+      prod:
+        - common
+--- # common
+spring:
+  config:
+    activate:
+      on-profile: common
   r2dbc:
     url: ${DB_CONNECTION_URL}
     username: ${DB_USER}
@@ -8,7 +19,6 @@ spring:
         r2dbc:
           mapping:
             camel-case: true
-
 lostark:
   api:
     key: ${LOSTARK.API.KEY}
