@@ -1,0 +1,15 @@
+spring:
+  r2dbc:
+    url: r2dbc:postgresql://43.201.2.177:55432/postgres
+    username: postgres
+    password: poql1oicomeTlin!
+    properties:
+      spring:
+        r2dbc:
+          mapping:
+            camel-case: true
+lostark:
+  api:
+    key: ${LOSTARK.API.KEY}
+#  datasource:
+#    driverClassName: org.postgresql.Driver
