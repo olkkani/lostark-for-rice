@@ -8,8 +8,9 @@ spring:
         r2dbc:
           mapping:
             camel-case: true
+  datasource:
+    driver-class-name: org.postgresql.Driver
+
 lostark:
   api:
     key: ${LOSTARK.API.KEY}
-#  datasource:
-#    driverClassName: org.postgresql.Driver
