@@ -78,6 +78,6 @@ jobs:
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD}} \
             ghcr.io/${{ github.repository }}:latest
 
-#             4. Nginx 설정 업데이트
+            # 4. Nginx 설정 업데이트
             sudo sed -i 's/blue/green/g' /etc/nginx/sites-available/lfr
             sudo service nginx reload
