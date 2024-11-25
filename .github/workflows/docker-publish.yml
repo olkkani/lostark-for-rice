@@ -66,8 +66,6 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             APP_NAME="lft"
-            GREEN_PORT=${{ secrets.PORT_GREEN }}
-            BLUE_PORT=${{ secrets.PORT_BLUE }}
             
             # 현재 활성화된 환경 확인
             ACTIVE_ENV=$(grep 'backend-$APP_NAME ${{ secrets.HOST }}:$BLUE_PORT;' /etc/nginx/conf.d/services.conf | wc -l)
@@ -75,19 +73,19 @@ jobs:
             if [ $ACTIVE_ENV -eq 1 ]; then
               # 현재 Blue 환경이 활성화된 경우
               NEW_ENV="Green"
-              NEW_PORT=$GREEN_PORT
+              NEW_PORT=${{ secrets.PORT_GREEN }}
               OLD_ENV="Blue"
-              OLD_PORT=$BLUE_PORT
+              OLD_PORT=${{ secrets.PORT_BLUE }}
             else
               # 현재 Green 환경이 활성화된 경우
               NEW_ENV="Blue"
-              NEW_PORT=$BLUE_PORT
+              NEW_PORT=${{ secrets.PORT_BLUE }}
               OLD_ENV="Green"
-              OLD_PORT=$GREEN_PORT
+              OLD_PORT=${{ secrets.PORT_GREEN }}RT
             fi
             
             # 1. 최신 Docker 이미지 가져오기
-            docker pull $IMAGE_NAME 
+            docker pull ${{ env.IMAGE_NAME }}
 
             # 2. 새로운 컨테이너 실행
             docker run -d -p NEW_PORT:8080 \
