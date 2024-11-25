@@ -70,7 +70,7 @@ jobs:
             BLUE_PORT=${{ secrets.PORT_BLUE }}
             
             # 현재 활성화된 환경 확인
-            ACTIVE_ENV=$(grep 'backend-$APP_NAME ${{ secrets.HOST }}:$BLUE_PORT;' /etc/nginx/nginx.conf | wc -l)
+            ACTIVE_ENV=$(grep 'backend-$APP_NAME ${{ secrets.HOST }}:$BLUE_PORT;' /etc/nginx/conf.d/services.conf | wc -l)
         
             if [ $ACTIVE_ENV -eq 1 ]; then
               # 현재 Blue 환경이 활성화된 경우
