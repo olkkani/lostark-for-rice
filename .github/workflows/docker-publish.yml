@@ -1,8 +1,4 @@
 name: CI/CD Pipeline
-
-env:
-  IMAGE_NAME: ghcr.io/${{ github.repository }}:${{ github.sha }}
-
 on:
   push:
     branches:
@@ -10,6 +6,10 @@ on:
   pull_request:
     branches:
       - main
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}:${{ github.sha }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -50,8 +50,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          tags: $IMAGE_NAME
           push: true
+          tags: ${{ env.IMAGE_NAME }}
 
   deploy:
     runs-on: ubuntu-latest
