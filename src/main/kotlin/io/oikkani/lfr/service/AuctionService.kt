@@ -99,7 +99,7 @@ class AuctionService (
         }
     }
 
-    fun getGemOpenPricesScheduler() {
+    fun getGemOpenPrices() {
         auctionRequests.forEach { (key, request) ->
             apiClient.getAuctionItems(request)
                 .subscribe(
@@ -108,7 +108,7 @@ class AuctionService (
                             auctionPrices[key]?.add(item.auctionInfo.buyPrice)
                         }
                         auctionOpenPrice[key] =
-                            IQRCalculator(auctionPrices[key]!!.map { it -> it.toDouble() }).getMin()!!.toInt()
+                            IQRCalculator(auctionPrices[key]!!.map { it.toDouble() }).getMin()!!.toInt()
                     },
                     { error ->
                         println("Error fetching $key: ${error.message}")
@@ -117,7 +117,7 @@ class AuctionService (
         }
     }
 
-    fun getGemPricesScheduler() {
+    fun getGemPrices() {
         auctionRequests.forEach { (key, request) ->
             apiClient.getAuctionItems(request)
                 .subscribe(
@@ -133,11 +133,11 @@ class AuctionService (
         }
     }
 
-    fun saveAuctionPrices() {
-        auctionPrices.forEach { (key, prices) ->
-            val averagePrice = prices.average().toLong()
-            println("$key: $averagePrice")
-        }
-    }
-
+//    fun getGemsPrices() {
+//        auctionRequests.forEach { (_, gem) ->
+//            val oldPrices = repository.findAllByItemCode(gem.itemCode)
+//            return oldPrices
+//
+//        }
+//    }
 }

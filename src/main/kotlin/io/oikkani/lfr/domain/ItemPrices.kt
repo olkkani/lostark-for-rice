@@ -1,17 +1,15 @@
 package io.oikkani.lfr.domain
 
-import io.oikkani.lfr.util.createTsid
-import org.springframework.data.annotation.Id
-import org.springframework.data.relational.core.mapping.Column
-import org.springframework.data.relational.core.mapping.Table
+import io.hypersistence.utils.hibernate.id.Tsid
+import jakarta.persistence.Column
+import jakarta.persistence.Entity
+import jakarta.persistence.Id
 import java.time.LocalDate
 
-@Table
-data class ItemPrices (
-    @Id
-    val id: Long = createTsid(),
-    @Column
-    val recordedDate: LocalDate,
+@Entity
+class ItemPrices (
+    @Id @Tsid
+    val id: Long?=null,
     @Column
     val itemCode: Int,
     @Column
@@ -22,4 +20,7 @@ data class ItemPrices (
     val highPrice: Int,
     @Column
     val lowPrice: Int,
+    @Column
+    val recordedDate: LocalDate,
+
 )

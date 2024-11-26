@@ -11,7 +11,7 @@ class GemOpenPricesRetrievalJob(
 ) : QuartzJobBean() {
 
     override fun executeInternal(context: JobExecutionContext) {
-        service.getGemOpenPricesScheduler()
+        service.getGemOpenPrices()
     }
 }
 
@@ -21,7 +21,7 @@ class GemPricesRetrievalJob(
 ) : QuartzJobBean() {
 
     override fun executeInternal(context: JobExecutionContext) {
-        service.getGemPricesScheduler()
+        service.getGemPrices()
     }
 }
 
