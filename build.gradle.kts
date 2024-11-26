@@ -1,27 +1,20 @@
 plugins {
-    kotlin("jvm") version "1.9.25"
-    kotlin("plugin.spring") version "1.9.25"
+    kotlin("jvm") version "2.0.21"
+    kotlin("plugin.spring") version "2.0.21"
+    kotlin("plugin.jpa") version "2.0.21"
     kotlin("kapt") version "2.0.21"
-    id("org.jetbrains.kotlin.plugin.jpa") version "1.9.25"
     id("org.springframework.boot") version "3.3.5"
     id("io.spring.dependency-management") version "1.1.6"
     id("org.graalvm.buildtools.native") version "0.10.3"
 }
 
 group = "io.oikkani"
-version = "0.0.1-SNAPSHOT"
+//version = "0.0.1-SNAPSHOT"
 
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
-}
-
-configurations {
-//    val annotationProcessor by getting
-//    val compileOnly by getting {
-//        extendsFrom(annotationProcessor)
-//    }
 }
 
 repositories {
@@ -41,7 +34,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor")
+    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.9.0")
+    implementation("io.projectreactor:reactor-core:3.7.0")
     implementation("org.springframework.data:spring-data-rest-hal-explorer")
     implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
     implementation("com.querydsl:querydsl-jpa"){artifact{classifier="jakarta"}} // QueryDSL 의존성
@@ -76,6 +70,8 @@ sourceSets {
         kotlin.srcDirs += generated
     }
 }
+
+
 tasks.named("clean") {
     doLast {
         generated.deleteRecursively()

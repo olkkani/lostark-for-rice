@@ -43,7 +43,7 @@ class AuctionService (
                        itemCode = gemCode,
                        price = price
                    )
-               ).subscribe()
+               )
            }
         }
     }
@@ -79,7 +79,7 @@ class AuctionService (
                                 highPrice = iqrCalculator.getMax()!!.toInt() ,
                                 lowPrice = iqrCalculator.getMin()!!.toInt(),
                             )
-                        ).subscribe()
+                        )
                     },
                     { error ->
                         println("Error fetching $key: ${error.message}")
@@ -92,7 +92,7 @@ class AuctionService (
     fun getTodayGemsPricesTemp () {
         val today: LocalDate = LocalDate.now()
         auctionRequests.forEach { (gem, gemInfo) ->
-            tempRepository.findByItemCodeAndRecordedDate(itemCode = gemInfo.itemCode, recordedDate = today).subscribe { response ->
+            tempRepository.findByItemCodeAndRecordedDate(itemCode = gemInfo.itemCode, recordedDate = today).forEach { response ->
                     auctionPrices[gem]?.add(response.price)
                 }
 
@@ -133,11 +133,11 @@ class AuctionService (
         }
     }
 
-//    fun getGemsPrices() {
+    fun getGemsPrices() {
 //        auctionRequests.forEach { (_, gem) ->
 //            val oldPrices = repository.findAllByItemCode(gem.itemCode)
 //            return oldPrices
 //
 //        }
-//    }
+    }
 }

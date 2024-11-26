@@ -1,4 +1,15 @@
 spring:
+  profiles:
+    group:
+      local:
+        - common
+      prod:
+        - common
+--- # common
+spring:
+  config:
+    activate:
+      on-profile: common
   r2dbc:
     url: ${DB_CONNECTION_URL}
     username: ${DB_USER}
@@ -11,5 +22,3 @@ spring:
 lostark:
   api:
     key: ${LOSTARK.API.KEY}
-#  datasource:
-#    driverClassName: org.postgresql.Driver

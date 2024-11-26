@@ -1,5 +1,4 @@
 name: CI/CD Pipeline
-
 on:
   push:
     branches:
@@ -7,6 +6,10 @@ on:
   pull_request:
     branches:
       - main
+
+env:
+  IMAGE_NAME: ghcr.io/${{ github.repository }}:${{ github.sha }}
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -47,8 +50,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          tags: ghcr.io/${{ github.repository }}:latest
           push: true
+          tags: ${{ env.IMAGE_NAME }}
 
   deploy:
     runs-on: ubuntu-latest
@@ -62,22 +65,42 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
+            APP_NAME="lft"
+            
+            # 현재 활성화된 환경 확인
+            ACTIVE_ENV=$(grep '\$backend-$APP_NAME ${{ secrets.HOST }}:${{ secrets.PORT_BLUE }};' /etc/nginx/conf.d/services.conf | wc -l)
+        
+            if [ $ACTIVE_ENV -eq 1 ]; then
+              # 현재 Blue 환경이 활성화된 경우
+              NEW_ENV="Green"
+              NEW_PORT=${{ secrets.PORT_GREEN }}
+              OLD_ENV="Blue"
+              OLD_PORT=${{ secrets.PORT_BLUE }}
+            else
+              # 현재 Green 환경이 활성화된 경우
+              NEW_ENV="Blue"
+              NEW_PORT=${{ secrets.PORT_BLUE }}
+              OLD_ENV="Green"
+              OLD_PORT=${{ secrets.PORT_GREEN }}RT
+            fi
+            
             # 1. 최신 Docker 이미지 가져오기
-            docker pull ghcr.io/${{ github.repository }}:latest
+            docker pull ${{ env.IMAGE_NAME }}
 
-            # 2. 기존 green 컨테이너 중지 및 삭제
-            docker stop green || true
-            docker rm green || true
-
-            # 3. 새로운 green 컨테이너 실행
-            docker run -d -p 18082:8080 \
-            --name green \
-            -e API_KEY=${{ secrets.API_KEY}} \ 
+            # 2. 새로운 컨테이너 실행
+            docker run -d -p $NEW_PORT:8080 \
+            --name $APP_NAME-$NEW_ENV \
+            -e SPRING_PROFILES_ACTIVE=prod \
+            -e API_KEY=${{ secrets.API_KEY}} \
             -e DB_CUNNECTION_URL=${{ secrets.DB_CONNECTION_URL}} \
             -e DB_USER=${{ secrets.DB_USER}} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD}} \
-            ghcr.io/${{ github.repository }}:latest
-
-            # 4. Nginx 설정 업데이트
-            sudo sed -i 's/blue/green/g' /etc/nginx/sites-available/lfr
-            sudo service nginx reload
+            ${{ env.IMAGE_NAME }}
+            
+            # 3. NGINX 설정 업데이트
+            sudo sed -i "s/set \$backend_$APP_NAME .*/set \$backend_$APP_NAME http:\/\/${{ secrets.HOST }}:$NEW_PORT;/" /etc/nginx/conf.d/services.conf
+            sudo nginx -s reload
+            
+            # 4. 기존 컨테이너 중지 및 삭제
+            docker stop $APP_NAME-$OLD_ENV || true
+            docker rm $APP_NAME-$OLD_ENV || true           
