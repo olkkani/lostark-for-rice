@@ -51,6 +51,7 @@ dependencies {
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
     kapt("com.querydsl:querydsl-apt"){artifact{classifier="jakarta"}}
+
     implementation("org.postgresql:postgresql:42.7.4")
 //    runtimeOnly("org.postgresql:r2dbc-postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")

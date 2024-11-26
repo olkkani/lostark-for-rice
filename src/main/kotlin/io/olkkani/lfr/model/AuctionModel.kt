@@ -1,4 +1,4 @@
-package io.oikkani.lfr.model
+package io.olkkani.lfr.model
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming

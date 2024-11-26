@@ -1,4 +1,4 @@
-package io.oikkani.lfr.config
+package io.olkkani.lfr.config
 
 import com.querydsl.jpa.impl.JPAQueryFactory
 import jakarta.persistence.EntityManager

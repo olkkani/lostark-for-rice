@@ -1,13 +1,13 @@
-package io.oikkani.lfr.service
+package io.olkkani.lfr.service
 
-import io.oikkani.lfr.api.LostarkAPIClient
-import io.oikkani.lfr.domain.ItemPrices
-import io.oikkani.lfr.domain.ItemPricesRepository
-import io.oikkani.lfr.domain.ItemPricesTemp
-import io.oikkani.lfr.domain.ItemPricesTempRepository
-import io.oikkani.lfr.model.gemsInfo
-import io.oikkani.lfr.util.IQRCalculator
-import io.oikkani.lfr.util.createTsid
+import io.olkkani.lfr.api.LostarkAPIClient
+import io.olkkani.lfr.domain.ItemPrices
+import io.olkkani.lfr.domain.ItemPricesRepository
+import io.olkkani.lfr.domain.ItemPricesTemp
+import io.olkkani.lfr.domain.ItemPricesTempRepository
+import io.olkkani.lfr.model.gemsInfo
+import io.olkkani.lfr.util.IQRCalculator
+import io.olkkani.lfr.util.createTsid
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import java.time.LocalDate
@@ -63,11 +63,11 @@ class AuctionService (
                             prices.add(item.auctionInfo.buyPrice)
                         }
                         // 1-1. 이상치를 제거한 최저값을 가져온다.(close price)
-                        val closePrice: Int = IQRCalculator(pricesForClosePrice.map{it.toDouble()}).getMin()!!.toInt()
+                        val closePrice: Int = IQRCalculator(pricesForClosePrice.map { it.toDouble() }).getMin()!!.toInt()
                         // 2. 기존 시세에 현재 시세를 더한 후 이상치를 제거
                         prices.addAll(pricesForClosePrice)
 
-                        val iqrCalculator = IQRCalculator(prices.map{it.toDouble()})
+                        val iqrCalculator = IQRCalculator(prices.map { it.toDouble() })
                         // 3. 준비된 값을 저장
                         repository.save(
                             ItemPrices(

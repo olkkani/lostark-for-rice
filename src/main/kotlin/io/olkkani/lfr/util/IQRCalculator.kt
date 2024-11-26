@@ -1,4 +1,4 @@
-package io.oikkani.lfr.util
+package io.olkkani.lfr.util
 
 class IQRCalculator(private val data: List<Double>) {
     private val filteredData: List<Double> = removeOutliers()

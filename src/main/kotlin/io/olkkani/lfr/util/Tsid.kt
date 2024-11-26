@@ -1,4 +1,4 @@
-package io.oikkani.lfr.util
+package io.olkkani.lfr.util
 
 import com.github.f4b6a3.tsid.TsidCreator
 

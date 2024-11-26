@@ -1,4 +1,4 @@
-package io.oikkani.lfr.controller
+package io.olkkani.lfr.controller
 
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration

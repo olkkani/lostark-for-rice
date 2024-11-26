@@ -1,7 +1,7 @@
-package io.oikkani.lfr.api
+package io.olkkani.lfr.api
 
-import io.oikkani.lfr.model.AuctionRequest
-import io.oikkani.lfr.model.AuctionResponse
+import io.olkkani.lfr.model.AuctionRequest
+import io.olkkani.lfr.model.AuctionResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient

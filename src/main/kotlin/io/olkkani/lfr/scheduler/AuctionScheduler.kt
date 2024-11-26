@@ -1,6 +1,6 @@
-package io.oikkani.lfr.scheduler
+package io.olkkani.lfr.scheduler
 
-import io.oikkani.lfr.service.AuctionService
+import io.olkkani.lfr.service.AuctionService
 import org.quartz.JobExecutionContext
 import org.springframework.scheduling.quartz.QuartzJobBean
 import org.springframework.stereotype.Component

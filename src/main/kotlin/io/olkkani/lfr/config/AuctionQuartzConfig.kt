@@ -1,8 +1,8 @@
-package io.oikkani.lfr.config
+package io.olkkani.lfr.config
 
-import io.oikkani.lfr.scheduler.GemOpenPricesRetrievalJob
-import io.oikkani.lfr.scheduler.GemPricesRetrievalJob
-import io.oikkani.lfr.scheduler.SaveTodayPricesJob
+import io.olkkani.lfr.scheduler.GemOpenPricesRetrievalJob
+import io.olkkani.lfr.scheduler.GemPricesRetrievalJob
+import io.olkkani.lfr.scheduler.SaveTodayPricesJob
 import org.quartz.*
 import org.quartz.impl.StdSchedulerFactory
 import org.springframework.context.annotation.Bean

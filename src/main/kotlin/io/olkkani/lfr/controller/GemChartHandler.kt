@@ -1,4 +1,4 @@
-package io.oikkani.lfr.controller
+package io.olkkani.lfr.controller
 
 import org.springframework.stereotype.Controller
 import org.springframework.web.reactive.function.server.ServerResponse
