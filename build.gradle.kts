@@ -43,6 +43,7 @@ dependencies {
     implementation("jakarta.persistence:jakarta.persistence-api")
     implementation("jakarta.annotation:jakarta.annotation-api")
     implementation("com.github.f4b6a3:tsid-creator:5.2.6")
+    implementation("org.postgresql:postgresql:42.7.4")
     implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.9.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     developmentOnly("org.springframework.boot:spring-boot-docker-compose")
@@ -51,9 +52,6 @@ dependencies {
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
     kapt("com.querydsl:querydsl-apt"){artifact{classifier="jakarta"}}
-
-    implementation("org.postgresql:postgresql:42.7.4")
-//    runtimeOnly("org.postgresql:r2dbc-postgresql")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.9.25")

@@ -3,54 +3,15 @@ spring:
     group:
       test:
         - common
-        - server-local
-        - db-prod
-      prod:
-        - common
-        - server-prod
         - db-prod
 --- # common
 spring:
   config:
     activate:
       on-profile: common
-  thymeleaf:
-    prefix: classpath:templates/
-    suffix: .html
-  resource:
-    static-locations: classpath:/static
 lostark:
   api:
     key: ${LOSTARK.API.KEY}
---- # local-server
-spring:
-  config:
-    activate:
-      on-profile: server-local
-  devtools:
-    livereload:
-      enabled: true
-    restart:
-      enabled: true
-  thymeleaf:
-    cache: false
-    check-template-location: true
-server:
-  port: 8080
-  undertow:
-    threads:
-      io: 20
-      worker: 400
---- # prod-server
-spring:
-  config:
-    activate:
-      on-profile: server-prod
---- # db-h2
-spring:
-  config:
-    activate:
-      on-profile: db-h2
 --- # db-prod
 spring:
   config:
