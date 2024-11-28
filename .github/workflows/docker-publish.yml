@@ -92,8 +92,8 @@ jobs:
             docker pull ${{ env.IMAGE_NAME }}
 
             # 2. 새로운 컨테이너 실행
-            docker run -d -p $NEW_PORT:8080 \
-            --name $APP_NAME-$NEW_ENV \
+            docker run -d --name $APP_NAME-$NEW_ENV \
+            -p $NEW_PORT:8080 \
             -e SPRING_PROFILES_ACTIVE=prod \
             -e API_KEY=${{ secrets.API_KEY}} \
             -e DB_CUNNECTION_URL=${{ secrets.DB_CONNECTION_URL}} \
