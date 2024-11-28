@@ -72,7 +72,7 @@ jobs:
             APP_NAME="lfr"
             
             # 현재 활성화된 환경 확인
-            ACTIVE_ENV=$(grep 'set \$backend_$APP_NAME $HOST:$PORT_BLUE;' /etc/nginx/conf.d/services.conf | wc -l)
+            ACTIVE_ENV=$(grep 'set \\$backend_$APP_NAME $HOST:$PORT_BLUE;' /etc/nginx/conf.d/services.conf | wc -l)
 
             if [ "$ACTIVE_ENV" -eq 1 ]; then
               # 현재 Blue 환경이 활성화된 경우
@@ -96,13 +96,13 @@ jobs:
             -p $NEW_PORT:8080 \
             -e SPRING_PROFILES_ACTIVE=prod \
             -e API_KEY=${{ secrets.API_KEY}} \
-            -e DB_CUNNECTION_URL=${{ secrets.DB_CONNECTION_URL}} \
+            -e DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL}} \
             -e DB_USER=${{ secrets.DB_USER}} \
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD}} \
             ${{ env.IMAGE_NAME }}
             
             # 3. NGINX 설정 업데이트
-            sudo sed -i "s/^set \$backend_$APP_NAME.*/set \$backend_$APP_NAME $HOST:$NEW_PORT;/" /etc/nginx/conf.d/services.conf
+            sudo sed -i "s/^set \\$backend_$APP_NAME.*/set \\$backend_$APP_NAME $HOST:$NEW_PORT;/" /etc/nginx/conf.d/services.conf
             sudo nginx -s reload
             
             # 4. 기존 컨테이너 중지 및 삭제
