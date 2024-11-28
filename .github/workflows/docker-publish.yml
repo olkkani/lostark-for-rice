@@ -93,7 +93,7 @@ jobs:
 
             # 2. 새로운 컨테이너 실행
             docker run -d --name $APP_NAME-$NEW_ENV \
-            -p $NEW_PORT:8080 \
+            -p 18082:8080 \
             -e SPRING_PROFILES_ACTIVE=prod \
             -e API_KEY=${{ secrets.API_KEY}} \
             -e DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL}} \
