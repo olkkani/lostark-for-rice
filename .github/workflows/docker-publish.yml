@@ -61,7 +61,7 @@ jobs:
       PORT_BLUE: ${{ secrets.PORT_BLUE }}
       PORT_GREEN: ${{ secrets.PORT_GREEN }}
     steps:
-      - name: Deploy and Switch
+      - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -71,28 +71,11 @@ jobs:
           script: |
             APP_NAME="lfr"
             
-            # 현재 활성화된 환경 확인
-            ACTIVE_ENV=$(grep 'set \$backend_$APP_NAME $HOST:$PORT_BLUE;' /etc/nginx/conf.d/services.conf | wc -l)
-
-            if [ "$ACTIVE_ENV" -eq 1 ]; then
-              # 현재 Blue 환경이 활성화된 경우
-              NEW_ENV="Green"
-              NEW_PORT=$PORT_GREEN
-              OLD_ENV="Blue"
-              OLD_PORT=$PORT_BLUE
-            else
-              # 현재 Green 환경이 활성화된 경우
-              NEW_ENV="Blue"
-              NEW_PORT=$PORT_BLUE
-              OLD_ENV="Green"
-              OLD_PORT=$PORT_GREEN
-            fi
-            
             # 1. 최신 Docker 이미지 가져오기
             docker pull ${{ env.IMAGE_NAME }}
 
             # 2. 새로운 컨테이너 실행
-            docker run -d --name $APP_NAME-$NEW_ENV -p $NEW_PORT:8080 \
+            docker run -d -p 18082:8080 --name $APP_NAME-$NEW_ENV  \
             -e SPRING_PROFILES_ACTIVE=prod \
             -e API_KEY=${{ secrets.API_KEY}} \
             -e DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL}} \
@@ -100,10 +83,3 @@ jobs:
             -e DB_PASSWORD=${{ secrets.DB_PASSWORD}} \
             ${{ env.IMAGE_NAME }}
             
-            # 3. NGINX 설정 업데이트
-            sudo sed -i "s/^set \$backend_$APP_NAME.*/set \$backend_$APP_NAME $HOST:$NEW_PORT;/" /etc/nginx/conf.d/services.conf
-            sudo nginx -s reload
-            
-            # 4. 기존 컨테이너 중지 및 삭제
-            docker stop $APP_NAME-$OLD_ENV || true
-            docker rm $APP_NAME-$OLD_ENV || true           
