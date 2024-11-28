@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     steps:
-      - name: Deploy and Switch to Green
+      - name: Deploy and Switch
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
@@ -70,7 +70,7 @@ jobs:
             # 현재 활성화된 환경 확인
             ACTIVE_ENV=$(grep 'set \$backend_$APP_NAME ${{ secrets.HOST }}:${{ secrets.PORT_BLUE }};' /etc/nginx/conf.d/services.conf | wc -l)
         
-            if [ $ACTIVE_ENV -eq 1 ]; then
+            if [ "$ACTIVE_ENV" -eq 1 ]; then
               # 현재 Blue 환경이 활성화된 경우
               NEW_ENV="Green"
               NEW_PORT=${{ secrets.PORT_GREEN }}
