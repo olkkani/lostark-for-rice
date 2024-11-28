@@ -68,7 +68,7 @@ jobs:
             APP_NAME="lft"
             
             # 현재 활성화된 환경 확인
-            ACTIVE_ENV=$(grep '\$backend_$APP_NAME ${{ secrets.HOST }}:${{ secrets.PORT_BLUE }};' /etc/nginx/conf.d/services.conf | wc -l)
+            ACTIVE_ENV=$(grep 'set \$backend_$APP_NAME ${{ secrets.HOST }}:${{ secrets.PORT_BLUE }};' /etc/nginx/conf.d/services.conf | wc -l)
         
             if [ $ACTIVE_ENV -eq 1 ]; then
               # 현재 Blue 환경이 활성화된 경우
@@ -98,7 +98,7 @@ jobs:
             ${{ env.IMAGE_NAME }}
             
             # 3. NGINX 설정 업데이트
-            sudo sed -i "s/set \$backend_$APP_NAME .*/set \$backend_$APP_NAME http:\/\/${{ secrets.HOST }}:$NEW_PORT;/" /etc/nginx/conf.d/services.conf
+            sudo sed -i "s/^set \$backend_$APP_NAME.*/set \$backend_$APP_NAME ${{ secrets.HOST }}:$NEW_PORT;/" /etc/nginx/conf.d/services.conf
             sudo nginx -s reload
             
             # 4. 기존 컨테이너 중지 및 삭제
