@@ -65,7 +65,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            APP_NAME="lft"
+            APP_NAME="lfr"
             
             # 현재 활성화된 환경 확인
             ACTIVE_ENV=$(grep 'set \$backend_$APP_NAME ${{ secrets.HOST }}:${{ secrets.PORT_BLUE }};' /etc/nginx/conf.d/services.conf | wc -l)
