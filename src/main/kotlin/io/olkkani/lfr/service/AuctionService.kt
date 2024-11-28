@@ -31,6 +31,13 @@ class AuctionService (
             auctionOpenPrice[key] = 0
         }
     }
+    fun clearTodayPrices() {
+        auctionRequests.forEach { (key, _) ->
+            auctionPrices[key] = mutableListOf()
+            auctionOpenPrice[key] = 0
+        }
+    }
+
     fun saveTodayGemsPricesTemp () {
         val today: LocalDate = LocalDate.now()
         auctionPrices.forEach { gem, prices ->
@@ -100,6 +107,7 @@ class AuctionService (
     }
 
     fun getGemOpenPrices() {
+        clearTodayPrices()
         auctionRequests.forEach { (key, request) ->
             apiClient.getAuctionItems(request)
                 .subscribe(
@@ -118,6 +126,7 @@ class AuctionService (
     }
 
     fun getGemPrices() {
+
         auctionRequests.forEach { (key, request) ->
             apiClient.getAuctionItems(request)
                 .subscribe(
@@ -131,13 +140,5 @@ class AuctionService (
                     }
                 )
         }
-    }
-
-    fun getGemsPrices() {
-//        auctionRequests.forEach { (_, gem) ->
-//            val oldPrices = repository.findAllByItemCode(gem.itemCode)
-//            return oldPrices
-//
-//        }
     }
 }
