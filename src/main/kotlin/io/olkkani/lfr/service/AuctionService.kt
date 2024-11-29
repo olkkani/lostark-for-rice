@@ -80,15 +80,18 @@ class AuctionService(
                         // 2. 기존 시세에 현재 시세를 더한 후 이상치를 제거
                         prices.addAll(response)
                         val iqrCalculator = IQRCalculator(prices.map { it.toDouble() })
+                        val lowPrice = iqrCalculator.getMin()?.toInt() ?: 0
+
+
                         // 3. 준비된 값을 저장
                             val gemPrice: ItemPrices = ItemPrices(
                                 id = createTsid(),
                                 recordedDate = today,
                                 itemCode = gemCode,
                                 closePrice = iqrCalculatorForClosePrice.getMin()?.toInt() ?: 0,
-                                openPrice = gemsOpenPrice[key] ?: iqrCalculator.getMin()?.toInt() ?: 0,
+                                openPrice = gemsOpenPrice[key] ?: iqrCalculator.getMin()?.toInt() ?: lowPrice,
                                 highPrice = iqrCalculator.getMax()!!.toInt(),
-                                lowPrice = iqrCalculator.getMin()!!.toInt(),
+                                lowPrice = lowPrice,
                             )
                         repository.save(gemPrice)
                     },
