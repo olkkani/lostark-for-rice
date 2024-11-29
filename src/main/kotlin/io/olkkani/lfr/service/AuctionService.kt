@@ -4,13 +4,13 @@ import io.olkkani.lfr.api.LostarkAPIClient
 import io.olkkani.lfr.domain.*
 import io.olkkani.lfr.model.gemsInfo
 import io.olkkani.lfr.util.IQRCalculator
-import io.olkkani.lfr.util.createTsid
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
+@Transactional
 class AuctionService(
     private val repository: ItemPricesRepository,
     private val repositorySupport: ItemPricesRepositorySupport,
@@ -23,12 +23,19 @@ class AuctionService(
     private val gemsPrices: MutableMap<Int, MutableList<Int>> = mutableMapOf()
     private val gemsOpenPrice: MutableMap<Int, Int> = mutableMapOf()
 
+
     init {
+        val today = LocalDate.now()
         // 초기화: 결과 저장소를 준비
         auctionRequests.forEach { (key, _) ->
             gemsPrices[key] = mutableListOf()
             gemsOpenPrice[key] = 0
+            // 이전에 종료된 데이터가 있다면 불러옴
+            tempRepository.findByItemCodeAndRecordedDate(itemCode = key, recordedDate = today).forEach{
+                gemsPrices[key]?.add(it.price)
+            }
         }
+
     }
 
     fun clearTodayPrices() {
@@ -40,12 +47,11 @@ class AuctionService(
 
     fun saveTodayGemsPricesTemp() {
         val today: LocalDate = LocalDate.now()
-        gemsPrices.forEach { gem, prices ->
+        gemsPrices.forEach { (gem, prices) ->
             val gemCode = auctionRequests.first { it.first == gem }.second.itemCode
             prices.forEach { price ->
                 tempRepository.save(
                     ItemPricesTemp(
-                        id = createTsid(),
                         recordedDate = today,
                         itemCode = gemCode,
                         price = price
@@ -142,21 +148,26 @@ class AuctionService(
         }
     }
 
-    @Transactional
-    fun getAllGemsPricesByItemCode(itemCode: Int) : List<ItemPrices> {
-        val itemPricesList: MutableList<ItemPrices> = mutableListOf()
+    fun getAllGemsPricesByItemCode(itemCode: Int): MutableList<ItemPrices> {
         val today: LocalDate = LocalDate.now()
+        // Gems prices 가져오기
+        val prices = gemsPrices[itemCode]?.map { it.toDouble() }
+            ?: throw IllegalArgumentException("Invalid item code: $itemCode")
 
-        val iqrCalculator = IQRCalculator(gemsPrices[itemCode]!!.map { it.toDouble() })
+        val iqrCalculator = IQRCalculator(prices)
+        val lowPrice = iqrCalculator.getMin()!!.toInt()
+        val highPrice = iqrCalculator.getMax()!!.toInt()
+
         val itemPrices = ItemPrices(
-            closePrice = iqrCalculator.getMin()!!.toInt(),
+            // TODO: 현재가와 오늘의 최저가가 동일함, 가장 최근에 불러온 데이터는 따로 관리 후 저장
+            closePrice = lowPrice,
             openPrice = gemsOpenPrice[itemCode] ?: 0,
-            highPrice = iqrCalculator.getMax()!!.toInt(),
-            lowPrice = iqrCalculator.getMin()!!.toInt(),
+            highPrice = highPrice,
+            lowPrice = lowPrice,
             recordedDate = today,
         )
-        return repositorySupport.findOldAllByItemCode(itemCode)
-        }
-
+        val gemPrices: MutableList<ItemPrices> = repositorySupport.findOldAllByItemCode(itemCode)
+        gemPrices.add(itemPrices)
+        return gemPrices
     }
 }

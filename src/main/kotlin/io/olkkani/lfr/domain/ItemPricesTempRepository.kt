@@ -6,7 +6,7 @@ import java.time.LocalDate
 
 @Repository
 interface ItemPricesTempRepository: JpaRepository<ItemPricesTemp, Long> {
-    fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): List<ItemPricesTemp>
+    fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): MutableList<ItemPricesTemp>
 
 //    fun getGemPriceRecordByRecordDate(recordDate: Instant)
 }

@@ -26,7 +26,7 @@ val kotestVersion="5.9.1"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
-    implementation("org.springframework.boot:spring-boot-starter-security")
+//    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-quartz")
@@ -46,7 +46,7 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.4")
     implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.9.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
-    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
+//    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
     kapt("com.querydsl:querydsl-kotlin-codegen")
     kapt("jakarta.annotation:jakarta.annotation-api")
@@ -59,6 +59,7 @@ dependencies {
     testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
     testImplementation("io.kotest:kotest-property:$kotestVersion")
     testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("com.h2database:h2:2.3.232")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.3")
 }
 
@@ -85,4 +86,5 @@ kotlin {
 
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
+    jvmArgs("-Xshare:off")
 }

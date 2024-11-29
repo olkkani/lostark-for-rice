@@ -17,11 +17,11 @@ spring:
   thymeleaf:
     prefix: classpath:templates/
     suffix: .html
-  resource:
-    static-locations: classpath:/static
+#  resource:
+#    static-locations: classpath:/static
 lostark:
   api:
-    key: ${LOSTARK.API.KEY}
+    key: ${API.KEY}
 --- # local-server
 spring:
   config:
