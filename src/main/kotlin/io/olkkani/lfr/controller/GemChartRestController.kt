@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.RestController
 
 
 @RestController
-@RequestMapping("/gem-prices/")
+@RequestMapping("/gem-prices")
 class GemChartRestController (
     private val service: AuctionService
 ){
 
-    @GetMapping
-    fun save(): ResponseEntity.BodyBuilder {
+    @GetMapping("/save")
+    fun save(): ResponseEntity<String> {
         service.saveTodayGemsPrices()
-        return ResponseEntity.ok()
+        return ResponseEntity.ok().body("ok")
     }
 }

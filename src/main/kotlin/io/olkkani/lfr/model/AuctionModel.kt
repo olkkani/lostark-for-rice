@@ -1,13 +1,53 @@
 package io.olkkani.lfr.model
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import io.olkkani.lfr.domain.ItemPrices
 
-@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
-data class AuctionItem(
-    val auctionInfo: AuctionInfo
-)
+//@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
+//data class AuctionResponse(
+//    val pageNo: Int,
+//    val pageSize: Int,
+//    val totalCount: Int,
+//    val items: MutableList<AuctionItem> = mutableListOf()
+//)
+//
+//@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
+//data class AuctionItem(
+//    val name: String,
+//    val grade: String,
+//    val tier: Int,
+//    val level: Int,
+//    val icon: String,
+//    val gradeQuality: Int?,
+//    val auctionInfo: AuctionInfo,
+//    val options: List<AuctionOption>
+//)
+//
+//@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
+//data class AuctionInfo(
+//    val startPrice: Int,
+//    val buyPrice: Int,
+//    val bidPrice: Int,
+//    val endDate: String?,
+//    val bidCount: Int,
+//    val bidStartPrice: Int,
+//    val isCompetitive: Boolean,
+//    val tradeAllowCount: Int,
+//    val upgradeLevel: Int?
+//)
+//
+//@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
+//data class AuctionOption(
+//    val type: String,
+//    val optionName: String,
+//    val optionNameTripod: String?,
+//    val value: Double,
+//    val isPenalty: Boolean,
+//    val className: String,
+//    val isValuePercentage: Boolean
+//)
 @JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
 data class AuctionRequest(
     val itemTier: Int,
@@ -19,19 +59,34 @@ data class AuctionRequest(
     val sort: String = "BUY_PRICE",
     val categoryCode: Int = 210000
 )
-
-@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
-data class AuctionResponse(
-    val pageNo: Int,
-    val pageSize: Int,
-    val totalCount: Int,
-    val items: List<AuctionItem>
+data class ResponseData(
+    @JsonProperty("Items") val items: List<Item>
 )
 
-@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
+data class Item(
+    @JsonProperty("AuctionInfo") val auctionInfo: AuctionInfo
+)
+
 data class AuctionInfo(
-    val buyPrice: Int
+    @JsonProperty("BuyPrice") val buyPrice: Int
 )
+
+
+//@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy::class)
+//data class AuctionResponse(
+//    val pageNo: Int,
+//    val pageSize: Int,
+//    val totalCount: Int,
+//    val items: MutableList<AuctionItem> = mutableListOf(),
+//)
+//@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy::class)
+//data class AuctionItem(
+//    val auctionInfo: AuctionInfo
+//)
+//@JsonNaming(PropertyNamingStrategies.LowerCamelCaseStrategy::class)
+//data class AuctionInfo(
+//    val buyPrice: Int
+//)
 
 
 val gemsInfo = listOf(

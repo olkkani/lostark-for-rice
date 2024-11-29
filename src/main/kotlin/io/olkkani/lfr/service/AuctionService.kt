@@ -1,9 +1,11 @@
 package io.olkkani.lfr.service
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.olkkani.lfr.api.LostarkAPIClient
 import io.olkkani.lfr.domain.*
 import io.olkkani.lfr.model.gemsInfo
 import io.olkkani.lfr.util.IQRCalculator
+import io.olkkani.lfr.util.createTsid
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,6 +19,7 @@ class AuctionService(
     private val tempRepository: ItemPricesTempRepository,
     @Value("\${lostark.api.key}") private val apiKey: String
 ) {
+    private val logger = KotlinLogging.logger {}
     private val apiClient = LostarkAPIClient(apiKey)
 
     private val auctionRequests = gemsInfo
@@ -50,8 +53,10 @@ class AuctionService(
         gemsPrices.forEach { (gem, prices) ->
             val gemCode = auctionRequests.first { it.first == gem }.second.itemCode
             prices.forEach { price ->
+                // TODO: List 형태로 바꾼 후 한번에 저장
                 tempRepository.save(
                     ItemPricesTemp(
+                        id = createTsid(),
                         recordedDate = today,
                         itemCode = gemCode,
                         price = price
@@ -66,36 +71,29 @@ class AuctionService(
         // 5. 가져오고 싶은 매물의 개수만큼 작업을 반복
         gemsPrices.forEach { (key, prices) ->
             val gemCode = auctionRequests.first { it.first == key }.second.itemCode
-            val pricesForClosePrice = mutableListOf<Int>()
             // 0. 현재 시세 가져오기
             apiClient.getAuctionItems(auctionRequests.first { it.first == key }.second)
                 .subscribe(
                     { response ->
-                        response.items.forEach { item ->
-                            // 1. 가져온 항목을 list 로 담기
-                            prices.add(item.auctionInfo.buyPrice)
-                        }
-                        // 1-1. 이상치를 제거한 최저값을 가져온다.(close price)
-                        val closePrice: Int =
-                            IQRCalculator(pricesForClosePrice.map { it.toDouble() }).getMin()!!.toInt()
+                        // 1. 이상치를 제거한 최저값을 가져온다.(close price)
+                        val iqrCalculatorForClosePrice = IQRCalculator(response.map { it.toDouble() })
                         // 2. 기존 시세에 현재 시세를 더한 후 이상치를 제거
-                        prices.addAll(pricesForClosePrice)
-
+                        prices.addAll(response)
                         val iqrCalculator = IQRCalculator(prices.map { it.toDouble() })
                         // 3. 준비된 값을 저장
-                        repository.save(
-                            ItemPrices(
+                            val gemPrice: ItemPrices = ItemPrices(
+                                id = createTsid(),
                                 recordedDate = today,
                                 itemCode = gemCode,
-                                closePrice = closePrice,
-                                openPrice = gemsOpenPrice[key] ?: iqrCalculator.getMin()!!.toInt(),
+                                closePrice = iqrCalculatorForClosePrice.getMin()?.toInt() ?: 0,
+                                openPrice = gemsOpenPrice[key] ?: iqrCalculator.getMin()?.toInt() ?: 0,
                                 highPrice = iqrCalculator.getMax()!!.toInt(),
                                 lowPrice = iqrCalculator.getMin()!!.toInt(),
                             )
-                        )
+                        repository.save(gemPrice)
                     },
                     { error ->
-                        println("Error fetching $key: ${error.message}")
+                        logger.error {"Error fetching $key: ${error.message}"}
                     }
                 )
         }
@@ -118,12 +116,9 @@ class AuctionService(
         auctionRequests.forEach { (key, request) ->
             apiClient.getAuctionItems(request)
                 .subscribe(
-                    { response ->
-                        response.items.forEach { item ->
-                            gemsPrices[key]?.add(item.auctionInfo.buyPrice)
-                        }
+                    { response -> gemsPrices[key]?.addAll(response)
                         gemsOpenPrice[key] =
-                            IQRCalculator(gemsPrices[key]!!.map { it.toDouble() }).getMin()!!.toInt()
+                            IQRCalculator(gemsPrices[key]!!.map { it.toDouble() }).getMin()?.toInt() ?: 0
                     },
                     { error ->
                         println("Error fetching $key: ${error.message}")
@@ -136,11 +131,7 @@ class AuctionService(
         auctionRequests.forEach { (key, request) ->
             apiClient.getAuctionItems(request)
                 .subscribe(
-                    { response ->
-                        response.items.forEach { item ->
-                            gemsPrices[key]?.add(item.auctionInfo.buyPrice)
-                        }
-                    },
+                    { response -> gemsPrices[key]?.addAll(response) },
                     { error ->
                         println("Error fetching $key: ${error.message}")
                     }

@@ -11,7 +11,16 @@ spring:
       on-profile: common
 lostark:
   api:
-    key: ${LOSTARK.API.KEY}
+    key: ${API.KEY}
+logging:
+  level:
+    root: debug
+kotest:
+  framework:
+    classpath:
+      scanning:
+        autoscan:
+          disable: true
 --- # db-prod
 spring:
   config:
