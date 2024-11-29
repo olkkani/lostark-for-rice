@@ -21,8 +21,13 @@ repositories {
     mavenCentral()
 }
 
-val kotestVersion="5.9.1"
+configurations {
+    all {
+        exclude(module = "spring-boot-starter-tomcat")
+    }
+}
 
+val kotestVersion="5.9.1"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
