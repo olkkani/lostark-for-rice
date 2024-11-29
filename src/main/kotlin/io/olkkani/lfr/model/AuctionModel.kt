@@ -2,6 +2,7 @@ package io.olkkani.lfr.model
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import io.olkkani.lfr.domain.ItemPrices
 
 @JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
 data class AuctionItem(
@@ -34,10 +35,27 @@ data class AuctionInfo(
 
 
 val gemsInfo = listOf(
-    "lv10Annihilation" to AuctionRequest(itemTier = 3, itemGrade = "유물", itemCode = 65021100, itemName = "10레벨 멸화의 보석"),
-    "lv10CrimsonFlame" to AuctionRequest(itemTier = 3, itemGrade = "유물", itemCode = 65022100, itemName = "10레벨 홍염의 보석"),
-    "lv8DoomFire" to AuctionRequest(itemTier = 4, itemGrade = "유물", itemCode = 65031080, itemName = "8레벨 겁화의 보석"),
-    "lv8Blazing" to AuctionRequest(itemTier = 4, itemGrade = "유물", itemCode = 65032080, itemName = "8레벨 작열의 보석"),
-    "lv10DoomFire" to AuctionRequest(itemTier = 4, itemGrade = "고대", itemCode = 65031100, itemName = "10레벨 겁화의 보석"),
-    "lv10Blazing" to AuctionRequest(itemTier = 4, itemGrade = "고대", itemCode = 65032100, itemName = "10레벨 작열의 보석")
+    65021100 to AuctionRequest(itemName = "10레벨 멸화의 보석", itemTier = 3, itemGrade = "유물", itemCode = 65021100),
+    65022100 to AuctionRequest(itemName = "10레벨 홍염의 보석", itemTier = 3, itemGrade = "유물", itemCode = 65022100),
+    65031080 to AuctionRequest(itemName = "8레벨 겁화의 보석", itemTier = 4, itemGrade = "유물", itemCode = 65031080),
+    65032080 to AuctionRequest(itemName = "8레벨 작열의 보석", itemTier = 4, itemGrade = "유물", itemCode = 65032080),
+    65031100 to AuctionRequest(itemName = "10레벨 겁화의 보석", itemTier = 4, itemGrade = "고대", itemCode = 65031100),
+    65032100 to AuctionRequest(itemName = "8레벨 작열의 보석", itemTier = 4, itemGrade = "고대", itemCode = 65032100 )
 )
+
+data class CandleChartResponse(
+    val open: Int,
+    val high: Int,
+    val low: Int,
+    val close: Int,
+    val time: String
+)
+
+fun ItemPrices.toResponse() = CandleChartResponse(
+    open = openPrice,
+    high = highPrice,
+    low = lowPrice,
+    close = closePrice,
+    time = recordedDate.toString()
+)
+

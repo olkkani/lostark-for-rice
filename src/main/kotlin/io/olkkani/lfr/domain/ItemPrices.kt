@@ -9,9 +9,9 @@ import java.time.LocalDate
 @Entity
 class ItemPrices (
     @Id @Tsid
-    val id: Long?=null,
+    val id: Long? = null,
     @Column
-    val itemCode: Int,
+    val itemCode: Int? = null,
     @Column
     val closePrice: Int,
     @Column
@@ -21,6 +21,6 @@ class ItemPrices (
     @Column
     val lowPrice: Int,
     @Column
-    val recordedDate: LocalDate,
+    val recordedDate: LocalDate?,
 
 )

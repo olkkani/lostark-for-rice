@@ -10,7 +10,7 @@ class ItemPricesRepositorySupport (
     private val queryFactory: JPAQueryFactory,
 ): QuerydslRepositorySupport(ItemPrices::class.java
 ){
-    fun findOldAllByItemCode(itemCode: Int): List<ItemPrices> {
+    fun findOldAllByItemCode(itemCode: Int): MutableList<ItemPrices> {
         val today = LocalDate.now()
         return queryFactory.selectFrom(QItemPrices.itemPrices).where(
             QItemPrices.itemPrices.itemCode.eq(itemCode)
