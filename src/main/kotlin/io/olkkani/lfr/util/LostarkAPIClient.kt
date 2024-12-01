@@ -1,8 +1,8 @@
-package io.olkkani.lfr.api
+package io.olkkani.lfr.util
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.olkkani.lfr.model.AuctionRequest
-import io.olkkani.lfr.model.ResponseData
+import io.olkkani.lfr.dto.AuctionRequest
+import io.olkkani.lfr.dto.AuctionResponse
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
@@ -20,18 +20,29 @@ class LostarkAPIClient(
         .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .build()
 
-    fun getAuctionItems(auctionRequest: AuctionRequest): Mono<List<Int>>  {
+    fun fetchAuctionItems(auctionRequest: AuctionRequest): Mono<AuctionResponse> {
         return client.post()
             .uri("/auctions/items")
             .bodyValue(auctionRequest)
             .retrieve()
-            .bodyToMono(ResponseData::class.java)
-            .map { response ->
-                response.items.map { it.auctionInfo.buyPrice }
-            }
+            .bodyToMono(AuctionResponse::class.java)
             .onErrorResume { error ->
                 logger.error {"Error occurred: ${error.message}"}
                 Mono.empty()
             }
     }
+
+    fun fetchAuctionItemsStringResponse(auctionRequest: AuctionRequest): Mono<String> {
+        return client.post()
+            .uri("/auctions/items")
+            .bodyValue(auctionRequest)
+            .retrieve()
+            .bodyToMono(String::class.java)
+            .onErrorResume { error ->
+                logger.error {"Error occurred: ${error.message}"}
+                Mono.empty()
+            }
+    }
+
+
 }

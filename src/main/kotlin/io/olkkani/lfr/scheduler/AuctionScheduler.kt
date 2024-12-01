@@ -21,7 +21,7 @@ class GemPricesRetrievalJob(
 ) : QuartzJobBean() {
 
     override fun executeInternal(context: JobExecutionContext) {
-        service.fetchingGemsPrices()
+        service.fetchGemsPrices()
     }
 }
 
