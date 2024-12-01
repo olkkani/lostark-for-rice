@@ -4,6 +4,7 @@ spring:
       local:
         - common
         - server-local
+        - db-local
         - db-prod
       prod:
         - common
@@ -67,3 +68,23 @@ spring:
         physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
         implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
       ddl-auto: validate
+--- # db-local
+spring:
+  config:
+    activate:
+      on-profile: db-local
+  datasource:
+    p6spy:
+      # JDBC 이벤트 로깅을 위한 P6LogFactory 등록
+      enable-logging: true
+
+      # com.p6spy.engine.spy.appender.MultiLineFormat 사용 (SingleLineFormat 대신)
+      multiline: true
+
+      # 기본 리스너들을 위한 로깅 사용 [slf4j, sysout, file, custom]
+      logging: slf4j
+
+      # 실제 값으로 '?'를 대체한 효과적인 SQL 문자열을 추적 시스템에 보고
+      # 참고: 이 설정은 로깅 메시지에 영향을 주지 않음
+      tracing:
+        include-parameter-values: true
