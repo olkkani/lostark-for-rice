@@ -1,4 +1,4 @@
-package io.olkkani.lfr.scheduler
+package io.olkkani.lfr.util
 
 import io.olkkani.lfr.service.AuctionService
 import org.quartz.JobExecutionContext
@@ -11,7 +11,7 @@ class GemOpenPricesRetrievalJob(
 ) : QuartzJobBean() {
 
     override fun executeInternal(context: JobExecutionContext) {
-        service.getGemOpenPrices()
+        service.fetchGemsOpenPrice()
     }
 }
 

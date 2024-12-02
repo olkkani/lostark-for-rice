@@ -29,7 +29,11 @@ class GemPricesRestController (
         service.fetchGemsPrices()
         return ResponseEntity.ok().body(service.getAllGemsPricesByItemCode(65021100).map { it.toResponse() })
     }
-
+    @GetMapping("/find-open")
+    fun execFetchGemOpenPrices(): ResponseEntity.BodyBuilder {
+        service.fetchGemsOpenPrice()
+        return ResponseEntity.ok()
+    }
 
     @GetMapping("/save")
     fun save(): ResponseEntity<String> {

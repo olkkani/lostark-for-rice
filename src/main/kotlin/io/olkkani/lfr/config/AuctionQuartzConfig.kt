@@ -1,24 +1,16 @@
 package io.olkkani.lfr.config
 
-import io.olkkani.lfr.scheduler.GemOpenPricesRetrievalJob
-import io.olkkani.lfr.scheduler.GemPricesRetrievalJob
-import io.olkkani.lfr.scheduler.SaveTodayPricesJob
+import io.olkkani.lfr.util.GemOpenPricesRetrievalJob
+import io.olkkani.lfr.util.GemPricesRetrievalJob
+import io.olkkani.lfr.util.SaveTodayPricesJob
 import org.quartz.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
-import org.springframework.scheduling.quartz.SchedulerFactoryBean
 
 @Configuration
 @Profile("prod")
 class AuctionQuartzConfig {
-    @Bean
-    fun schedulerFactoryBean(triggers: Array<Trigger>, jobDetails: Array<JobDetail>): SchedulerFactoryBean =
-        SchedulerFactoryBean().apply {
-            setTriggers(*triggers)
-            setJobDetails(*jobDetails)
-        }
-
     @Bean
     fun gemOpenPricesRetrievalJobDetail(): JobDetail {
         return JobBuilder.newJob(GemOpenPricesRetrievalJob::class.java)

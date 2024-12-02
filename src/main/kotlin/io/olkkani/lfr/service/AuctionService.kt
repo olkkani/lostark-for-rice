@@ -113,7 +113,7 @@ class AuctionService(
         }
     }
 
-    fun getGemOpenPrices() {
+    fun fetchGemsOpenPrice() {
         clearTodayPrices()
         auctionRequests.forEach { (key, request) ->
             apiClient.fetchAuctionItems(request)
