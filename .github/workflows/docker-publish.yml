@@ -77,7 +77,7 @@ jobs:
 
             # 2. 새로운 컨테이너 실행
             docker run -d -p 18082:8080 --name $APP_NAME-$NEW_ENV  \
-            --network \
+            --network olkkani_network \
             -e SPRING_PROFILES_ACTIVE=prod \
             -e API_KEY=${{ secrets.API_KEY}} \
             -e DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL}} \
