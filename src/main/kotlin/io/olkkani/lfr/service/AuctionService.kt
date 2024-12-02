@@ -167,11 +167,13 @@ class AuctionService(
         val iqrCalculator = IQRCalculator(prices)
         val lowPrice = iqrCalculator.getMin()!!.toInt()
         val highPrice = iqrCalculator.getMax()!!.toInt()
+        var openPrice: Int = gemsOpenPrice[itemCode] ?: 0
+        openPrice = if (openPrice == 0) lowPrice else openPrice
 
         val itemPrices = ItemPrices(
             // TODO: 현재가와 오늘의 최저가가 동일함, 가장 최근에 불러온 데이터는 따로 관리 후 저장
             closePrice = lowPrice,
-            openPrice = gemsOpenPrice[itemCode] ?: lowPrice,
+            openPrice = openPrice,
             highPrice = highPrice,
             lowPrice = lowPrice,
             recordedDate = today,
