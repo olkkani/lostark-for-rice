@@ -32,17 +32,7 @@ class LostarkAPIClient(
             }
     }
 
-    fun fetchAuctionItemsStringResponse(auctionRequest: AuctionRequest): Mono<String> {
-        return client.post()
-            .uri("/auctions/items")
-            .bodyValue(auctionRequest)
-            .retrieve()
-            .bodyToMono(String::class.java)
-            .onErrorResume { error ->
-                logger.error {"Error occurred: ${error.message}"}
-                Mono.empty()
-            }
+    fun fetchAuctionItemsSynchronously(auctionRequest: AuctionRequest): AuctionResponse? {
+        return fetchAuctionItems(auctionRequest).block()
     }
-
-
 }

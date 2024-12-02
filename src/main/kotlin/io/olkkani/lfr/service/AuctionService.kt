@@ -139,18 +139,31 @@ class AuctionService(
                         val fetchPrices: List<Int> = response.items.map { it.auctionInfo.buyPrice }
                         gemsPrices[key]?.addAll(fetchPrices)
                     }, { error ->
-                        logger.error {"Error fetching $key: ${error.message}"}
+                        logger.error { "Error fetching $key: ${error.message}" }
                     }
                 )
         }
     }
 
+    fun fetchGemsPricesSync() {
+        auctionRequests.forEach { (key, request) ->
+            val response = apiClient.fetchAuctionItemsSynchronously(request)
+            response?.let { gem ->
+                gem.items.map { it.auctionInfo.buyPrice }
+            }!!.also {
+                gemsPrices[key]?.addAll(it)
+            }
+        }
+    }
+
     fun getAllGemsPricesByItemCode(itemCode: Int): MutableList<ItemPrices> {
         val today: LocalDate = LocalDate.now()
+        if (gemsPrices[itemCode]?.isEmpty() == true) {
+            fetchGemsPricesSync()
+        }
         // Gems prices 가져오기
         val prices = gemsPrices[itemCode]?.map { it.toDouble() }
             ?: throw IllegalArgumentException("Invalid item code: $itemCode")
-
         val iqrCalculator = IQRCalculator(prices)
         val lowPrice = iqrCalculator.getMin()!!.toInt()
         val highPrice = iqrCalculator.getMax()!!.toInt()
