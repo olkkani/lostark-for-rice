@@ -37,10 +37,6 @@ spring:
     check-template-location: true
 server:
   port: 8080
-  undertow:
-    threads:
-      io: 20
-      worker: 400
 --- # prod-server
 spring:
   config:
