@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController
 class GemPricesRestController (
     private val service: AuctionService
 ){
-
     @GetMapping("/{itemCode}")
     fun getAllByItemCode(
         @PathVariable("itemCode") itemCode: Int
@@ -23,6 +22,14 @@ class GemPricesRestController (
         return ResponseEntity.ok().body(service.getAllGemsPricesByItemCode(itemCode).map { it.toResponse() })
     }
 
+
+
+
+    // TODO: 테스트 용 삭제 예정
+    @GetMapping("/view-all")
+    fun getGemsPrices(): ResponseEntity<MutableMap<Int, MutableList<Int>>> {
+        return ResponseEntity.ok().body(service.getCurrentGemPrice())
+    }
 
     @GetMapping("/find")
     fun execFetchGemPrices(): ResponseEntity<List<CandleChartResponse>> {

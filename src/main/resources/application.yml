@@ -42,6 +42,10 @@ spring:
   config:
     activate:
       on-profile: server-prod
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+server:
+  shutdown: graceful
 --- # db-h2
 spring:
   config:

@@ -183,4 +183,9 @@ class AuctionService(
         gemPrices.add(itemPrices)
         return gemPrices
     }
+    // TODO 테스트를 위함
+    fun getCurrentGemPrice(): MutableMap<Int, MutableList<Int>> {
+        return gemsPrices
+    }
+
 }
