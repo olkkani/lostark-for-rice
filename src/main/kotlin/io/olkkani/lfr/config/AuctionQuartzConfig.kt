@@ -54,14 +54,14 @@ class AuctionQuartzConfig {
     fun fetchGemPriceTriggerDailyWithoutWed(): Trigger =
         TriggerBuilder.newTrigger()
             .withIdentity("trigger-everyOddHourExceptWed")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 0 1-23/2 ? * MON,TUE,THU,FRI,SAT,SUN"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("*/15 1-23 * * 0-2,4-6"))
             .forJob(gemPricesRetrievalJobDetail())
             .build()
     @Bean
     fun fetchGemPriceTriggerWed(): Trigger =
         TriggerBuilder.newTrigger()
             .withIdentity("trigger-WednesdayBiHourlyNight")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 0 1-5,11-23/2 ? * WED"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("*/15 1-5,10-23 * * 3"))
             .forJob(gemPricesRetrievalJobDetail())
             .build()
 

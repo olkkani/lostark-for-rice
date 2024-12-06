@@ -3,6 +3,7 @@ package io.olkkani.lfr.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import java.time.LocalDateTime
 
 @JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
 data class AuctionRequest(
@@ -29,4 +30,5 @@ data class AuctionItem(
 )
 data class AuctionInfo(
     @JsonProperty("BuyPrice")val buyPrice: Int,
+    @JsonProperty("EndDate")val endDate: LocalDateTime
 )

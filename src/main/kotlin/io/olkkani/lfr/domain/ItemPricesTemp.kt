@@ -5,6 +5,7 @@ import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import java.time.LocalDate
+import java.time.LocalDateTime
 
 @Entity
 class ItemPricesTemp(
@@ -12,6 +13,8 @@ class ItemPricesTemp(
     val id: Long?= null,
     @Column
     val recordedDate: LocalDate,
+    @Column
+    val endDate: LocalDateTime,
     @Column
     val itemCode: Int,
     @Column
