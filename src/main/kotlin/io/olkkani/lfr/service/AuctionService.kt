@@ -5,7 +5,6 @@ import io.olkkani.lfr.domain.*
 import io.olkkani.lfr.dto.gemsInfo
 import io.olkkani.lfr.util.IQRCalculator
 import io.olkkani.lfr.util.LostarkAPIClient
-import io.olkkani.lfr.util.createTsid
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -55,7 +54,6 @@ class AuctionService(
                 // TODO: List 형태로 바꾼 후 한번에 저장
                 tempRepository.save(
                     ItemPricesTemp(
-                        id = createTsid(),
                         recordedDate = today,
                         itemCode = key,
                         price = price
@@ -84,7 +82,6 @@ class AuctionService(
                         val lowPrice = iqrCalculator.getMin()?.toInt() ?: 0
                         // 3. 준비된 값을 저장
                         val gemPrice: ItemPrices = ItemPrices(
-                            id = createTsid(),
                             recordedDate = today,
                             itemCode = key,
                             closePrice = iqrCalculatorForClosePrice.getMin()?.toInt() ?: 0,

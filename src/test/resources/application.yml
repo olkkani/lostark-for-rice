@@ -14,13 +14,7 @@ lostark:
     key: ${API.KEY}
 logging:
   level:
-    root: debug
-kotest:
-  framework:
-    classpath:
-      scanning:
-        autoscan:
-          disable: true
+    root: info
 --- # db-prod
 spring:
   config:
@@ -59,10 +53,3 @@ spring:
       settings:
         trace: false
         web-allow-others: false
-logging:
-  level:
-    org:
-      hibernate:
-        type:
-          descriptor:
-            sql: trace # sql parameter 확인
