@@ -124,17 +124,6 @@ class AuctionService(
             })
         }
     }
-
-//    fun fetchGemsPrices() {
-//        auctionRequests.forEach { (key, request) ->
-//            apiClient.fetchAuctionItems(request).subscribe({ response ->
-//                putGemsPrices(itemCode = key, auctionResponse = response)
-//            }, { error ->
-//                logger.error { "Error fetching $key: ${error.message}" }
-//            })
-//        }
-//    }
-
     fun fetchGemsPricesSync() {
         auctionRequests.forEach { (key, request) ->
             val response = apiClient.fetchAuctionItemsSynchronously(request)
