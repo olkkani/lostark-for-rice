@@ -21,22 +21,4 @@ class GemPricesRestController (
     ): ResponseEntity<List<CandleChartResponse>> {
         return ResponseEntity.ok().body(service.getAllGemsPricesByItemCode(itemCode).map { it.toResponse() })
     }
-
-    @GetMapping("/find")
-    fun execFetchGemPrices(): ResponseEntity<List<CandleChartResponse>> {
-        service.fetchGemsPrices()
-        return ResponseEntity.ok().body(service.getAllGemsPricesByItemCode(65021100).map { it.toResponse() })
-    }
-    @GetMapping("/find-open")
-    fun execFetchGemOpenPrices(): ResponseEntity.BodyBuilder {
-        service.fetchGemsOpenPrice()
-        return ResponseEntity.ok()
-    }
-
-    @GetMapping("/save")
-    fun save(): ResponseEntity<String> {
-        service.saveTodayGemsPrices()
-        return ResponseEntity.ok().body("ok")
-    }
-
 }

@@ -107,32 +107,23 @@ class AuctionService(
     }
 
 
-    fun fetchGemsOpenPrice() {
+    fun fetchGemsPrice() {
         clearTodayPrices()
         auctionRequests.forEach { (key, request) ->
             apiClient.fetchAuctionItems(request).subscribe({ response ->
                 // 1. 가져온 데이터를 전체 시세 목록에 반영
                 putGemsPrices(itemCode = key, auctionResponse = response)
                 // 2. Open Price 를 추가
-                val fetchPrices: List<Double> = response.items.map { it.auctionInfo.buyPrice.toDouble() }
-                val iqrCalculator = IQRCalculator(fetchPrices)
-                gemsOpenPrice[key] = iqrCalculator.getMin()?.toInt() ?: 0
-            }, { error ->
-                println("Error fetching $key: ${error.message}")
-            })
-        }
-    }
-
-    fun fetchGemsPrices() {
-        auctionRequests.forEach { (key, request) ->
-            apiClient.fetchAuctionItems(request).subscribe({ response ->
-                putGemsPrices(itemCode = key, auctionResponse = response)
+                if (gemsOpenPrice[key] == 0 || gemsOpenPrice[key] == null ) {
+                    val fetchPrices: List<Double> = response.items.map { it.auctionInfo.buyPrice.toDouble() }
+                    val iqrCalculator = IQRCalculator(fetchPrices)
+                    gemsOpenPrice[key] = iqrCalculator.getMin()?.toInt() ?: 0
+                }
             }, { error ->
                 logger.error { "Error fetching $key: ${error.message}" }
             })
         }
     }
-
     fun fetchGemsPricesSync() {
         auctionRequests.forEach { (key, request) ->
             val response = apiClient.fetchAuctionItemsSynchronously(request)
