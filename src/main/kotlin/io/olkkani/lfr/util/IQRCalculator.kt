@@ -6,7 +6,7 @@ class IQRCalculator(private val data: List<Double>) {
     // Q1, Q3 및 IQR을 계산하는 함수
     private fun calculateIQR(): Pair<Double, Double> {
         val sortedData = data.sorted()
-        val q1 = sortedData[(sortedData.size * 0.25).toInt()]
+        val q1: Double = sortedData[(sortedData.size * 0.25).toInt()]
         val q3 = sortedData[(sortedData.size * 0.75).toInt()]
         return Pair(q1, q3)
     }
@@ -21,9 +21,8 @@ class IQRCalculator(private val data: List<Double>) {
     }
 
     // 이상치를 제거한 데이터의 최저값을 반환
-    fun getMin(): Double? = filteredData.minOrNull()
+    fun getMin(): Double = filteredData.minOrNull() ?: 0.toDouble()
 
     // 이상치를 제거한 데이터의 최대값을 반환
-    fun getMax(): Double? = filteredData.maxOrNull()
-
+    fun getMax(): Double = filteredData.maxOrNull() ?: 0.toDouble()
 }

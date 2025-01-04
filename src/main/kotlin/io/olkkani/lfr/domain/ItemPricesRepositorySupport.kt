@@ -17,6 +17,6 @@ class ItemPricesRepositorySupport (
                 .and(
                     QItemPrices.itemPrices.recordedDate.ne(today)
                 )
-        ).fetch()
+        ).orderBy(QItemPrices.itemPrices.recordedDate.asc()).fetch()
     }
 }
