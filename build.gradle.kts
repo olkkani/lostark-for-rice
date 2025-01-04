@@ -31,17 +31,15 @@ configurations {
 val kotestVersion="5.9.1"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 //    implementation("org.springframework.boot:spring-boot-starter-hateoas")
-//    implementation("org.springframework.boot:spring-boot-starter-security")
-//    implementation("org.springframework.boot:spring-boot-starter-thymeleaf")
 //    implementation("org.springframework.data:spring-data-rest-hal-explorer")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-quartz")
     implementation("org.springframework.boot:spring-boot-starter-undertow")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.3")
-//    implementation("org.thymeleaf.extras:thymeleaf-extras-springsecurity6")
     implementation("com.querydsl:querydsl-jpa"){artifact{classifier="jakarta"}} // QueryDSL 의존성
     implementation("com.querydsl:querydsl-apt")
     implementation("jakarta.persistence:jakarta.persistence-api")
@@ -59,15 +57,16 @@ dependencies {
     implementation("io.github.oshai:kotlin-logging:7.0.0")
     runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:2.1.0")
     runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.9.0")
+    runtimeOnly("com.h2database:h2")
     if(osdetector.arch.equals("aarch_64")){
         implementation("io.netty:netty-resolver-dns-native-macos:4.1.115.Final"){artifact { classifier="osx-aarch_64" }}
     }
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.9.25")
-    testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("com.h2database:h2:2.3.232")
+    testRuntimeOnly("com.h2database:h2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.3")
 }
 
