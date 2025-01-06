@@ -2,6 +2,7 @@ package io.olkkani.lfr.config
 
 import io.olkkani.lfr.util.GemPricesRetrievalJob
 import io.olkkani.lfr.util.SaveTodayPricesJob
+import io.olkkani.lfr.util.clearTodayPriceRecordJob
 import org.quartz.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -27,6 +28,14 @@ class AuctionQuartzConfig {
     }
 
     @Bean
+    fun clearTodayPriceRecordJobDetail(): JobDetail {
+        return JobBuilder.newJob(clearTodayPriceRecordJob::class.java)
+            .withIdentity("clearTodayPriceRecordJob")
+            .storeDurably()
+            .build()
+    }
+
+    @Bean
     fun fetchGemPriceTriggerDailyWithoutWed(): Trigger =
         TriggerBuilder.newTrigger()
             .withIdentity("trigger-everyOddHourExceptWed")
@@ -47,5 +56,13 @@ class AuctionQuartzConfig {
             .withIdentity("trigger-everyNight")
             .withSchedule(CronScheduleBuilder.cronSchedule("0 50 23 ? * *"))
             .forJob(saveTodayPricesJobDetail())
+            .build()
+
+    @Bean
+    fun clearTodayPriceRecordTrigger(): Trigger =
+        TriggerBuilder.newTrigger()
+            .withIdentity("trigger-everyNight")
+            .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 ? * *"))
+            .forJob(clearTodayPriceRecordJobDetail())
             .build()
 }

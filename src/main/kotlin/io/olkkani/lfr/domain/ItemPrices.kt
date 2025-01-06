@@ -22,5 +22,5 @@ class ItemPrices (
     val lowPrice: Int,
     @Column
     val recordedDate: LocalDate?,
-
 )
+

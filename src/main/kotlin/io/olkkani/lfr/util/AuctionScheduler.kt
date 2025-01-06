@@ -1,24 +1,34 @@
 package io.olkkani.lfr.util
 
-import io.olkkani.lfr.service.AuctionService
+import io.olkkani.lfr.service.AuctionGemService
 import org.quartz.JobExecutionContext
 import org.springframework.scheduling.quartz.QuartzJobBean
 import org.springframework.stereotype.Component
 
 @Component
 class GemPricesRetrievalJob(
-    private val service: AuctionService
+    private val service: AuctionGemService
 ) : QuartzJobBean() {
     override fun executeInternal(context: JobExecutionContext) {
-        service.fetchGemsPrice()
+        service.fetchGemPrices()
     }
 }
 
 @Component
 class SaveTodayPricesJob(
-    private val service: AuctionService
+    private val service: AuctionGemService
 ) : QuartzJobBean() {
     override fun executeInternal(context: JobExecutionContext) {
-        service.saveTodayGemsPrices()
+       service.saveTodayPrices()
+    }
+}
+
+@Component
+class clearTodayPriceRecordJob (
+    private val service: AuctionGemService
+): QuartzJobBean() {
+    override fun executeInternal(context: JobExecutionContext) {
+        service.clearTodayPricesRecord()
+        service.fetchGemsPricesSync()
     }
 }
