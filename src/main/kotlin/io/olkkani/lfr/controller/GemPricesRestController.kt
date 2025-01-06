@@ -18,18 +18,14 @@ class GemPricesRestController(
 ) {
 
     @GetMapping("/prices/today")
-    fun getAllKindsTodayPrice() {
-        val prices: MutableList<TodayPriceResponse> = mutableListOf()
-        ResponseEntity.ok().body(
-            service.getAllKindsTodayPrice().map { gem ->
-                prices.add(
-                    TodayPriceResponse(
-                        itemCode = gem.itemCode,
-                        price = gem.toResponse()
-                    )
+    fun getAllKindsTodayPrice(): ResponseEntity<List<TodayPriceResponse>> {
+        val prices = service.getAllKindsTodayPrice().map { gem ->
+                TodayPriceResponse(
+                    itemCode = gem.itemCode,
+                    price = gem.toResponse()
                 )
-            }
-        )
+        }
+        return ResponseEntity.ok().body(prices)
     }
     @GetMapping("/{itemCode}/prices")
     fun getAllPricesByItemCode(@PathVariable itemCode: Int): ResponseEntity<List<CandleChartResponse>> {
