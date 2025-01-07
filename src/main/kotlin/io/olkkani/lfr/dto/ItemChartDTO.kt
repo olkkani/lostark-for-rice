@@ -10,9 +10,18 @@ data class CandleChartResponse(
     val close: Int,
     val time: String
 )
+
+class ItemPreview(
+    val price: Int,
+    val highPrice: Int,
+    val lowPrice: Int,
+    val priceChange: Int,
+    val priceChangeRate: Double
+)
+
 class TodayPriceResponse (
     val itemCode: Int,
-    val price: CandleChartResponse
+    val price: ItemPreview
 )
 
 fun ItemPrices.toResponse() = CandleChartResponse(
@@ -23,10 +32,10 @@ fun ItemPrices.toResponse() = CandleChartResponse(
     time = recordedDate.toString()
 )
 
-fun Item.toResponse()  = CandleChartResponse(
-    open = open,
-    high = high,
-    low = low,
-    close = close,
-    time = time.toString()
+fun Item.toResponse() = ItemPreview(
+    price = close,
+    highPrice = high,
+    lowPrice = low,
+    priceChange = close - open,
+    priceChangeRate = close.toDouble() / open.toDouble() * 100,
 )
