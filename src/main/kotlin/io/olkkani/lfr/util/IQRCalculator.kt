@@ -21,8 +21,8 @@ class IQRCalculator(private val data: List<Double>) {
     }
 
     // 이상치를 제거한 데이터의 최저값을 반환
-    fun getMin(): Double = filteredData.minOrNull() ?: 0.toDouble()
+    fun getMin(): Double = filteredData.minOrNull() ?: 0.0
 
     // 이상치를 제거한 데이터의 최대값을 반환
-    fun getMax(): Double = filteredData.maxOrNull() ?: 0.toDouble()
+    fun getMax(): Double = filteredData.maxOrNull() ?: 0.0
 }

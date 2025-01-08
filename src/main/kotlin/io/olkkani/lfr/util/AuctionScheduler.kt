@@ -24,7 +24,7 @@ class SaveTodayPricesJob(
 }
 
 @Component
-class clearTodayPriceRecordJob (
+class ClearTodayPriceRecordJob (
     private val service: AuctionGemService
 ): QuartzJobBean() {
     override fun executeInternal(context: JobExecutionContext) {

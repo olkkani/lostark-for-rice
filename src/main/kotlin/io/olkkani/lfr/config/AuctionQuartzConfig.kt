@@ -1,8 +1,8 @@
 package io.olkkani.lfr.config
 
+import io.olkkani.lfr.util.ClearTodayPriceRecordJob
 import io.olkkani.lfr.util.GemPricesRetrievalJob
 import io.olkkani.lfr.util.SaveTodayPricesJob
-import io.olkkani.lfr.util.clearTodayPriceRecordJob
 import org.quartz.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -29,7 +29,7 @@ class AuctionQuartzConfig {
 
     @Bean
     fun clearTodayPriceRecordJobDetail(): JobDetail {
-        return JobBuilder.newJob(clearTodayPriceRecordJob::class.java)
+        return JobBuilder.newJob(ClearTodayPriceRecordJob::class.java)
             .withIdentity("clearTodayPriceRecordJob")
             .storeDurably()
             .build()

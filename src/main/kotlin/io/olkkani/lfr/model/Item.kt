@@ -5,7 +5,7 @@ import io.olkkani.lfr.util.IQRCalculator
 import java.time.LocalDate
 import java.time.LocalDateTime
 
-class Item(
+data class Item(
     val itemCode: Int
 ) {
     var open: Int = 0
@@ -23,7 +23,7 @@ class Item(
         if (high < iqrCalculator.getMax().toInt()) {
             high = iqrCalculator.getMax().toInt()
         }
-        if (low > close) {
+        if (low > close || low == 0) {
             low = close
         }
         if (open == 0) {

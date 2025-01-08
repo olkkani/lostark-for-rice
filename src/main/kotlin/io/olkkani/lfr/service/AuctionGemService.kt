@@ -2,8 +2,8 @@ package io.olkkani.lfr.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.olkkani.lfr.domain.*
-import io.olkkani.lfr.model.Item
 import io.olkkani.lfr.dto.gemsInfo
+import io.olkkani.lfr.model.Item
 import io.olkkani.lfr.model.toDomain
 import io.olkkani.lfr.util.LostarkAPIClient
 import org.springframework.beans.factory.annotation.Value
@@ -43,6 +43,7 @@ class AuctionGemService(
     }
 
     fun clearTodayPricesRecord() {
+        logger.info { "Clear Gems instance ${LocalDateTime.now().toString()}" }
         gems.clear()
         val gemList = gemsInfo
         gemList.forEach { gemInfo ->
@@ -91,10 +92,6 @@ class AuctionGemService(
                 tempRepository.saveAll(gem.toTempDomains())
             }
         }
-    }
-
-    fun getTodayPrice(): List<Item> {
-        return gems
     }
 
     fun getTodayTempPricesAndAddPrices() {
