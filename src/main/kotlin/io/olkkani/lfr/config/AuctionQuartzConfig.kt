@@ -36,25 +36,33 @@ class AuctionQuartzConfig {
     }
 
     @Bean
-    fun fetchGemPriceTriggerDailyWithoutWed(): Trigger =
+    fun fetchGemPriceTriggerDailyStart0am(): Trigger =
         TriggerBuilder.newTrigger()
-            .withIdentity("trigger-everyOddHourExceptWed")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 */15 0-23 ? * MON,TUE,THU,FRI,SAT,SUN"))
+            .withIdentity("trigger-every-0am-to-1am, fetch-prices")
+            .withSchedule(CronScheduleBuilder.cronSchedule("0 15,30,45 0 ? * *"))
             .forJob(gemPricesRetrievalJobDetail())
             .build()
     @Bean
+    fun fetchGemPriceTriggerDailyWithoutWed(): Trigger =
+        TriggerBuilder.newTrigger()
+            .withIdentity("trigger-everyOddHourExceptWed-1am, fetch-prices")
+            .withSchedule(CronScheduleBuilder.cronSchedule("0 */15 1-23 ? * MON,TUE,THU,FRI,SAT,SUN"))
+            .forJob(gemPricesRetrievalJobDetail())
+            .build()
+
+    @Bean
     fun fetchGemPriceTriggerWed(): Trigger =
         TriggerBuilder.newTrigger()
-            .withIdentity("trigger-WednesdayBiHourlyNight")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 */15 0-5,10-23 ? * WED"))
+            .withIdentity("trigger-WednesdayBiHourlyNight, fetch-prices")
+            .withSchedule(CronScheduleBuilder.cronSchedule("0 */15 1-5,10-23 ? * WED"))
             .forJob(gemPricesRetrievalJobDetail())
             .build()
 
     @Bean
     fun saveGemPriceTrigger(): Trigger =
         TriggerBuilder.newTrigger()
-            .withIdentity("trigger-everyNight")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 50 23 ? * *"))
+            .withIdentity("trigger-everyMidnight")
+            .withSchedule(CronScheduleBuilder.cronSchedule("0 55 23 ? * *"))
             .forJob(saveTodayPricesJobDetail())
             .build()
 
