@@ -37,5 +37,5 @@ fun Item.toResponse() = ItemPreview(
     highPrice = high,
     lowPrice = low,
     priceChange = close - open,
-    priceChangeRate = close.toDouble() / open.toDouble() * 100,
+    priceChangeRate = close.toDouble() / open.toDouble(),
 )
