@@ -1,6 +1,8 @@
-package io.olkkani.lfr.domain
+package io.olkkani.lfr.repository
 
 import com.querydsl.jpa.impl.JPAQueryFactory
+import io.olkkani.lfr.entity.ItemPrices
+import io.olkkani.lfr.entity.QItemPrices
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
@@ -8,7 +10,8 @@ import java.time.LocalDate
 @Repository
 class ItemPricesRepositorySupport (
     private val queryFactory: JPAQueryFactory,
-): QuerydslRepositorySupport(ItemPrices::class.java
+): QuerydslRepositorySupport(
+    ItemPrices::class.java
 ){
     fun findOldAllByItemCode(itemCode: Int): MutableList<ItemPrices> {
         val today = LocalDate.now()

@@ -1,6 +1,6 @@
-package io.olkkani.lfr.model
+package io.olkkani.lfr.dto
 
-import io.olkkani.lfr.domain.ItemPrices
+import io.olkkani.lfr.entity.ItemPrices
 import io.olkkani.lfr.util.IQRCalculator
 import java.time.LocalDate
 import java.time.LocalDateTime

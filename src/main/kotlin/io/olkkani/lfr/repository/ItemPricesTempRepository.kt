@@ -1,5 +1,6 @@
-package io.olkkani.lfr.domain
+package io.olkkani.lfr.repository
 
+import io.olkkani.lfr.entity.ItemPricesTemp
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDate

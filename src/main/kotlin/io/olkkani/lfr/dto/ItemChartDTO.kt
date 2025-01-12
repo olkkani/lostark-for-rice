@@ -1,7 +1,6 @@
 package io.olkkani.lfr.dto
 
-import io.olkkani.lfr.domain.ItemPrices
-import io.olkkani.lfr.model.Item
+import io.olkkani.lfr.entity.ItemPrices
 
 data class CandleChartResponse(
     val open: Int,

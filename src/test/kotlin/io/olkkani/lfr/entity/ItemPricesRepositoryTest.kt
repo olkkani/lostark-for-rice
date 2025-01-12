@@ -1,6 +1,7 @@
-package io.olkkani.lfr.domain
+package io.olkkani.lfr.entity
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.olkkani.lfr.repository.ItemPricesRepository
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

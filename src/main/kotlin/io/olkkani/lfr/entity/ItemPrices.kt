@@ -1,4 +1,4 @@
-package io.olkkani.lfr.domain
+package io.olkkani.lfr.entity
 
 import io.hypersistence.utils.hibernate.id.Tsid
 import jakarta.persistence.Column

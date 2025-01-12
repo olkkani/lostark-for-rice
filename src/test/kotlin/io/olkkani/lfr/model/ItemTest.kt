@@ -1,5 +1,6 @@
 package io.olkkani.lfr.model
 
+import io.olkkani.lfr.dto.Item
 import java.time.LocalDateTime
 
 class ItemTest {

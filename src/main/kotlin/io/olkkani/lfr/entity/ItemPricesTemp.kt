@@ -1,7 +1,7 @@
-package io.olkkani.lfr.domain
+package io.olkkani.lfr.entity
 
 import io.hypersistence.utils.hibernate.id.Tsid
-import io.olkkani.lfr.model.Item
+import io.olkkani.lfr.dto.Item
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
