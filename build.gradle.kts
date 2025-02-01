@@ -28,7 +28,8 @@ configurations {
     }
 }
 
-val kotestVersion="5.9.1"
+val kotestVersion = "5.9.1"
+val coroutinesVersion = "1.10.1"
 dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-security")
@@ -40,7 +41,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-undertow")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.3")
-    implementation("com.querydsl:querydsl-jpa"){artifact{classifier="jakarta"}} // QueryDSL 의존성
+    implementation("com.querydsl:querydsl-jpa") { artifact { classifier = "jakarta" } } // QueryDSL 의존성
     implementation("com.querydsl:querydsl-apt")
     implementation("jakarta.persistence:jakarta.persistence-api")
     implementation("jakarta.annotation:jakarta.annotation-api")
@@ -48,20 +49,28 @@ dependencies {
     implementation("org.postgresql:postgresql:42.7.4")
     implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.9.0")
     implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.10.0")
+    implementation("io.kotest.extensions:kotest-extensions-spring:1.3.0")
+
 //    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
     kapt("com.querydsl:querydsl-kotlin-codegen")
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
-    kapt("com.querydsl:querydsl-apt"){artifact{classifier="jakarta"}}
+    kapt("com.querydsl:querydsl-apt") { artifact { classifier = "jakarta" } }
     implementation("io.github.oshai:kotlin-logging:7.0.0")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
     runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:2.1.0")
-    runtimeOnly("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.9.0")
     runtimeOnly("com.h2database:h2")
-    if(osdetector.arch.equals("aarch_64")){
-        implementation("io.netty:netty-resolver-dns-native-macos:4.1.115.Final"){artifact { classifier="osx-aarch_64" }}
+    if (osdetector.arch.equals("aarch_64")) {
+        implementation("io.netty:netty-resolver-dns-native-macos:4.1.115.Final") {
+            artifact {
+                classifier = "osx-aarch_64"
+            }
+        }
     }
     developmentOnly("org.springframework.boot:spring-boot-devtools")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.9.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.projectreactor:reactor-test")

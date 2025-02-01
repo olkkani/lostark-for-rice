@@ -1,6 +1,7 @@
 package io.olkkani.lfr.util
 
 import io.olkkani.lfr.service.AuctionGemService
+import kotlinx.coroutines.runBlocking
 import org.quartz.JobExecutionContext
 import org.springframework.scheduling.quartz.QuartzJobBean
 import org.springframework.stereotype.Component
@@ -10,7 +11,10 @@ class GemPricesRetrievalJob(
     private val service: AuctionGemService
 ) : QuartzJobBean() {
     override fun executeInternal(context: JobExecutionContext) {
-        service.fetchGemPrices()
+        runBlocking {
+            service.fetchGemPrices()
+            service.updatePairItemPriceGap()
+        }
     }
 }
 
@@ -19,16 +23,20 @@ class SaveTodayPricesJob(
     private val service: AuctionGemService
 ) : QuartzJobBean() {
     override fun executeInternal(context: JobExecutionContext) {
-       service.saveTodayPrices()
+        service.saveTodayPrices()
     }
 }
 
 @Component
-class ClearTodayPriceRecordJob (
+class ClearTodayPriceRecordJob(
     private val service: AuctionGemService
-): QuartzJobBean() {
+) : QuartzJobBean() {
     override fun executeInternal(context: JobExecutionContext) {
-        service.clearTodayPricesRecord()
-        service.fetchGemsPricesSync()
+        runBlocking {
+            service.clearTodayPricesRecord()
+            service.updatePrevPriceTrend()
+            service.fetchGemPrices()
+            service.updatePairItemPriceGap()
+        }
     }
 }

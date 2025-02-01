@@ -31,7 +31,7 @@ fun ItemPrices.toResponse() = CandleChartResponse(
     time = recordedDate.toString()
 )
 
-fun Item.toResponse() = ItemPreview(
+fun ItemTodayPrices.toResponse() = ItemPreview(
     price = close,
     highPrice = high,
     lowPrice = low,

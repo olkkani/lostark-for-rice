@@ -9,12 +9,17 @@ spring:
   config:
     activate:
       on-profile: common
-lostark:
-  api:
-    key: ${API.KEY}
 logging:
   level:
     root: info
+---
+spring:
+  config:
+    activate:
+      on-profile: api
+lostark:
+  api:
+    key: ${API.KEY}
 --- # db-prod
 spring:
   config:

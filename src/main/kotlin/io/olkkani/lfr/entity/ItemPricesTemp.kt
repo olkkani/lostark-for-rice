@@ -1,7 +1,7 @@
 package io.olkkani.lfr.entity
 
 import io.hypersistence.utils.hibernate.id.Tsid
-import io.olkkani.lfr.dto.Item
+import io.olkkani.lfr.dto.ItemTodayPrices
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
@@ -22,7 +22,7 @@ class ItemPricesTemp(
     val price: Int
 )
 
-fun Item.toTempDomains(): MutableList<ItemPricesTemp> {
+fun ItemTodayPrices.toTempDomains(): MutableList<ItemPricesTemp> {
     val itemPricesTemps = mutableListOf<ItemPricesTemp>()
     todayPrices.forEach { item ->
         ItemPricesTemp(

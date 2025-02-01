@@ -1,7 +1,7 @@
-package io.olkkani.lfr.entity
+package io.olkkani.lfr.repository
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.olkkani.lfr.repository.ItemPricesRepository
+import io.olkkani.lfr.entity.ItemPrices
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -15,7 +15,7 @@ import java.time.LocalDate
 @ExtendWith(SpringExtension::class)
 @DataJpaTest
 @ActiveProfiles("test")
-class ItemPricesRepositoryTest @Autowired constructor(
+class ItemTodayPricesPricesRepositoryTest @Autowired constructor(
     private val repository: ItemPricesRepository
 ){
 
@@ -37,5 +37,11 @@ class ItemPricesRepositoryTest @Autowired constructor(
         val findItem = repository.findById(savedItem.id!!).orElse(null)
 //        then
         Assertions.assertThat(findItem.itemCode).isEqualTo(savedItem.itemCode)
+    }
+
+    @Test
+    @DisplayName("get item five rows test")
+    fun getItemFiveRowsTest() {
+
     }
 }
