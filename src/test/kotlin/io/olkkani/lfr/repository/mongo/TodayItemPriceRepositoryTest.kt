@@ -1,22 +1,14 @@
 package io.olkkani.lfr.repository.mongo
 
-import io.github.oshai.kotlinlogging.KotlinLogging
-import io.kotest.core.spec.style.DescribeSpec
-import io.kotest.extensions.spring.SpringExtension
-import io.olkkani.lfr.LostarkForRiceApplication
-import org.springframework.test.context.ActiveProfiles
-import org.springframework.test.context.ContextConfiguration
-
-@ActiveProfiles("test")
+//@ActiveProfiles("test")
 //@DataMongoTest
-@ContextConfiguration(classes = [LostarkForRiceApplication::class])
-class TodayItemPriceRepositoryTest : DescribeSpec() {
-    override fun extensions() = listOf(SpringExtension)
+//@ContextConfiguration(classes = [LostarkForRiceApplication::class])
+//class TodayItemPriceRepositoryTest : DescribeSpec() {
+//    override fun extensions() = listOf(SpringExtension)
 
 //    @Autowired
 //    private lateinit var repository: TodayItemPriceRepository
 
-    private val logger = KotlinLogging.logger {}
 
 //    init {
 //        this.describe("데이터 중복 방지 삽입 테스트") {
@@ -108,4 +100,4 @@ class TodayItemPriceRepositoryTest : DescribeSpec() {
 //            }
 //        }
 //    }
-}
+//}
