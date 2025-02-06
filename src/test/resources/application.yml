@@ -82,6 +82,7 @@ spring:
   data:
     mongodb:
       auto-index-creation: true
+      port: 0
 de:
   flapdoodle:
     mongodb:
