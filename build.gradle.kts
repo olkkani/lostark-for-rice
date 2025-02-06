@@ -1,11 +1,10 @@
 plugins {
-    kotlin("jvm") version "2.0.21"
-    kotlin("plugin.spring") version "2.0.21"
-    kotlin("plugin.jpa") version "2.0.21"
-    kotlin("kapt") version "2.0.21"
+    kotlin("jvm") version "2.1.10"
+    kotlin("plugin.spring") version "2.1.10"
+    kotlin("plugin.jpa") version "2.1.10"
+    kotlin("kapt") version "2.1.10"
     id("org.springframework.boot") version "3.3.5"
     id("io.spring.dependency-management") version "1.1.6"
-    id("org.graalvm.buildtools.native") version "0.10.3"
     id("com.google.osdetector") version "1.7.3"
 }
 
@@ -18,22 +17,23 @@ java {
     }
 }
 
+allOpen {
+    annotation("javax.persistence.Entity")
+    annotation("javax.persistence.MappedSuperclass")
+    annotation("javax.persistence.Embeddable")
+}
+
 repositories {
     mavenCentral()
 }
 
-configurations {
-    all {
-        exclude(module = "spring-boot-starter-tomcat")
-    }
-}
-
-val kotestVersion = "5.9.1"
 val coroutinesVersion = "1.10.1"
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web") { exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat") }
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
+
 //    implementation("org.springframework.boot:spring-boot-starter-hateoas")
 //    implementation("org.springframework.data:spring-data-rest-hal-explorer")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
@@ -41,26 +41,19 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-undertow")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.3")
-    implementation("com.querydsl:querydsl-jpa") { artifact { classifier = "jakarta" } } // QueryDSL 의존성
-    implementation("com.querydsl:querydsl-apt")
-    implementation("jakarta.persistence:jakarta.persistence-api")
-    implementation("jakarta.annotation:jakarta.annotation-api")
     implementation("com.github.f4b6a3:tsid-creator:5.2.6")
-    implementation("org.postgresql:postgresql:42.7.4")
+    implementation("org.postgresql:postgresql")
     implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.9.0")
     implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.10.0")
     implementation("io.kotest.extensions:kotest-extensions-spring:1.3.0")
-
 //    developmentOnly("org.springframework.boot:spring-boot-docker-compose")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
-    kapt("com.querydsl:querydsl-kotlin-codegen")
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
-    kapt("com.querydsl:querydsl-apt") { artifact { classifier = "jakarta" } }
     implementation("io.github.oshai:kotlin-logging:7.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
-    runtimeOnly("org.jetbrains.kotlin:kotlin-reflect:2.1.0")
+    implementation(kotlin("reflect"))
     runtimeOnly("com.h2database:h2")
     if (osdetector.arch.equals("aarch_64")) {
         implementation("io.netty:netty-resolver-dns-native-macos:4.1.115.Final") {
@@ -72,28 +65,24 @@ dependencies {
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:5.9.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:4.18.0")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.9.25")
     testRuntimeOnly("com.h2database:h2")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.3")
 }
-
-// QueryDSL Setting
 val generated = file("build/generated/kapt/main/kotlin")
 sourceSets {
     main {
         kotlin.srcDirs += generated
     }
 }
-
-
 tasks.named("clean") {
     doLast {
         generated.deleteRecursively()
     }
 }
-
 kotlin {
     compilerOptions {
         freeCompilerArgs.addAll("-Xjsr305=strict")

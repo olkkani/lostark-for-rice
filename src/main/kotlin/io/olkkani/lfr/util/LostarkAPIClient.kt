@@ -3,10 +3,12 @@ package io.olkkani.lfr.util
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.olkkani.lfr.dto.AuctionRequest
 import io.olkkani.lfr.dto.AuctionResponse
+import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
+import reactor.core.scheduler.Schedulers
 
 class LostarkAPIClient(
     private val apiKey: String
@@ -20,7 +22,7 @@ class LostarkAPIClient(
         .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .build()
 
-    fun fetchAuctionItems(auctionRequest: AuctionRequest): Mono<AuctionResponse> {
+    private fun fetchAuctionItems(auctionRequest: AuctionRequest): Mono<AuctionResponse> {
         return client.post()
             .uri("/auctions/items")
             .bodyValue(auctionRequest)
@@ -31,8 +33,9 @@ class LostarkAPIClient(
                 Mono.empty()
             }
     }
-
-    fun fetchAuctionItemsSynchronously(auctionRequest: AuctionRequest): AuctionResponse? {
-        return fetchAuctionItems(auctionRequest).block()
+    suspend fun fetchAuctionItemsSubscribe(auctionRequest: AuctionRequest): AuctionResponse {
+        return fetchAuctionItems(auctionRequest)
+            .subscribeOn(Schedulers.boundedElastic())
+            .awaitSingle()
     }
 }

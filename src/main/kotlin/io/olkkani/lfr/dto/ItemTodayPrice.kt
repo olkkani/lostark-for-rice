@@ -1,6 +1,6 @@
 package io.olkkani.lfr.dto
 
-import io.olkkani.lfr.entity.ItemPrices
+import io.olkkani.lfr.entity.jpa.ItemPriceIndex
 import io.olkkani.lfr.util.IQRCalculator
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -17,7 +17,7 @@ data class ItemTodayPrices(
     val priceFiveDaysTrend = mutableMapOf<LocalDate, PriceTrend>()
 
     fun addTodayPrices(prices: Map<LocalDateTime, Int>) {
-        val iqrCalculator = IQRCalculator(prices.map { it.value.toDouble() })
+        val iqrCalculator = IQRCalculator(prices.map { it.value })
 
         close = iqrCalculator.getMin().toInt()
         if (high < iqrCalculator.getMax().toInt()) {
@@ -91,7 +91,7 @@ class PriceTrend {
     var pairItemPriceGapRate: Double = 0.0
 }
 
-fun ItemTodayPrices.toDomain() = ItemPrices(
+fun ItemTodayPrices.toDomain() = ItemPriceIndex(
     itemCode = itemCode,
     closePrice = close,
     openPrice = open,

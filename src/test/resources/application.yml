@@ -3,8 +3,18 @@ spring:
     group:
       test:
         - common
+        - api
         - db-local
+        - db-local-mongodb
 --- # common
+spring:
+  config:
+    activate:
+      on-profile: common
+logging:
+  level:
+    root: info
+--- # api
 spring:
   config:
     activate:
@@ -19,7 +29,7 @@ spring:
       on-profile: api
 lostark:
   api:
-    key: ${API.KEY}
+    key: ${API_KEY}
 --- # db-prod
 spring:
   config:
@@ -64,3 +74,17 @@ spring:
   sql:
     init:
       mode: always
+--- # db-local-mongodb
+spring:
+  config:
+    activate:
+      on-profile: db-local-mongodb
+  data:
+    mongodb:
+      auto-index-creation: true
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.4.0
+        tools-version: 100.8.0

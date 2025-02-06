@@ -1,4 +1,4 @@
-insert into item_prices (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
+insert into item_price_index (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
 values (1, 65031100, 343600, 339000, 345000, 340900, '2025-01-01'),
        (2, 65031100, 343600, 339000, 345000, 340900, '2024-12-31'),
        (3, 65031100, 343600, 339000, 345000, 340900, '2024-12-30'),
@@ -7,7 +7,7 @@ values (1, 65031100, 343600, 339000, 345000, 340900, '2025-01-01'),
        (6, 65031100, 343600, 339000, 345000, 340900, '2024-12-27'),
        (7, 65031100, 343600, 339000, 345000, 340900, '2024-12-26');
 
-INSERT INTO item_prices (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
+INSERT INTO item_price_index (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
 VALUES (8, 65032100, 343600, 339000, 345000, 340900, '2025-01-01'),
        (9, 65032100, 343600, 339000, 345000, 340900, '2024-12-31'),
        (10, 65032100, 343600, 339000, 345000, 340900, '2024-12-30'),
@@ -16,7 +16,7 @@ VALUES (8, 65032100, 343600, 339000, 345000, 340900, '2025-01-01'),
        (13, 65032100, 343600, 339000, 345000, 340900, '2024-12-27'),
        (14, 65032100, 343600, 339000, 345000, 340900, '2024-12-26');
 
-INSERT INTO item_prices (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
+INSERT INTO item_price_index (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
 VALUES (15, 65021100, 343600, 339000, 345000, 340900, '2025-01-01'),
        (16, 65021100, 343600, 339000, 345000, 340900, '2024-12-31'),
        (17, 65021100, 343600, 339000, 345000, 340900, '2024-12-30'),
@@ -26,7 +26,7 @@ VALUES (15, 65021100, 343600, 339000, 345000, 340900, '2025-01-01'),
        (21, 65021100, 343600, 339000, 345000, 340900, '2024-12-26');
 
 -- item_code가 65022100인 경우
-INSERT INTO item_prices (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
+INSERT INTO item_price_index (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
 VALUES (22, 65022100, 343600, 339000, 345000, 340900, '2025-01-01'),
        (23, 65022100, 343600, 339000, 345000, 340900, '2024-12-31'),
        (24, 65022100, 343600, 339000, 345000, 340900, '2024-12-30'),
@@ -36,7 +36,7 @@ VALUES (22, 65022100, 343600, 339000, 345000, 340900, '2025-01-01'),
        (28, 65022100, 343600, 339000, 345000, 340900, '2024-12-26');
 
 -- item_code가 65031080인 경우
-INSERT INTO item_prices (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
+INSERT INTO item_price_index (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
 VALUES (29, 65031080, 343600, 339000, 345000, 340900, '2025-01-01'),
        (30, 65031080, 343600, 339000, 345000, 340900, '2024-12-31'),
        (31, 65031080, 343600, 339000, 345000, 340900, '2024-12-30'),
@@ -46,7 +46,7 @@ VALUES (29, 65031080, 343600, 339000, 345000, 340900, '2025-01-01'),
        (35, 65031080, 343600, 339000, 345000, 340900, '2024-12-26');
 
 -- item_code가 65032080인 경우
-INSERT INTO item_prices (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
+INSERT INTO item_price_index (id, item_code, close_price, open_price, high_price, low_price, recorded_date)
 VALUES (36, 65032080, 343600, 339000, 345000, 340900, '2025-01-01'),
        (37, 65032080, 343600, 339000, 345000, 340900, '2024-12-31'),
        (38, 65032080, 343600, 339000, 345000, 340900, '2024-12-30'),

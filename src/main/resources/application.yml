@@ -5,10 +5,12 @@ spring:
         - common
         - server-local
         - db-local
+        - db-mongo-prod
       prod:
         - common
         - server-prod
         - db-prod
+        - db-mongo-prod
 --- # common
 spring:
   config:
@@ -21,7 +23,7 @@ spring:
 #    static-locations: classpath:/static
 lostark:
   api:
-    key: ${API.KEY}
+    key: ${API_KEY}
 --- # local-server
 spring:
   config:
@@ -48,6 +50,15 @@ spring:
   config:
     activate:
       on-profile: db-h2
+--- # db-prod-mongodb
+spring:
+  config:
+    activate:
+      on-profile: db-mongo-prod
+  data:
+    mongodb:
+      uri: ${DB_MONGODB_CONNECTION_URL}
+      auto-index-creation: true
 --- # db-prod
 spring:
   config:

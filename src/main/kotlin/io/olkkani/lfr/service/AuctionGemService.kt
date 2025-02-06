@@ -2,32 +2,24 @@ package io.olkkani.lfr.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.olkkani.lfr.dto.ItemTodayPrices
-import io.olkkani.lfr.dto.PriceTrend
 import io.olkkani.lfr.dto.collectGemInfoList
 import io.olkkani.lfr.dto.toDomain
-import io.olkkani.lfr.entity.ItemPrices
-import io.olkkani.lfr.entity.toTempDomains
-import io.olkkani.lfr.repository.ItemPricesRepository
-import io.olkkani.lfr.repository.ItemPricesRepositorySupport
-import io.olkkani.lfr.repository.ItemPricesTempRepository
+import io.olkkani.lfr.entity.jpa.ItemPriceIndex
+import io.olkkani.lfr.repository.jpa.ItemPriceIndexRepository
 import io.olkkani.lfr.util.LostarkAPIClient
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
-import reactor.core.scheduler.Schedulers
 import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Service
 @Transactional
 class AuctionGemService(
-    private val repository: ItemPricesRepository,
-    private val repositorySupport: ItemPricesRepositorySupport,
-    private val tempRepository: ItemPricesTempRepository,
+    private val repository: ItemPriceIndexRepository,
     @Value("\${lostark.api.key}") private val apiKey: String
 ) {
     private val logger = KotlinLogging.logger {}
@@ -36,23 +28,7 @@ class AuctionGemService(
     @Volatile
     var gems = mutableListOf<ItemTodayPrices>()
 
-    init {
-        val today = LocalDate.now()
-        val gemList = collectGemInfoList
-        gemList.forEach { gemInfo ->
-            gems.add(ItemTodayPrices(itemCode = gemInfo.itemCode))
 
-            // 오늘자 임시 데이터가 있다면 삽입
-            val tempPrices: MutableMap<LocalDateTime, Int> = mutableMapOf()
-            tempRepository.findByItemCodeAndRecordedDate(itemCode = gemInfo.itemCode, recordedDate = today)
-                .forEach { tempGemPrices ->
-                    tempPrices[tempGemPrices.endDate] = tempGemPrices.price
-                }
-            if (tempPrices.isNotEmpty()) {
-                gems.find { gem -> gem.itemCode == gemInfo.itemCode }?.addTodayPrices(tempPrices)
-            }
-        }
-    }
 
     fun clearTodayPricesRecord() {
         logger.info { "Clear Gems instance ${LocalDateTime.now().toString()}" }
@@ -63,33 +39,13 @@ class AuctionGemService(
         }
     }
 
-    suspend fun fetchGemPrices() = coroutineScope {
-        val gemList = collectGemInfoList
-        gemList.map { gemInfo ->
-            async {
-                try {
-                    val response = apiClient.fetchAuctionItems(gemInfo.request)
-                        .subscribeOn(Schedulers.boundedElastic())
-                        .awaitSingle()
 
-                    if (response != null && response.items.isNotEmpty()) {
-                        val responseGemPrices = response.items.associate {
-                            it.auctionInfo.endDate to it.auctionInfo.buyPrice
-                        }
-                        gems.find { it.itemCode == gemInfo.itemCode }?.addTodayPrices(responseGemPrices)
-                    }
-                } catch (error: Exception) {
-                    logger.error { "Error fetching ${gemInfo.itemCode}: ${error.message}" }
-                }
-            }
-        }.awaitAll()
-    }
 
     fun updatePrevPriceTrend() {
         val gemList = collectGemInfoList
-        val gemsPrices: MutableMap<Int, List<ItemPrices>> = mutableMapOf()
+        val gemsPrices: MutableMap<Int, List<ItemPriceIndex>> = mutableMapOf()
         gemList.forEach { gemInfo ->
-            gemsPrices[gemInfo.itemCode] = repositorySupport.findPrevEightDaysPricesByItemCode(gemInfo.itemCode)
+            gemsPrices[gemInfo.itemCode] = repository.findPrevSixDaysPricesByItemCode(gemInfo.itemCode)
         }
 
         gemList.forEach { gem ->
@@ -145,31 +101,13 @@ class AuctionGemService(
         }
     }
 
-    fun saveTodayPricesToTemp() {
-        gems.forEach { gem ->
-            if (gem.todayPrices.isNotEmpty()) {
-                tempRepository.saveAll(gem.toTempDomains())
-            }
-        }
-    }
 
-    fun getTodayTempPricesAndAddPrices() {
-        gems.forEach { gem ->
-            val prices = mutableMapOf<LocalDateTime, Int>()
-            tempRepository.findByItemCodeAndRecordedDate(gem.itemCode, gem.time).let { tempItemPrices ->
-                tempItemPrices.forEach { tempItemPrice ->
-                    prices[tempItemPrice.endDate] = tempItemPrice.price
-                }
-            }
-            if (prices.isNotEmpty()) {
-                gem.addTodayPrices(prices)
-            }
-        }
-    }
 
-    fun getPricesByItemCode(itemCode: Int): List<ItemPrices> {
-        val prices = repositorySupport.findOldAllByItemCode(itemCode)
-        gems.find { it.itemCode == itemCode }?.let { prices.add(it.toDomain()) }
+
+    fun getPricesByItemCode(itemCode: Int): List<ItemPriceIndex> {
+        val prices = repository.findOldAllByItemCode(itemCode)
+        // mutableList 에서 List 로 바꾼 후 발생하는 에러 추후 수정 시 참고
+//        gems.find { it.itemCode == itemCode }?.let { prices.add(it.toDomain()) }
         return prices
     }
 
@@ -177,7 +115,5 @@ class AuctionGemService(
         return gems
     }
 
-    fun getPriceTrendByItemCode(itemCode: Int): Map<LocalDate, PriceTrend> {
-        return gems[itemCode].priceFiveDaysTrend
-    }
+
 }
