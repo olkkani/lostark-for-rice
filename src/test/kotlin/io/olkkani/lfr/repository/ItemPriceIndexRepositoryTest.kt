@@ -30,7 +30,10 @@ class ItemPriceIndexRepositoryTest: DescribeSpec() {
                     val priceIndex = ItemPriceIndex(
                         itemCode = itemCode,
                         recordedDate = today,
-                        openPrice = 1000
+                        openPrice = 1000,
+                        lowPrice = 1000,
+                        highPrice = 2000,
+                        closePrice = 1000,
                     )
                     repository.save(priceIndex)
 
