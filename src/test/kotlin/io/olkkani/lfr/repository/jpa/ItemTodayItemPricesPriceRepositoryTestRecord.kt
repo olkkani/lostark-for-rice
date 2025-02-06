@@ -1,8 +1,7 @@
-package io.olkkani.lfr.repository
+package io.olkkani.lfr.repository.jpa
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.olkkani.lfr.entity.jpa.ItemPriceIndex
-import io.olkkani.lfr.repository.jpa.ItemPriceIndexRepository
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test

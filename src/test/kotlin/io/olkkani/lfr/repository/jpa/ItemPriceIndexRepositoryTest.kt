@@ -1,10 +1,9 @@
-package io.olkkani.lfr.repository
+package io.olkkani.lfr.repository.jpa
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.olkkani.lfr.entity.jpa.ItemPriceIndex
-import io.olkkani.lfr.repository.jpa.ItemPriceIndexRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles

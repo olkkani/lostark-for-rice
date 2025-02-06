@@ -1,4 +1,4 @@
-package io.olkkani.lfr.repository
+package io.olkkani.lfr.repository.mongo
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.kotest.core.spec.style.DescribeSpec
@@ -7,7 +7,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.olkkani.lfr.LostarkForRiceApplication
 import io.olkkani.lfr.entity.mongo.TodayItemPrice
-import io.olkkani.lfr.repository.mongo.TodayItemPriceRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.test.context.ActiveProfiles
