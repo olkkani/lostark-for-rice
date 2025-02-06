@@ -79,7 +79,8 @@ jobs:
             docker pull ${{ env.IMAGE_NAME }}
 
             # 2. 새로운 컨테이너 실행
-            docker run -d -p 18082:8080 --name $APP_NAME-$NEW_ENV  \
+            docker run -d \
+            -p 18082:8080 --name $APP_NAME-$NEW_ENV \
             --network olkkani_network \
             -e TZ=Asia/Seoul \
             -e SPRING_PROFILES_ACTIVE=prod \
