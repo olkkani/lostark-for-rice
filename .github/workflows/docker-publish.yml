@@ -72,7 +72,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            APP_NAME="lfr"
+            APP_NAME="lfr-b"
             NEW_ENV="0206"
             
             # 1. 최신 Docker 이미지 가져오기
