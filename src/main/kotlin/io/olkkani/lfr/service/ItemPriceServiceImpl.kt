@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service
 class ItemPriceServiceImpl(
     private val repository: ItemPriceIndexRepository,
     private val todayPriceRepository: TodayItemPriceRepository,
-    private val todayOpenPriceRepository: TodayItemOpenAndClosePriceRepository,
 ) : ItemPriceService {
 
     override fun savaTodayPrice(){
