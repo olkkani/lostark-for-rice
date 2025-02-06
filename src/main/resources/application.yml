@@ -66,8 +66,7 @@ spring:
       on-profile: db-prod
   datasource:
     url: ${DB_CONNECTION_URL}
-#    username: ${DB_USER}
-    username: postgres
+    username: ${DB_USER}
     password: ${DB_PASSWORD}
   jpa:
     hibernate:
