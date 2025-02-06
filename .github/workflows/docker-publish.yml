@@ -37,6 +37,8 @@ jobs:
         run: chmod +x gradlew
 
       - name: Build with Gradle
+        env:
+          SPRING_PROFILES_ACTIVE: test
         run: ./gradlew build
 
       - name: Login to GitHub Container Registry
