@@ -57,7 +57,7 @@ spring:
       on-profile: db-mongo-prod
   data:
     mongodb:
-      uri: ${DB_MONGODB_CONNECTION_URL}
+      uri: ${DB_MONGO_URL}
       auto-index-creation: true
 --- # db-prod
 spring:
