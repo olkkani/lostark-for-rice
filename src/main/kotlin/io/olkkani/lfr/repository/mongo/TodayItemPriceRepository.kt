@@ -11,7 +11,7 @@ fun interface PriceProjection {
 }
 
 @Repository
-interface TodayItemPriceRepository: MongoRepository<TodayItemPrice, ObjectId>, TodayItemPricesTemplateRepository {
+interface TodayItemPriceRepository: MongoRepository<TodayItemPrice, ObjectId>, CustomTodayItemPriceRepository {
     @Query("{ 'itemCode': :#{#itemCode} }")
     fun findPricesByItemCode(itemCode: Int): List<PriceProjection>
 }

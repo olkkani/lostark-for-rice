@@ -5,14 +5,13 @@ import org.springframework.data.mongodb.core.BulkOperations
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
-
-fun interface TodayItemPricesTemplateRepository {
+interface CustomTodayItemPriceRepository {
     fun saveIfNotExists(todayPrices: List<TodayItemPrice>)
 }
 
-class TodayItemPricesTemplateRepositoryImpl (
+class CustomTodayItemPriceRepositoryImpl (
     private val mongoTemplate: MongoTemplate
-): TodayItemPricesTemplateRepository {
+): CustomTodayItemPriceRepository {
     override fun saveIfNotExists(todayPrices: List<TodayItemPrice>) {
         val bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, TodayItemPrice::class.java)
 

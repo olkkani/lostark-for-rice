@@ -4,6 +4,7 @@ import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.CompoundIndex
 import org.springframework.data.mongodb.core.mapping.Document
+import java.time.LocalDateTime
 
 @Document(collection = "todayItemPrice")
 @CompoundIndex(
@@ -15,6 +16,6 @@ class TodayItemPrice (
     @Id
     val id: ObjectId? = null,
     val itemCode: Int,
-    val endDate: java.time.LocalDateTime,
+    val endDate: LocalDateTime,
     val price: Int,
 )

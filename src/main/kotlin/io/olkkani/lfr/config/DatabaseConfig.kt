@@ -9,6 +9,8 @@ import org.springframework.context.annotation.Primary
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.data.mongodb.MongoDatabaseFactory
 import org.springframework.data.mongodb.MongoTransactionManager
+import org.springframework.data.mongodb.core.MongoTemplate
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories
 import org.springframework.orm.jpa.JpaTransactionManager
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean
@@ -51,6 +53,14 @@ class JpaConfig {
     mongoTemplateRef = "mongoTemplate"
 )
 class MongoConfig {
+
+    @Bean
+    fun mongoTemplate(
+        mongoDbFactory: MongoDatabaseFactory,
+        converter: MappingMongoConverter
+    ): MongoTemplate {
+        return MongoTemplate(mongoDbFactory, converter)
+    }
 
     @Bean(name = ["mongoTransactionManager"])
     fun mongoTransactionManager(
