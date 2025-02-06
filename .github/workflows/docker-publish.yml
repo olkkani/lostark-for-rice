@@ -70,7 +70,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             APP_NAME="lfr"
-            NEW_ENV="test-1201-1"
+            NEW_ENV="test-0206-1"
             
             # 1. 최신 Docker 이미지 가져오기
             docker pull ${{ env.IMAGE_NAME }}
