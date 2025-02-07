@@ -13,18 +13,18 @@ class CustomTodayItemPriceRepositoryImpl (
     private val mongoTemplate: MongoTemplate
 ): CustomTodayItemPriceRepository {
     override fun saveIfNotExists(todayPrices: List<TodayItemPrice>) {
-        val bulkOps = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, TodayItemPrice::class.java)
-
-        todayPrices.forEach { data ->
+        val inserts = todayPrices.filter { data ->
             val query = Query(
                 Criteria.where("itemCode").`is`(data.itemCode)
                     .and("endDate").`is`(data.endDate)
             )
-
-            if (!mongoTemplate.exists(query, TodayItemPrice::class.java)) {
-                bulkOps.insert(data)
-            }
+            !mongoTemplate.exists(query, TodayItemPrice::class.java)
         }
-        bulkOps.execute()
+
+        if (inserts.isNotEmpty()) {
+            mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, TodayItemPrice::class.java)
+                .insert(inserts)
+                .execute()
+        }
     }
 }

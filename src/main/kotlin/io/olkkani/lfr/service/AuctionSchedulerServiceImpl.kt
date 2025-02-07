@@ -74,7 +74,15 @@ class AuctionSchedulerServiceImpl(
                         if (savedTodayPrice != null) {
                             savedTodayPrice.closePrice = iqrCal.getMin()
                         } else {
-                            fetchPriceAndInsertOpenPrice()
+                            logger.debug{"execute open Price fetch"}
+                            indexRepository.save(ItemPriceIndex(
+                                itemCode = gemInfo.itemCode,
+                                recordedDate = today,
+                                openPrice = iqrCal.getMin(),
+                                lowPrice = iqrCal.getMin(),
+                                highPrice = iqrCal.getMax(),
+                                closePrice = iqrCal.getMin()
+                            ))
                         }
                     }
                 } catch (error: Exception) {
@@ -106,7 +114,15 @@ class AuctionSchedulerServiceImpl(
                             savedTodayPriceIndex.lowPrice = iqrCal.getMin()
                             savedTodayPriceIndex.highPrice = iqrCal.getMax()
                         } else {
-                            fetchPriceAndInsertOpenPrice()
+                            logger.debug{"execute open Price fetch"}
+                            indexRepository.save(ItemPriceIndex(
+                                itemCode = gemInfo.itemCode,
+                                recordedDate = today,
+                                openPrice = iqrCal.getMin(),
+                                lowPrice = iqrCal.getMin(),
+                                highPrice = iqrCal.getMax(),
+                                closePrice = iqrCal.getMin()
+                            ))
                         }
 
                     }
