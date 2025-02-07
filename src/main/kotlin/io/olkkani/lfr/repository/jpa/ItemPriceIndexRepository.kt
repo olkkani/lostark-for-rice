@@ -37,5 +37,5 @@ interface ItemPriceIndexRepository: JpaRepository<ItemPriceIndex, Long> {
         @Param("today") today: LocalDate = LocalDate.now()
     ): List<ItemPriceIndex>
 
-    fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): ItemPriceIndex
+    fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): ItemPriceIndex?
 }
