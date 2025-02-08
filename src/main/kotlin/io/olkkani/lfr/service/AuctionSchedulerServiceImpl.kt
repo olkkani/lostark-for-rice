@@ -6,6 +6,7 @@ import io.olkkani.lfr.dto.extractPrices
 import io.olkkani.lfr.dto.toTodayItemPrices
 import io.olkkani.lfr.entity.jpa.ItemPriceIndex
 import io.olkkani.lfr.repository.jpa.ItemPriceIndexRepository
+import io.olkkani.lfr.repository.mongo.ItemPriceIndexTrendRepository
 import io.olkkani.lfr.repository.mongo.TodayItemPriceRepository
 import io.olkkani.lfr.util.IQRCalculator
 import io.olkkani.lfr.util.LostarkAPIClient
@@ -22,6 +23,7 @@ import java.time.LocalDate
 class AuctionSchedulerServiceImpl(
     val indexRepository: ItemPriceIndexRepository,
     val todayPriceRepository: TodayItemPriceRepository,
+    val indexTrendRepository: ItemPriceIndexTrendRepository,
     @Value("\${lostark.api.key}") private val apiKey: String
 ) : AuctionSchedulerService {
     private val logger = KotlinLogging.logger {}
@@ -133,7 +135,36 @@ class AuctionSchedulerServiceImpl(
         }.awaitAll()
     }
 
-    override fun clearTodayPriceRecord() {
+    override fun clearOldPriceRecord() {
         todayPriceRepository.deleteAll()
+
+        val prevTenDays = LocalDate.now().minusDays(10)
+        val indexRecords = indexTrendRepository.findAll()
+        indexRecords.forEach {
+             it.priceRecords = it.priceRecords.filter{ record -> record.date > prevTenDays }
+        }
+        indexTrendRepository.saveAll(indexRecords)
+    }
+
+    override fun calculateGapTodayItemPrice() {
+        val today = LocalDate.now()
+        val gemList = collectGemInfoList
+        gemList.map { gemInfo ->
+            val todayIndex = indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today)
+            val todayPairIndex = indexRepository.findByItemCodeAndRecordedDate(gemInfo.pairItemCode, today)
+            val yesterdayIndex = indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today.minusDays(1))
+            val indexTrend = indexTrendRepository.findByItemCode(gemInfo.itemCode)
+
+            if (todayIndex != null && todayPairIndex != null && yesterdayIndex != null && indexTrend != null) {
+                indexTrend.priceRecords.find { record -> record.date == today }?.apply{
+                    prevGepPrice = todayIndex.closePrice - yesterdayIndex.closePrice
+                    prevGapPriceRate = todayIndex.closePrice.toDouble() / yesterdayIndex.closePrice.toDouble()
+                    pairGapPrice = todayIndex.closePrice - yesterdayIndex.closePrice
+                    pairGapPriceRate = todayIndex.closePrice.toDouble() / yesterdayIndex.closePrice.toDouble()
+                }
+
+                indexTrendRepository.save(indexTrend)
+            }
+        }
     }
 }

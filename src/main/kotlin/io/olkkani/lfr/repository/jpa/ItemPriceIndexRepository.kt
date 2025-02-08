@@ -24,18 +24,6 @@ interface ItemPriceIndexRepository: JpaRepository<ItemPriceIndex, Long> {
         @Param("endDate") endDate: LocalDate = LocalDate.now().minusDays(1)
     ): List<ItemPriceIndex>
 
-    @Query(
-        """
-        SELECT ip FROM ItemPriceIndex ip
-        WHERE ip.itemCode = :itemCode
-        AND ip.recordedDate != :today
-        ORDER BY ip.recordedDate ASC
-        """
-    )
-    fun findOldAllByItemCode(
-        @Param("itemCode") itemCode: Int,
-        @Param("today") today: LocalDate = LocalDate.now()
-    ): List<ItemPriceIndex>
-
     fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): ItemPriceIndex?
+    fun findAllByRecordedDate(recordedDate: LocalDate): List<ItemPriceIndex>
 }
