@@ -12,23 +12,20 @@ class TodayOpeningJob(
 ) : QuartzJobBean() {
     override fun executeInternal(context: JobExecutionContext) {
         runBlocking {
-            service.clearTodayPriceRecord()
+            service.clearOldPriceRecord()
             service.fetchPriceAndInsertOpenPrice()
-//            serviceOld.fetchGemPrices()
-//            serviceOld.updatePairItemPriceGap()
         }
     }
 }
 
 @Component
 class TodayFetchPricesJob(
-//    private val service: AuctionGemService
     private val service: AuctionSchedulerService,
 ) : QuartzJobBean() {
     override fun executeInternal(context: JobExecutionContext) {
-//        service.saveTodayPrices()
         runBlocking {
             service.fetchPriceAndUpdateLowAndHighPrice()
+            service.calculateGapTodayItemPrice()
         }
     }
 }
@@ -40,11 +37,6 @@ class TodayClosingJob(
     override fun executeInternal(context: JobExecutionContext) {
         runBlocking {
             service.fetchPriceAndUpdateClosePrice()
-
-//            service.clearTodayPricesRecord()
-//            service.updatePrevPriceTrend()
-//            service.fetchGemPrices()
-//            service.updatePairItemPriceGap()
         }
     }
 }
