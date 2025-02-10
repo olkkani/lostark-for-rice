@@ -4,6 +4,7 @@ import io.hypersistence.utils.hibernate.id.Tsid
 import io.olkkani.lfr.dto.CandleChartResponse
 import io.olkkani.lfr.dto.ItemPreview
 import io.olkkani.lfr.entity.mongo.PriceRecord
+import io.olkkani.lfr.util.PercentageCalculation
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import java.time.LocalDate
@@ -25,7 +26,7 @@ fun ItemPriceIndex.toPreviewResponse() = ItemPreview(
     highPrice = highPrice,
     lowPrice = lowPrice,
     priceChange = closePrice - openPrice,
-    priceChangeRate = ((closePrice * 1000) / (openPrice * 1000)).toDouble() / 1000000
+    priceChangeRate = PercentageCalculation().calc(closePrice, openPrice),
 )
 
 fun ItemPriceIndex.toChartResponse() = CandleChartResponse(

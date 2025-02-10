@@ -12,6 +12,7 @@ import io.olkkani.lfr.repository.mongo.ItemPriceIndexTrendRepository
 import io.olkkani.lfr.repository.mongo.TodayItemPriceRepository
 import io.olkkani.lfr.util.IQRCalculator
 import io.olkkani.lfr.util.LostarkAPIClient
+import io.olkkani.lfr.util.PercentageCalculation
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -163,9 +164,9 @@ class AuctionSchedulerServiceImpl(
 
             if (todayIndex != null && todayPairIndex != null && yesterdayIndex != null) {
                 val prevGep = todayIndex.closePrice - yesterdayIndex.closePrice
-                val prevGapRate = (todayIndex.closePrice*1000 / yesterdayIndex.closePrice*1000).toDouble() / 1000000
+                val prevGapRate = PercentageCalculation().calc(todayIndex.closePrice, yesterdayIndex.closePrice)
                 val pairGap = todayIndex.closePrice - todayPairIndex.closePrice
-                val pairGapRate = (todayIndex.closePrice*1000 / todayPairIndex.closePrice*1000).toDouble() / 1000000
+                val pairGapRate = PercentageCalculation().calc(todayIndex.closePrice, todayPairIndex.closePrice)
 
                 indexTrend?.let { trend ->
                     trend.priceRecords.find { record -> record.date == today }
