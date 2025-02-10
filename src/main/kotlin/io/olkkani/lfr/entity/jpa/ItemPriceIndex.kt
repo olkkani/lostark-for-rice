@@ -3,7 +3,6 @@ package io.olkkani.lfr.entity.jpa
 import io.hypersistence.utils.hibernate.id.Tsid
 import io.olkkani.lfr.dto.CandleChartResponse
 import io.olkkani.lfr.dto.ItemPreview
-import io.olkkani.lfr.entity.mongo.PriceRecord
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import java.time.LocalDate
