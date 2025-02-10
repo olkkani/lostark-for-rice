@@ -77,7 +77,11 @@ jobs:
             
             # 1. 최신 Docker 이미지 가져오기
             docker pull ${{ env.IMAGE_NAME }}
-
+            
+            docker stop $APP_NAME-$NEW_ENV
+            docker container prune
+            docker image prune -a
+            
             # 2. 새로운 컨테이너 실행
             docker run -d \
             -p 18082:8080 --name $APP_NAME-$NEW_ENV --network olkkani_network \
