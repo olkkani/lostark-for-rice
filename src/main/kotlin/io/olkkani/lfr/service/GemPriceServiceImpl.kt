@@ -1,6 +1,5 @@
 package io.olkkani.lfr.service
 
-import io.olkkani.lfr.dto.ItemTodayPriceDTO
 import io.olkkani.lfr.entity.jpa.ItemPriceIndex
 import io.olkkani.lfr.entity.mongo.ItemPriceIndexTrend
 import io.olkkani.lfr.repository.jpa.ItemPriceIndexRepository
@@ -12,16 +11,9 @@ import java.time.LocalDate
 class GemPriceServiceImpl(
     private val indexRepository: ItemPriceIndexRepository,
     private val indexTrendRepository: ItemPriceIndexTrendRepository,
-): GemPriceService {
-    override fun getAllKindsTodayPrice(): List<ItemTodayPriceDTO> {
-        return indexRepository.findAllByRecordedDate(LocalDate.now()).map{ todayIndex ->
-            ItemTodayPriceDTO(
-                itemCode = todayIndex.itemCode,
-                price = todayIndex.closePrice,
-                priceGap = todayIndex.closePrice - todayIndex.openPrice,
-                priceGapRate = ((todayIndex.closePrice*1000) / (todayIndex.openPrice*1000)).toDouble() / 1000
-            )
-        }
+) : GemPriceService {
+    override fun getAllKindsTodayPrice(): List<ItemPriceIndex> {
+        return indexRepository.findAllByRecordedDate(LocalDate.now())
     }
 
     override fun getPriceIndexByItemCode(itemCode: Int): List<ItemPriceIndex> {

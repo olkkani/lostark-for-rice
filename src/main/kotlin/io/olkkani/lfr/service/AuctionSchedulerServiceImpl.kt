@@ -163,9 +163,9 @@ class AuctionSchedulerServiceImpl(
 
             if (todayIndex != null && todayPairIndex != null && yesterdayIndex != null) {
                 val prevGep = todayIndex.closePrice - yesterdayIndex.closePrice
-                val prevGapRate = (todayIndex.closePrice*1000 / yesterdayIndex.closePrice*1000).toDouble() / 1000
+                val prevGapRate = (todayIndex.closePrice*1000 / yesterdayIndex.closePrice*1000).toDouble() / 1000000
                 val pairGap = todayIndex.closePrice - todayPairIndex.closePrice
-                val pairGapRate = (todayIndex.closePrice*1000 / todayPairIndex.closePrice*1000).toDouble() / 1000
+                val pairGapRate = (todayIndex.closePrice*1000 / todayPairIndex.closePrice*1000).toDouble() / 1000000
 
                 indexTrend?.let { trend ->
                     trend.priceRecords.find { record -> record.date == today }

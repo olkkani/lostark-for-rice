@@ -1,7 +1,5 @@
 package io.olkkani.lfr.dto
 
-import io.olkkani.lfr.entity.jpa.ItemPriceIndex
-
 data class CandleChartResponse(
     val open: Int,
     val high: Int,
@@ -18,23 +16,5 @@ class ItemPreview(
     val priceChangeRate: Double
 )
 
-class TodayPriceResponse (
-    val itemCode: Int,
-    val price: ItemPreview
-)
 
-fun ItemPriceIndex.toResponse() = CandleChartResponse(
-    open = openPrice,
-    high = highPrice,
-    low = lowPrice,
-    close = closePrice,
-    time = recordedDate.toString()
-)
 
-fun ItemTodayPrices.toResponse() = ItemPreview(
-    price = close,
-    highPrice = high,
-    lowPrice = low,
-    priceChange = close - open,
-    priceChangeRate = close.toDouble() / open.toDouble(),
-)
