@@ -14,6 +14,7 @@ class TodayOpeningJob(
         runBlocking {
             service.clearOldPriceRecord()
             service.fetchPriceAndInsertOpenPrice()
+            service.calculateGapTodayItemPrice()
         }
     }
 }
@@ -37,6 +38,7 @@ class TodayClosingJob(
     override fun executeInternal(context: JobExecutionContext) {
         runBlocking {
             service.fetchPriceAndUpdateClosePrice()
+            service.calculateGapTodayItemPrice()
         }
     }
 }

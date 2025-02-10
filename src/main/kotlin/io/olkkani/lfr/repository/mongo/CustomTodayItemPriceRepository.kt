@@ -5,7 +5,8 @@ import org.springframework.data.mongodb.core.BulkOperations
 import org.springframework.data.mongodb.core.MongoTemplate
 import org.springframework.data.mongodb.core.query.Criteria
 import org.springframework.data.mongodb.core.query.Query
-interface CustomTodayItemPriceRepository {
+
+fun interface CustomTodayItemPriceRepository {
     fun saveIfNotExists(todayPrices: List<TodayItemPrice>)
 }
 
