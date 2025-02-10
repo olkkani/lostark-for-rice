@@ -70,8 +70,8 @@ de:
   flapdoodle:
     mongodb:
       embedded:
-        version: 4.4.0
-        tools-version: 100.8.0
+        version: 6.0.8
+        tools-version: 100.7.4
 --- # db-prod-mongodb
 spring:
   config:
