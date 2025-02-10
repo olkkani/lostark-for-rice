@@ -172,6 +172,7 @@ class AuctionSchedulerServiceImpl(
                     trend.priceRecords.find { record -> record.date == today }
                         ?.apply {
                             // 기존 데이터가 있다면 변경 후 저장
+                            price = todayIndex.closePrice
                             prevGepPrice = prevGep
                             prevGapPriceRate = prevGapRate
                             pairGapPrice = pairGap
@@ -181,6 +182,7 @@ class AuctionSchedulerServiceImpl(
                         trend.priceRecords.add(
                             PriceRecord(
                                 date = today,
+                                price = todayIndex.closePrice,
                                 prevGepPrice = prevGep,
                                 prevGapPriceRate = prevGapRate,
                                 pairGapPrice = pairGap,
@@ -197,6 +199,7 @@ class AuctionSchedulerServiceImpl(
                             priceRecords = mutableListOf(
                                 PriceRecord(
                                     date = today,
+                                    price = todayIndex.closePrice,
                                     prevGepPrice = prevGep,
                                     prevGapPriceRate = prevGapRate,
                                     pairGapPrice = pairGap,
