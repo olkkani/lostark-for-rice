@@ -83,5 +83,5 @@ de:
   flapdoodle:
     mongodb:
       embedded:
-        version: 6.0.8
-        tools-version: 100.7.0
+        version: 7.0.0-rc2
+        tools-version: 100.7.4
