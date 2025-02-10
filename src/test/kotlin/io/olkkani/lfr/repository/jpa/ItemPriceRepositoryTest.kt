@@ -12,7 +12,6 @@ import java.time.LocalDate
 @DataJpaTest
 @ActiveProfiles("test")
 class ItemPriceRepositoryTest : DescribeSpec() {
-
     override fun extensions() = listOf(SpringExtension)
 
     @Autowired

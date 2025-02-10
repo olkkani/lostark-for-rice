@@ -11,7 +11,7 @@ class ItemPriceIndexTrend(
     @Id
     val id: ObjectId? = null,
     val itemCode: Int,
-    var priceRecords: List<PriceRecord>
+    var priceRecords: MutableList<PriceRecord> = mutableListOf<PriceRecord>(),
 )
 class PriceRecord (
     val date: LocalDate,
@@ -21,6 +21,6 @@ class PriceRecord (
     var pairGapPriceRate: Double,
 )
 
-fun ItemPriceIndexTrend.toResponse(): List<PriceRecord> {
+fun ItemPriceIndexTrend.toResponse(): MutableList<PriceRecord> {
     return priceRecords
 }

@@ -5,6 +5,8 @@ import io.olkkani.lfr.dto.collectGemInfoList
 import io.olkkani.lfr.dto.extractPrices
 import io.olkkani.lfr.dto.toTodayItemPrices
 import io.olkkani.lfr.entity.jpa.ItemPriceIndex
+import io.olkkani.lfr.entity.mongo.ItemPriceIndexTrend
+import io.olkkani.lfr.entity.mongo.PriceRecord
 import io.olkkani.lfr.repository.jpa.ItemPriceIndexRepository
 import io.olkkani.lfr.repository.mongo.ItemPriceIndexTrendRepository
 import io.olkkani.lfr.repository.mongo.TodayItemPriceRepository
@@ -76,15 +78,17 @@ class AuctionSchedulerServiceImpl(
                         if (savedTodayPrice != null) {
                             savedTodayPrice.closePrice = iqrCal.getMin()
                         } else {
-                            logger.debug{"execute open Price fetch"}
-                            indexRepository.save(ItemPriceIndex(
-                                itemCode = gemInfo.itemCode,
-                                recordedDate = today,
-                                openPrice = iqrCal.getMin(),
-                                lowPrice = iqrCal.getMin(),
-                                highPrice = iqrCal.getMax(),
-                                closePrice = iqrCal.getMin()
-                            ))
+                            logger.debug { "execute open Price fetch" }
+                            indexRepository.save(
+                                ItemPriceIndex(
+                                    itemCode = gemInfo.itemCode,
+                                    recordedDate = today,
+                                    openPrice = iqrCal.getMin(),
+                                    lowPrice = iqrCal.getMin(),
+                                    highPrice = iqrCal.getMax(),
+                                    closePrice = iqrCal.getMin()
+                                )
+                            )
                         }
                     }
                 } catch (error: Exception) {
@@ -116,15 +120,17 @@ class AuctionSchedulerServiceImpl(
                             savedTodayPriceIndex.lowPrice = iqrCal.getMin()
                             savedTodayPriceIndex.highPrice = iqrCal.getMax()
                         } else {
-                            logger.debug{"execute open Price fetch"}
-                            indexRepository.save(ItemPriceIndex(
-                                itemCode = gemInfo.itemCode,
-                                recordedDate = today,
-                                openPrice = iqrCal.getMin(),
-                                lowPrice = iqrCal.getMin(),
-                                highPrice = iqrCal.getMax(),
-                                closePrice = iqrCal.getMin()
-                            ))
+                            logger.debug { "execute open Price fetch" }
+                            indexRepository.save(
+                                ItemPriceIndex(
+                                    itemCode = gemInfo.itemCode,
+                                    recordedDate = today,
+                                    openPrice = iqrCal.getMin(),
+                                    lowPrice = iqrCal.getMin(),
+                                    highPrice = iqrCal.getMax(),
+                                    closePrice = iqrCal.getMin()
+                                )
+                            )
                         }
 
                     }
@@ -141,7 +147,7 @@ class AuctionSchedulerServiceImpl(
         val prevTenDays = LocalDate.now().minusDays(10)
         val indexRecords = indexTrendRepository.findAll()
         indexRecords.forEach {
-             it.priceRecords = it.priceRecords.filter{ record -> record.date > prevTenDays }
+            it.priceRecords = it.priceRecords.filter { record -> record.date > prevTenDays }.toMutableList()
         }
         indexTrendRepository.saveAll(indexRecords)
     }
@@ -155,15 +161,50 @@ class AuctionSchedulerServiceImpl(
             val yesterdayIndex = indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today.minusDays(1))
             val indexTrend = indexTrendRepository.findByItemCode(gemInfo.itemCode)
 
-            if (todayIndex != null && todayPairIndex != null && yesterdayIndex != null && indexTrend != null) {
-                indexTrend.priceRecords.find { record -> record.date == today }?.apply{
-                    prevGepPrice = todayIndex.closePrice - yesterdayIndex.closePrice
-                    prevGapPriceRate = todayIndex.closePrice.toDouble() / yesterdayIndex.closePrice.toDouble()
-                    pairGapPrice = todayIndex.closePrice - yesterdayIndex.closePrice
-                    pairGapPriceRate = todayIndex.closePrice.toDouble() / yesterdayIndex.closePrice.toDouble()
-                }
+            if (todayIndex != null && todayPairIndex != null && yesterdayIndex != null) {
+                val prevGep = todayIndex.closePrice - yesterdayIndex.closePrice
+                val prevGapRate = (todayIndex.closePrice*1000 / yesterdayIndex.closePrice*1000).toDouble() / 1000
+                val pairGap = todayIndex.closePrice - todayPairIndex.closePrice
+                val pairGapRate = (todayIndex.closePrice*1000 / todayPairIndex.closePrice*1000).toDouble() / 1000
 
-                indexTrendRepository.save(indexTrend)
+                indexTrend?.let { trend ->
+                    trend.priceRecords.find { record -> record.date == today }
+                        ?.apply {
+                            // 기존 데이터가 있다면 변경 후 저장
+                            prevGepPrice = prevGep
+                            prevGapPriceRate = prevGapRate
+                            pairGapPrice = pairGap
+                            pairGapPriceRate = pairGapRate
+                    } ?: run {
+                        // 오늘자 데이터가 없다면 오늘자 기록을 새로 추가
+                        trend.priceRecords.add(
+                            PriceRecord(
+                                date = today,
+                                prevGepPrice = prevGep,
+                                prevGapPriceRate = prevGapRate,
+                                pairGapPrice = pairGap,
+                                pairGapPriceRate = pairGapRate
+                            )
+                        )
+                    }
+                    indexTrendRepository.save(trend)
+                } ?: run {
+                    // 전체 기록이 없다면 새로 생성 후 저장
+                    indexTrendRepository.save(
+                        ItemPriceIndexTrend(
+                            itemCode = gemInfo.itemCode,
+                            priceRecords = mutableListOf(
+                                PriceRecord(
+                                    date = today,
+                                    prevGepPrice = prevGep,
+                                    prevGapPriceRate = prevGapRate,
+                                    pairGapPrice = pairGap,
+                                    pairGapPriceRate = pairGapRate
+                                )
+                            )
+                        )
+                    )
+                }
             }
         }
     }
