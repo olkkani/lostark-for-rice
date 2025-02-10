@@ -3,11 +3,13 @@ spring:
     group:
       local:
         - common
+        - db-jpa-common
         - server-local
         - db-local
         - db-mongo-embedded
       prod:
         - common
+        - db-jpa-common
         - server-prod
         - db-prod
         - db-mongo-prod
@@ -49,6 +51,16 @@ server:
 spring:
   config:
     activate:
+      on-profile: db-jpa-common
+  jpa:
+    properties:
+      hibernate: # jpaEntityManagerFactory 에서 수동으로 DataSource 생성하고 해당 값을 가져오기 때문에 key naming 이 다름
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+---
+spring:
+  config:
+    activate:
       on-profile: db-mongo-embedded
   data:
     mongodb:
@@ -79,13 +91,11 @@ spring:
     username: ${DB_USER}
     password: ${DB_PASSWORD}
   jpa:
-    properties:
-      hibernate:  # jpaEntityManagerFactory 에서 수동으로 DataSource 생성하고 해당 값을 가져오기 때문에 key naming 이 다름
-        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
-        dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
 decorator:
   datasource:
     p6spy:
@@ -104,16 +114,9 @@ spring:
       enabled: true
       path: /h2-console
   jpa:
-    properties:
-      hibernate: # jpaEntityManagerFactory 에서 수동으로 DataSource 생성하고 해당 값을 가져오기 때문에 key naming 이 다름
-        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
     hibernate:
       ddl-auto: create-drop
     defer-datasource-initialization: true
   sql:
     init:
       mode: always
-hibernate:
-  hbm2ddl:
-    auto: create-drop
