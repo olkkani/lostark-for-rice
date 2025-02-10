@@ -54,6 +54,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
     implementation(kotlin("reflect"))
+    implementation("org.apache.commons:commons-compress:1.27.1")
     runtimeOnly("com.h2database:h2")
     if (osdetector.arch.equals("aarch_64")) {
         implementation("io.netty:netty-resolver-dns-native-macos:4.1.115.Final") {
