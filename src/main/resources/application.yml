@@ -5,7 +5,7 @@ spring:
         - common
         - server-local
         - db-local
-        - db-mongo-prod
+        - db-mongo-embedded
       prod:
         - common
         - server-prod
@@ -50,6 +50,21 @@ spring:
   config:
     activate:
       on-profile: db-h2
+---
+spring:
+  config:
+    activate:
+      on-profile: db-mongo-embedded
+  data:
+    mongodb:
+      auto-index-creation: true
+      port: 0
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 4.4.0
+        tools-version: 100.8.0
 --- # db-prod-mongodb
 spring:
   config:

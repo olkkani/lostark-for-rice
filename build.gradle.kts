@@ -62,10 +62,10 @@ dependencies {
             }
         }
     }
+    developmentOnly("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:4.18.0")
     developmentOnly("org.springframework.boot:spring-boot-devtools")
     testImplementation("io.kotest:kotest-runner-junit5-jvm:5.9.1")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:4.18.0")
     testImplementation("org.springframework.security:spring-security-test")
     testImplementation("io.projectreactor:reactor-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.9.25")
