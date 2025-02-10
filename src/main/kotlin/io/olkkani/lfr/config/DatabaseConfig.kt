@@ -2,10 +2,12 @@ package io.olkkani.lfr.config
 
 import jakarta.persistence.EntityManagerFactory
 import org.springframework.beans.factory.annotation.Qualifier
+import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Primary
+import org.springframework.core.env.Environment
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories
 import org.springframework.data.mongodb.MongoDatabaseFactory
 import org.springframework.data.mongodb.MongoTransactionManager
@@ -23,18 +25,24 @@ import javax.sql.DataSource
     entityManagerFactoryRef = "jpaEntityManagerFactory",
     transactionManagerRef = "jpaTransactionManager"
 )
-class JpaConfig {
-
+class JpaConfig (
+    private val builder: EntityManagerFactoryBuilder,
+    private val jpaProperties: JpaProperties,
+    private val env: Environment,
+){
     @Primary
     @Bean(name = ["jpaEntityManagerFactory"])
     fun jpaEntityManagerFactory(
-        builder: EntityManagerFactoryBuilder,
         dataSource: DataSource
     ): LocalContainerEntityManagerFactoryBean {
+        val ddlAuto = env.getProperty("spring.jpa.hibernate.ddl-auto") ?: "validate"
+        val properties = mutableMapOf("hibernate.hbm2ddl.auto" to ddlAuto)
+        properties.putAll(jpaProperties.properties)
         return builder
             .dataSource(dataSource)
             .packages("io.olkkani.lfr.entity.jpa")
             .persistenceUnit("jpa")
+            .properties(properties)
             .build()
     }
 

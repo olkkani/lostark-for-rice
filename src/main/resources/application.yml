@@ -45,11 +45,6 @@ spring:
     timeout-per-shutdown-phase: 30s
 server:
   shutdown: graceful
---- # db-h2
-spring:
-  config:
-    activate:
-      on-profile: db-h2
 ---
 spring:
   config:
@@ -85,9 +80,9 @@ spring:
     password: ${DB_PASSWORD}
   jpa:
     properties:
-      hibernate:
-        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+      hibernate:  # jpaEntityManagerFactory 에서 수동으로 DataSource 생성하고 해당 값을 가져오기 때문에 key naming 이 다름
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
         dialect: org.hibernate.dialect.PostgreSQLDialect
     hibernate:
       ddl-auto: validate
@@ -104,22 +99,21 @@ spring:
     url: jdbc:h2:mem:local;MODE=PostgreSQL
     username: sa
     password:
-
   h2:
     console:
       enabled: true
       path: /h2-console
-
   jpa:
-    hibernate:
-      naming:
-        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
-      ddl-auto: create
     properties:
-      hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+      hibernate: # jpaEntityManagerFactory 에서 수동으로 DataSource 생성하고 해당 값을 가져오기 때문에 key naming 이 다름
+        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    hibernate:
+      ddl-auto: create-drop
     defer-datasource-initialization: true
   sql:
     init:
       mode: always
+hibernate:
+  hbm2ddl:
+    auto: create-drop
