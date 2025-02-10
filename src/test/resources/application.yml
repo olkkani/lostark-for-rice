@@ -32,7 +32,7 @@ spring:
       on-profile: api
 lostark:
   api:
-    key: ${API_KEY}
+    key: ${API_KEY:must_not_null_key}
 --- # db-prod
 spring:
   config:
