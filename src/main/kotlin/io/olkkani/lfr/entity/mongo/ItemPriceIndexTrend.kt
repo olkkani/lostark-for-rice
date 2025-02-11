@@ -23,5 +23,6 @@ class PriceRecord (
 )
 
 fun ItemPriceIndexTrend.toResponse(): MutableList<PriceRecord> {
+    priceRecords.sortBy { it.date }
     return priceRecords
 }

@@ -9,7 +9,7 @@ import java.time.LocalDate
 
 @Repository
 interface ItemPriceIndexRepository: JpaRepository<ItemPriceIndex, Long> {
-    fun findAllByItemCode(itemCode: Int): MutableList<ItemPriceIndex>
+    fun findAllByItemCodeOrderByRecordedDateAsc(itemCode: Int): MutableList<ItemPriceIndex>
 
     @Query(
         """
@@ -25,5 +25,5 @@ interface ItemPriceIndexRepository: JpaRepository<ItemPriceIndex, Long> {
     ): List<ItemPriceIndex>
 
     fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): ItemPriceIndex?
-    fun findAllByRecordedDateOrderByRecordedDateAsc(recordedDate: LocalDate): List<ItemPriceIndex>
+    fun findAllByRecordedDate(recordedDate: LocalDate): List<ItemPriceIndex>
 }
