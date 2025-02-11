@@ -25,7 +25,7 @@ class TodayFetchPricesJob(
 ) : QuartzJobBean() {
     override fun executeInternal(context: JobExecutionContext) {
         runBlocking {
-            service.fetchPriceAndUpdateLowAndHighPrice()
+            service.fetchPriceAndUpdatePrice()
             service.calculateGapTodayItemPrice()
         }
     }

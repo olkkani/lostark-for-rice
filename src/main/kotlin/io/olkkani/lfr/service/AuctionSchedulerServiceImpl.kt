@@ -105,7 +105,7 @@ class AuctionSchedulerServiceImpl(
     }
 
     @Transactional
-    override suspend fun fetchPriceAndUpdateLowAndHighPrice(): Unit = coroutineScope {
+    override suspend fun fetchPriceAndUpdatePrice(): Unit = coroutineScope {
         val today = LocalDate.now()
         val gemList = collectGemInfoList
         gemList.map { gemInfo ->
@@ -123,7 +123,12 @@ class AuctionSchedulerServiceImpl(
                             indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today)
 
                         savedTodayPriceIndex?.apply {
+                            val savedTodayPrices =
+                                todayPriceRepository.findPricesByItemCode(gemInfo.itemCode).map { it.getPrice() }
+                            val todayIqrCal = IQRCalculator(savedTodayPrices)
+
                             lowPrice = iqrCal.getMin()
+                            closePrice = todayIqrCal.getMin()
                             highPrice = iqrCal.getMax()
                         }?.also{
                             indexRepository.save(it)

@@ -3,7 +3,7 @@ package io.olkkani.lfr.service
 interface AuctionSchedulerService {
     suspend fun fetchPriceAndInsertOpenPrice()
     suspend fun fetchPriceAndUpdateClosePrice()
-    suspend fun fetchPriceAndUpdateLowAndHighPrice()
+    suspend fun fetchPriceAndUpdatePrice()
     fun clearOldPriceRecord()
     fun calculateGapTodayItemPrice()
 }
