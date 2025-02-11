@@ -75,18 +75,23 @@ class AuctionSchedulerServiceImpl(
                         todayPriceRepository.saveIfNotExists(fetchedPrices)
 
                         val iqrCal = IQRCalculator(response.extractPrices())
-                        val savedTodayPrice = indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today)
-                        if (savedTodayPrice != null) {
-                            savedTodayPrice.closePrice = iqrCal.getMin()
-                        } else {
-                            logger.debug { "execute open Price fetch" }
+                        val savedTodayPriceIndex = indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today)
+
+                        savedTodayPriceIndex?.apply {
+                            savedTodayPriceIndex.closePrice = iqrCal.getMin()
+                        }?.also{
+                            indexRepository.save(it)
+                        } ?: run {
+                            val savedTodayPrices =
+                                todayPriceRepository.findPricesByItemCode(gemInfo.itemCode).map { it.getPrice() }
+                            val todayIqrCal = IQRCalculator(savedTodayPrices)
                             indexRepository.save(
                                 ItemPriceIndex(
                                     itemCode = gemInfo.itemCode,
                                     recordedDate = today,
-                                    openPrice = iqrCal.getMin(),
-                                    lowPrice = iqrCal.getMin(),
-                                    highPrice = iqrCal.getMax(),
+                                    openPrice = todayIqrCal.getMin(),
+                                    lowPrice = todayIqrCal.getMin(),
+                                    highPrice = todayIqrCal.getMax(),
                                     closePrice = iqrCal.getMin()
                                 )
                             )
@@ -117,11 +122,12 @@ class AuctionSchedulerServiceImpl(
                         val savedTodayPriceIndex =
                             indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today)
 
-                        if (savedTodayPriceIndex != null) {
-                            savedTodayPriceIndex.lowPrice = iqrCal.getMin()
-                            savedTodayPriceIndex.highPrice = iqrCal.getMax()
-                        } else {
-                            logger.debug { "execute open Price fetch" }
+                        savedTodayPriceIndex?.apply {
+                            lowPrice = iqrCal.getMin()
+                            highPrice = iqrCal.getMax()
+                        }?.also{
+                            indexRepository.save(it)
+                        } ?: run {
                             indexRepository.save(
                                 ItemPriceIndex(
                                     itemCode = gemInfo.itemCode,
@@ -133,7 +139,6 @@ class AuctionSchedulerServiceImpl(
                                 )
                             )
                         }
-
                     }
                 } catch (error: Exception) {
                     logger.error { "Error fetching ${gemInfo.itemCode}: ${error.message}" }
