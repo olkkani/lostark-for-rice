@@ -5,5 +5,5 @@ import org.bson.types.ObjectId
 import org.springframework.data.mongodb.repository.MongoRepository
 
 interface ItemPriceIndexTrendRepository: MongoRepository<ItemPriceIndexTrend, ObjectId> {
-    fun findByItemCodeOrderByRecordedDateAsc(itemCode: Int): ItemPriceIndexTrend?
+    fun findByItemCode(itemCode: Int): ItemPriceIndexTrend?
 }

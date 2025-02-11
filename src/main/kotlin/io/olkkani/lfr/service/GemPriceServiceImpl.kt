@@ -21,6 +21,6 @@ class GemPriceServiceImpl(
     }
 
     override fun getPrevTenDaysIndexTrendByItemCode(itemCode: Int): ItemPriceIndexTrend {
-        return indexTrendRepository.findByItemCodeOrderByRecordedDateAsc(itemCode) ?: ItemPriceIndexTrend(itemCode = itemCode)
+        return indexTrendRepository.findByItemCode(itemCode) ?: ItemPriceIndexTrend(itemCode = itemCode)
     }
 }
