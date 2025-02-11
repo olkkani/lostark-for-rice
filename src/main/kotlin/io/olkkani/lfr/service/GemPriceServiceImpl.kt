@@ -13,7 +13,7 @@ class GemPriceServiceImpl(
     private val indexTrendRepository: ItemPriceIndexTrendRepository,
 ) : GemPriceService {
     override fun getAllKindsTodayPrice(): List<ItemPriceIndex> {
-        return indexRepository.findAllByRecordedDate(LocalDate.now())
+        return indexRepository.findAllByRecordedDateOrderByRecordedDateAsc(LocalDate.now())
     }
 
     override fun getPriceIndexByItemCode(itemCode: Int): List<ItemPriceIndex> {

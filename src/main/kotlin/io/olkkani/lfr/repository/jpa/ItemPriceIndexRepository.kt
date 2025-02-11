@@ -25,5 +25,5 @@ interface ItemPriceIndexRepository: JpaRepository<ItemPriceIndex, Long> {
     ): List<ItemPriceIndex>
 
     fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): ItemPriceIndex?
-    fun findAllByRecordedDate(recordedDate: LocalDate): List<ItemPriceIndex>
+    fun findAllByRecordedDateOrderByRecordedDateAsc(recordedDate: LocalDate): List<ItemPriceIndex>
 }
