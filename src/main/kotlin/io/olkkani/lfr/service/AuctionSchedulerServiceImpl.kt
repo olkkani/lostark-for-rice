@@ -75,11 +75,12 @@ class AuctionSchedulerServiceImpl(
                         todayPriceRepository.saveIfNotExists(fetchedPrices)
 
                         val iqrCal = IQRCalculator(response.extractPrices())
-                        val savedTodayPriceIndex = indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today)
+                        val savedTodayPriceIndex =
+                            indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today)
 
                         savedTodayPriceIndex?.apply {
                             savedTodayPriceIndex.closePrice = iqrCal.getMin()
-                        }?.also{
+                        }?.also {
                             indexRepository.save(it)
                         } ?: run {
                             val savedTodayPrices =
@@ -118,28 +119,26 @@ class AuctionSchedulerServiceImpl(
 
                         val savedTodayPrices =
                             todayPriceRepository.findPricesByItemCode(gemInfo.itemCode).map { it.getPrice() }
-                        val iqrCal = IQRCalculator(savedTodayPrices)
+                        val iqrCal = IQRCalculator(response.extractPrices())
+                        val todayIqrCal = IQRCalculator(savedTodayPrices)
                         val savedTodayPriceIndex =
                             indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today)
 
                         savedTodayPriceIndex?.apply {
-                            val savedTodayPrices =
-                                todayPriceRepository.findPricesByItemCode(gemInfo.itemCode).map { it.getPrice() }
-                            val todayIqrCal = IQRCalculator(savedTodayPrices)
 
-                            lowPrice = iqrCal.getMin()
-                            closePrice = todayIqrCal.getMin()
-                            highPrice = iqrCal.getMax()
-                        }?.also{
+                            lowPrice = todayIqrCal.getMin()
+                            closePrice = iqrCal.getMin()
+                            highPrice = todayIqrCal.getMax()
+                        }?.also {
                             indexRepository.save(it)
                         } ?: run {
                             indexRepository.save(
                                 ItemPriceIndex(
                                     itemCode = gemInfo.itemCode,
                                     recordedDate = today,
-                                    openPrice = iqrCal.getMin(),
-                                    lowPrice = iqrCal.getMin(),
-                                    highPrice = iqrCal.getMax(),
+                                    openPrice = todayIqrCal.getMin(),
+                                    lowPrice = todayIqrCal.getMin(),
+                                    highPrice = todayIqrCal.getMax(),
                                     closePrice = iqrCal.getMin()
                                 )
                             )
@@ -187,7 +186,7 @@ class AuctionSchedulerServiceImpl(
                             prevGapPriceRate = prevGapRate
                             pairGapPrice = pairGap
                             pairGapPriceRate = pairGapRate
-                    } ?: run {
+                        } ?: run {
                         // 오늘자 데이터가 없다면 오늘자 기록을 새로 추가
                         trend.priceRecords.add(
                             PriceRecord(
