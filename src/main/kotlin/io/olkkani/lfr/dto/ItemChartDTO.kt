@@ -7,14 +7,3 @@ data class CandleChartResponse(
     val close: Int,
     val time: String
 )
-
-class ItemPreview(
-    val price: Int,
-    val highPrice: Int,
-    val lowPrice: Int,
-    val priceChange: Int,
-    val priceChangeRate: Double
-)
-
-
-

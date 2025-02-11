@@ -21,6 +21,7 @@ class ItemPriceIndex(
 )
 
 fun ItemPriceIndex.toPreviewResponse() = ItemPreview(
+    itemCode = itemCode,
     price = closePrice,
     highPrice = highPrice,
     lowPrice = lowPrice,
