@@ -16,7 +16,7 @@ class ItemPriceIndexTrend(
 class PriceRecord (
     val date: LocalDate,
     var price: Int,
-    var prevGepPrice: Int,
+    var prevGapPrice: Int,
     var prevGapPriceRate: Double,
     var pairGapPrice: Int,
     var pairGapPriceRate: Double,

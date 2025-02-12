@@ -182,7 +182,7 @@ class AuctionSchedulerServiceImpl(
                         ?.apply {
                             // 기존 데이터가 있다면 변경 후 저장
                             price = todayIndex.closePrice
-                            prevGepPrice = prevGep
+                            prevGapPrice = prevGep
                             prevGapPriceRate = prevGapRate
                             pairGapPrice = pairGap
                             pairGapPriceRate = pairGapRate
@@ -192,7 +192,7 @@ class AuctionSchedulerServiceImpl(
                             PriceRecord(
                                 date = today,
                                 price = todayIndex.closePrice,
-                                prevGepPrice = prevGep,
+                                prevGapPrice = prevGep,
                                 prevGapPriceRate = prevGapRate,
                                 pairGapPrice = pairGap,
                                 pairGapPriceRate = pairGapRate
@@ -209,7 +209,7 @@ class AuctionSchedulerServiceImpl(
                                 PriceRecord(
                                     date = today,
                                     price = todayIndex.closePrice,
-                                    prevGepPrice = prevGep,
+                                    prevGapPrice = prevGep,
                                     prevGapPriceRate = prevGapRate,
                                     pairGapPrice = pairGap,
                                     pairGapPriceRate = pairGapRate

@@ -47,7 +47,7 @@ class SchedulerJobTest: DescribeSpec() {
                     val itemCode = 65021100
                     val savedPriceTrend = priceService.getPrevTenDaysIndexTrendByItemCode(itemCode)
                     val todayPriceRecord = savedPriceTrend.priceRecords.find{it.date == today}
-                    todayPriceRecord?.prevGepPrice shouldBe -1000
+                    todayPriceRecord?.prevGapPrice shouldBe -1000
                     todayPriceRecord?.pairGapPrice shouldBe 0
                 }
             }
