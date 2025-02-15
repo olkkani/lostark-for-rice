@@ -33,6 +33,9 @@ spring:
 lostark:
   api:
     key: ${API_KEY:must_not_null_key}
+webhook:
+  url:
+    discord: ${DISCORD_WEBHOOK_URL}
 --- # db-prod
 spring:
   config:

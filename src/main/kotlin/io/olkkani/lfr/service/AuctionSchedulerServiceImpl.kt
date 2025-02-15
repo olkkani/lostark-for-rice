@@ -1,7 +1,7 @@
 package io.olkkani.lfr.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.olkkani.lfr.dto.collectGemInfoList
+import io.olkkani.lfr.dao.toRequest
 import io.olkkani.lfr.dto.extractPrices
 import io.olkkani.lfr.dto.toTodayItemPrices
 import io.olkkani.lfr.entity.jpa.ItemPriceIndex
@@ -16,37 +16,35 @@ import io.olkkani.lfr.util.PercentageCalculation
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
-
 
 @Service
 class AuctionSchedulerServiceImpl(
     val indexRepository: ItemPriceIndexRepository,
     val todayPriceRepository: TodayItemPriceRepository,
     val indexTrendRepository: ItemPriceIndexTrendRepository,
-    @Value("\${lostark.api.key}") private val apiKey: String
+    private val apiClient: LostarkAPIClient
 ) : AuctionSchedulerService {
     private val logger = KotlinLogging.logger {}
-    private val apiClient = LostarkAPIClient(apiKey)
+
+    val gems = io.olkkani.lfr.dao.gems
 
     override suspend fun fetchPriceAndInsertOpenPrice(): Unit = coroutineScope {
         val today = LocalDate.now()
-        val gemList = collectGemInfoList
-        gemList.map { gemInfo ->
+        gems.map { gem ->
             async {
                 try {
-                    val response = apiClient.fetchAuctionItemsSubscribe(gemInfo.request)
+                    val response = apiClient.fetchAuctionItemsSubscribe(gem.toRequest())
                     if (response.items.isNotEmpty()) {
-                        val fetchedPrices = response.toTodayItemPrices(itemCode = gemInfo.itemCode)
+                        val fetchedPrices = response.toTodayItemPrices(itemCode = gem.itemCode)
                         todayPriceRepository.saveIfNotExists(fetchedPrices)
 
                         val iqrCal = IQRCalculator(response.extractPrices())
                         indexRepository.save(
                             ItemPriceIndex(
-                                itemCode = gemInfo.itemCode,
+                                itemCode = gem.itemCode,
                                 recordedDate = today,
                                 openPrice = iqrCal.getMin(),
                                 lowPrice = iqrCal.getMin(),
@@ -56,7 +54,7 @@ class AuctionSchedulerServiceImpl(
                         )
                     }
                 } catch (error: Exception) {
-                    logger.error { "Error fetching ${gemInfo.itemCode}: ${error.message}" }
+                    logger.error { "Error fetching ${gem.itemCode}: ${error.message}" }
                 }
             }
         }.awaitAll()
@@ -65,18 +63,17 @@ class AuctionSchedulerServiceImpl(
     @Transactional
     override suspend fun fetchPriceAndUpdateClosePrice(): Unit = coroutineScope {
         val today = LocalDate.now()
-        val gemList = collectGemInfoList
-        gemList.map { gemInfo ->
+        gems.map { gem ->
             async {
                 try {
-                    val response = apiClient.fetchAuctionItemsSubscribe(gemInfo.request)
+                    val response = apiClient.fetchAuctionItemsSubscribe(gem.toRequest())
                     if (response.items.isNotEmpty()) {
-                        val fetchedPrices = response.toTodayItemPrices(itemCode = gemInfo.itemCode)
+                        val fetchedPrices = response.toTodayItemPrices(itemCode = gem.itemCode)
                         todayPriceRepository.saveIfNotExists(fetchedPrices)
 
                         val iqrCal = IQRCalculator(response.extractPrices())
                         val savedTodayPriceIndex =
-                            indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today)
+                            indexRepository.findByItemCodeAndRecordedDate(gem.itemCode, today)
 
                         savedTodayPriceIndex?.apply {
                             savedTodayPriceIndex.closePrice = iqrCal.getMin()
@@ -84,11 +81,11 @@ class AuctionSchedulerServiceImpl(
                             indexRepository.save(it)
                         } ?: run {
                             val savedTodayPrices =
-                                todayPriceRepository.findPricesByItemCode(gemInfo.itemCode).map { it.getPrice() }
+                                todayPriceRepository.findPricesByItemCode(gem.itemCode).map { it.getPrice() }
                             val todayIqrCal = IQRCalculator(savedTodayPrices)
                             indexRepository.save(
                                 ItemPriceIndex(
-                                    itemCode = gemInfo.itemCode,
+                                    itemCode = gem.itemCode,
                                     recordedDate = today,
                                     openPrice = todayIqrCal.getMin(),
                                     lowPrice = todayIqrCal.getMin(),
@@ -99,7 +96,7 @@ class AuctionSchedulerServiceImpl(
                         }
                     }
                 } catch (error: Exception) {
-                    logger.error { "Error fetching ${gemInfo.itemCode}: ${error.message}" }
+                    logger.error { "Error fetching ${gem.itemCode}: ${error.message}" }
                 }
             }
         }.awaitAll()
@@ -108,21 +105,20 @@ class AuctionSchedulerServiceImpl(
     @Transactional
     override suspend fun fetchPriceAndUpdatePrice(): Unit = coroutineScope {
         val today = LocalDate.now()
-        val gemList = collectGemInfoList
-        gemList.map { gemInfo ->
+        gems.map { gem ->
             async {
                 try {
-                    val response = apiClient.fetchAuctionItemsSubscribe(gemInfo.request)
+                    val response = apiClient.fetchAuctionItemsSubscribe(gem.toRequest())
                     if (response.items.isNotEmpty()) {
-                        val fetchedPrices = response.toTodayItemPrices(itemCode = gemInfo.itemCode)
+                        val fetchedPrices = response.toTodayItemPrices(itemCode = gem.itemCode)
                         todayPriceRepository.saveIfNotExists(fetchedPrices)
 
                         val savedTodayPrices =
-                            todayPriceRepository.findPricesByItemCode(gemInfo.itemCode).map { it.getPrice() }
+                            todayPriceRepository.findPricesByItemCode(gem.itemCode).map { it.getPrice() }
                         val iqrCal = IQRCalculator(response.extractPrices())
                         val todayIqrCal = IQRCalculator(savedTodayPrices)
                         val savedTodayPriceIndex =
-                            indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today)
+                            indexRepository.findByItemCodeAndRecordedDate(gem.itemCode, today)
 
                         savedTodayPriceIndex?.apply {
 
@@ -134,7 +130,7 @@ class AuctionSchedulerServiceImpl(
                         } ?: run {
                             indexRepository.save(
                                 ItemPriceIndex(
-                                    itemCode = gemInfo.itemCode,
+                                    itemCode = gem.itemCode,
                                     recordedDate = today,
                                     openPrice = todayIqrCal.getMin(),
                                     lowPrice = todayIqrCal.getMin(),
@@ -145,7 +141,7 @@ class AuctionSchedulerServiceImpl(
                         }
                     }
                 } catch (error: Exception) {
-                    logger.error { "Error fetching ${gemInfo.itemCode}: ${error.message}" }
+                    logger.error { "Error fetching ${gem.itemCode}: ${error.message}" }
                 }
             }
         }.awaitAll()
@@ -164,12 +160,11 @@ class AuctionSchedulerServiceImpl(
 
     override fun calculateGapTodayItemPrice() {
         val today = LocalDate.now()
-        val gemList = collectGemInfoList
-        gemList.map { gemInfo ->
-            val todayIndex = indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today)
-            val todayPairIndex = indexRepository.findByItemCodeAndRecordedDate(gemInfo.pairItemCode, today)
-            val yesterdayIndex = indexRepository.findByItemCodeAndRecordedDate(gemInfo.itemCode, today.minusDays(1))
-            val indexTrend = indexTrendRepository.findByItemCode(gemInfo.itemCode)
+        gems.map { gem ->
+            val todayIndex = indexRepository.findByItemCodeAndRecordedDate(gem.itemCode, today)
+            val todayPairIndex = indexRepository.findByItemCodeAndRecordedDate(gem.pairItemCode, today)
+            val yesterdayIndex = indexRepository.findByItemCodeAndRecordedDate(gem.itemCode, today.minusDays(1))
+            val indexTrend = indexTrendRepository.findByItemCode(gem.itemCode)
 
             if (todayIndex != null && todayPairIndex != null && yesterdayIndex != null) {
                 val prevGep = todayIndex.closePrice - yesterdayIndex.closePrice
@@ -204,7 +199,7 @@ class AuctionSchedulerServiceImpl(
                     // 전체 기록이 없다면 새로 생성 후 저장
                     indexTrendRepository.save(
                         ItemPriceIndexTrend(
-                            itemCode = gemInfo.itemCode,
+                            itemCode = gem.itemCode,
                             priceRecords = mutableListOf(
                                 PriceRecord(
                                     date = today,

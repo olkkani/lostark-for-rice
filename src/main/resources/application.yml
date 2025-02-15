@@ -26,6 +26,9 @@ spring:
 lostark:
   api:
     key: ${API_KEY}
+webhook:
+  url:
+    discord: ${DISCORD_WEBHOOK_URL}
 --- # local-server
 spring:
   config:

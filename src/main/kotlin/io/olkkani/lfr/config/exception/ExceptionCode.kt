@@ -13,6 +13,9 @@ enum class ExceptionCode(val status: HttpStatus, val message : String) {
     INVALID_AUTH_TOKEN(HttpStatus.UNAUTHORIZED, "권한 정보가 없는 토큰입니다"),
     UNAUTHORIZED_MEMBER(HttpStatus.UNAUTHORIZED, "현재 내 계정 정보가 존재하지 않습니다"),
 
+    /* FORBIDDEN: 거부됍 */
+    FETCH_ERROR_LOA(HttpStatus.FORBIDDEN, "LOSTARK API 로 부터 응답이 없습니다."),
+
     /* 404 NOT_FOUND : Resource 를 찾을 수 없음 */
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
     REFRESH_TOKEN_NOT_FOUND(HttpStatus.NOT_FOUND, "로그아웃 된 사용자입니다"),
@@ -20,4 +23,5 @@ enum class ExceptionCode(val status: HttpStatus, val message : String) {
 
     /* 409 CONFLICT : Resource 의 현재 상태와 충돌. 보통 중복된 데이터 존재 */
     DUPLICATE_RESOURCE(HttpStatus.CONFLICT, "데이터가 이미 존재합니다"),
+
 }

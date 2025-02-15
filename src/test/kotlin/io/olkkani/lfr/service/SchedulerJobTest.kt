@@ -3,7 +3,7 @@ package io.olkkani.lfr.service
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
-import io.olkkani.lfr.dto.collectGemInfoList
+import io.olkkani.lfr.dao.gems
 import io.olkkani.lfr.entity.jpa.ItemPriceIndex
 import io.olkkani.lfr.repository.jpa.ItemPriceIndexRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -28,10 +28,10 @@ class SchedulerJobTest: DescribeSpec() {
             val today = LocalDate.now()
             val sampleIndex = mutableListOf<ItemPriceIndex>()
             // 예제 데이터 삽입
-            collectGemInfoList.forEach { gemInfo ->
+            gems.forEach { gem ->
                 for(i in 0 .. 1){
                     sampleIndex.add(ItemPriceIndex(
-                        itemCode = gemInfo.itemCode,
+                        itemCode = gem.itemCode,
                         closePrice = 1000 * (i + 1),
                         recordedDate = today.minusDays(i.toLong()),
                         openPrice = 1000,
