@@ -22,7 +22,6 @@ class PriceRecord (
     var pairGapPriceRate: Double,
 )
 
-fun ItemPriceIndexTrend.toResponse(): MutableList<PriceRecord> {
-    priceRecords.sortBy { it.date }
-    return priceRecords
+fun ItemPriceIndexTrend.toResponse(): List<PriceRecord> {
+    return priceRecords.sortedByDescending { it.date }
 }
