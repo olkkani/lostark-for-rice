@@ -3,6 +3,7 @@ networks:
     external: true
 services:
   blue:
+    container_name: lfr-backend
     image:  ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
     environment:
       - DB_MONGO_URL=${DB_MONGO_URL}
