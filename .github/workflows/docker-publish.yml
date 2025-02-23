@@ -2,10 +2,10 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - main
+      - release
   pull_request:
     branches:
-      - main
+      - release
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}:${{ github.sha }}
@@ -55,7 +55,6 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE_NAME }}
-
   deploy:
     runs-on: ubuntu-24.04
     needs: build
@@ -63,7 +62,25 @@ jobs:
       HOST: ${{ secrets.HOST }}
       PORT_BLUE: ${{ secrets.PORT_BLUE }}
       PORT_GREEN: ${{ secrets.PORT_GREEN }}
+      WORK_SPACE: "/home/${{ secrets.USERNAME }}/lfr/back"
     steps:
+      - name: serve-config
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            mkdir -p ${{ env.WORK_SPACE}} && cd ${{ env.WORK_SPACE}}
+            
+            echo "DB_MONGO_URL=${{ secrets.DB_MONGO_URL }}" >> .env
+            echo "DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL }}" >> .env
+            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "API_KEY=${{ secrets.API_KEY }}" >> .env 
+            echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" >> .env 
+
       - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -72,19 +89,15 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            APP_NAME="lfr"
-            NEW_ENV="backend"
+            cd ${{ env.WORK_SPACE}}
             
-            # 1. 최신 Docker 이미지 가져오기
-            docker pull ${{ env.IMAGE_NAME }}
+            # 기존 서비스 종료
+            docker compose stop blue 
+            docker compose rm blue
             
-            # 2. 새로운 컨테이너 실행
-            docker run -d \
-            -p 18082:8080 --name $APP_NAME-$NEW_ENV --network olkkani_network \
-            -e TZ=Asia/Seoul -e SPRING_PROFILES_ACTIVE=prod \
-            -e DB_MONGO_URL="${{ secrets.DB_MONGO_URL }}" \
-            -e DB_CONNECTION_URL="${{ secrets.DB_CONNECTION_URL }}" \
-            -e DB_USER="${{ secrets.DB_USER }}" \
-            -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-            -e API_KEY="${{ secrets.API_KEY }}" \
-            "${{ env.IMAGE_NAME }}"
+            # 새 서비스 실행
+            docker compose pull blue
+            docker compose up -d blue
+            
+            # 사용하지 않는 이미지 삭제
+            docker image prune -f
