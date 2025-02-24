@@ -17,6 +17,9 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: release
+
       - name: setup jdk21
         uses: actions/setup-java@v4
         with:
@@ -73,7 +76,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             mkdir -p ${{ env.WORK_SPACE }} && cd ${{ env.WORK_SPACE }}
-            rm .env
+            rm -f .env
             
             echo "DB_MONGO_URL=${{ secrets.DB_MONGO_URL }}" >> .env
             echo "DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL }}" >> .env
