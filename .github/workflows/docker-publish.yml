@@ -64,6 +64,16 @@ jobs:
       PORT_GREEN: ${{ secrets.PORT_GREEN }}
       WORK_SPACE: "/home/${{ secrets.USERNAME }}/lfr/back"
     steps:
+      - name: Copy docker-compose.yml to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          source: "./docker-compose.yml"
+          target: ${{ env.WORK_SPACE }}
+
       - name: serve-config
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -72,7 +82,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            mkdir -p ${{ env.WORK_SPACE}} && cd ${{ env.WORK_SPACE}}
+            mkdir -p ${{ env.WORK_SPACE }} && cd ${{ env.WORK_SPACE }}
             
             echo "DB_MONGO_URL=${{ secrets.DB_MONGO_URL }}" >> .env
             echo "DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL }}" >> .env

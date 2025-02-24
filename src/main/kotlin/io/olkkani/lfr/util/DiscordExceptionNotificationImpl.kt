@@ -1,14 +1,15 @@
-package io.olkkani.lfr.service
+package io.olkkani.lfr.util
 
 import io.olkkani.lfr.dto.DiscordWebhookResponse
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
+import java.time.LocalDateTime
 
 @Component
 class DiscordExceptionNotificationImpl(
-    @Value("\${webhook.url.discord}") private val webhookUrl: String
+    @Value("\${webhook.url.discord:url}") private val webhookUrl: String
 ) : ExceptionNotification {
 
     private val webClient: WebClient = WebClient.builder().baseUrl(webhookUrl).build()
@@ -21,7 +22,7 @@ class DiscordExceptionNotificationImpl(
                     title = "에러 상세 정보",
                     description = """
                         **Function Name:** $actionName
-                        **Time Stamp:** ${java.time.LocalDateTime.now()}
+                        **Time Stamp:** ${LocalDateTime.now()}
                         **Stack Trace:**
                         ```
                         $errorMessage

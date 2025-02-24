@@ -3,7 +3,6 @@ package io.olkkani.lfr.util
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.olkkani.lfr.dto.AuctionRequest
 import io.olkkani.lfr.dto.AuctionResponse
-import io.olkkani.lfr.service.DiscordExceptionNotificationImpl
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -15,8 +14,8 @@ import reactor.core.scheduler.Schedulers
 
 @Component
 class LostarkAPIClient(
-    @Value("\${lostark.api.key}") private val apiKey: String,
-    private val exceptionNotification: DiscordExceptionNotificationImpl,
+    @Value("\${lostark.api.key:key}") private val apiKey: String,
+    private val exceptionNotification: ExceptionNotification,
 ) {
     private val logger = KotlinLogging.logger {}
     private val baseUrl: String = "https://developer-lostark.game.onstove.com"
