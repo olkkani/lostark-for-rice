@@ -9,11 +9,10 @@ on:
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}:${{ github.sha }}
-
+  WORK_SPACE: "/home/${{ secrets.USERNAME }}/lfr/back/"
 jobs:
   build:
     runs-on: ubuntu-24.04
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,52 +55,49 @@ jobs:
           context: .
           push: true
           tags: ${{ env.IMAGE_NAME }}
-  deploy:
+
+  serve-file:
     runs-on: ubuntu-24.04
     needs: build
+    steps:
+        - name: serve-env
+          uses: appleboy/ssh-action@v1.0.3
+          with:
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.USERNAME }}
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            port: ${{ secrets.PORT }}
+            script: |
+              mkdir -p ${{ env.WORK_SPACE }} && cd ${{ env.WORK_SPACE }}
+              rm -f .env
+              
+              echo "DB_MONGO_URL=${{ secrets.DB_MONGO_URL }}" >> .env
+              echo "DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL }}" >> .env
+              echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+              echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+              echo "API_KEY=${{ secrets.API_KEY }}" >> .env 
+              echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" >> .env       
+
+        - name: Copy docker-compose.yml to server
+          uses: appleboy/scp-action@v0.1.7
+          with:
+            host: ${{ secrets.HOST }}
+            username: ${{ secrets.USERNAME }}
+            key: ${{ secrets.SSH_PRIVATE_KEY }}
+            port: ${{ secrets.PORT }}
+            source: "./docker-compose.yml"
+            target: ${{ env.WORK_SPACE}}
+            overwrite: true
+
+  deploy:
+    runs-on: ubuntu-24.04
+    needs: serve-file
     env:
       HOST: ${{ secrets.HOST }}
       PORT_BLUE: ${{ secrets.PORT_BLUE }}
       PORT_GREEN: ${{ secrets.PORT_GREEN }}
-      WORK_SPACE: "/home/${{ secrets.USERNAME }}/lfr/back/"
+
     steps:
-      - name: Check files in workspace
-        run: ls -al ${{ github.workspace }}
-
-      - name: serve-config
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            mkdir -p ${{ env.WORK_SPACE }} && cd ${{ env.WORK_SPACE }}
-            rm -f .env
-            
-            echo "DB_MONGO_URL=${{ secrets.DB_MONGO_URL }}" >> .env
-            echo "DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL }}" >> .env
-            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-            echo "API_KEY=${{ secrets.API_KEY }}" >> .env 
-            echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" >> .env 
-
-
-
-      - name: Check docker-compose.yml existence
-        run: ls -al ${{ github.workspace }}/docker-compose.yml
-
-      - name: Copy docker-compose.yml to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          source: "./docker-compose.yml"
-          target: ${{ env.WORK_SPACE}}
-          overwrite: true
-
       - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
         with:
