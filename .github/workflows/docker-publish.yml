@@ -62,18 +62,8 @@ jobs:
       HOST: ${{ secrets.HOST }}
       PORT_BLUE: ${{ secrets.PORT_BLUE }}
       PORT_GREEN: ${{ secrets.PORT_GREEN }}
-      WORK_SPACE: "/home/${{ secrets.USERNAME }}/lfr/back"
+      WORK_SPACE: "/home/${{ secrets.USERNAME }}/lfr/back/"
     steps:
-      - name: Copy docker-compose.yml to server
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          source: "./docker-compose.yml"
-          target: ${{ env.WORK_SPACE }}
-
       - name: serve-config
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -90,6 +80,16 @@ jobs:
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "API_KEY=${{ secrets.API_KEY }}" >> .env 
             echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" >> .env 
+
+      - name: Copy docker-compose.yml to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          source: "./docker-compose.yml"
+          target: ${{ env.WORK_SPACE }}
 
       - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
