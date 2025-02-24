@@ -84,7 +84,8 @@ jobs:
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "API_KEY=${{ secrets.API_KEY }}" >> .env 
             echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" >> .env 
-
+      - name: Check docker-compose.yml existence
+        run: ls -al ${{ github.workspace }}/docker-compose.yml
       - name: Copy docker-compose.yml to server
         uses: appleboy/scp-action@v0.1.7
         with:
