@@ -93,7 +93,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           source: "./docker-compose.yml"
-          target: ${{ env.WORK_SPACE }}
+          target: "/home/${{ secrets.USERNAME }}/lfr/back/"
           debug: true
 
       - name: Deploy
