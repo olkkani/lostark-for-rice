@@ -73,6 +73,7 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             mkdir -p ${{ env.WORK_SPACE }} && cd ${{ env.WORK_SPACE }}
+            rm .env
             
             echo "DB_MONGO_URL=${{ secrets.DB_MONGO_URL }}" >> .env
             echo "DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL }}" >> .env
@@ -90,6 +91,7 @@ jobs:
           port: ${{ secrets.PORT }}
           source: "./docker-compose.yml"
           target: ${{ env.WORK_SPACE }}
+          debug: true
 
       - name: Deploy
         uses: appleboy/ssh-action@v1.0.3
