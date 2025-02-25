@@ -46,6 +46,7 @@ dependencies {
     implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.9.0")
     implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.10.0")
     implementation("io.kotest.extensions:kotest-extensions-spring:1.3.0")
+    implementation("org.apache.commons:commons-text:1.13.0")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
     kapt("jakarta.annotation:jakarta.annotation-api")
     kapt("jakarta.persistence:jakarta.persistence-api")
