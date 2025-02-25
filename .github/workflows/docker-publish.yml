@@ -79,6 +79,7 @@ jobs:
             echo "DB_USER=${{ secrets.DB_USER }}" >> .env
             echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
             echo "API_KEY=${{ secrets.API_KEY }}" >> .env 
+            echo "DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}" >> .env
             echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" >> .env       
 
       - name: Copy docker-compose.yml to server
