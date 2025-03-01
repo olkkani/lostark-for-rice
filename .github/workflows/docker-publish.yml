@@ -9,7 +9,8 @@ on:
 
 env:
   IMAGE_NAME: ghcr.io/${{ github.repository }}:${{ github.sha }}
-  WORK_SPACE: "/home/${{ secrets.USERNAME }}/lfr/back/"
+  WORK_DIR: "/home/${{ secrets.USERNAME }}/lfr/back/"
+  NGINX_DIR: "/home/${{ secrets.USERNAME }}/lfr/nginx/"
 jobs:
   build:
     runs-on: ubuntu-24.04
@@ -71,7 +72,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            mkdir -p ${{ env.WORK_SPACE }} && cd ${{ env.WORK_SPACE }}
+            mkdir -p ${{ env.WORK_DIR }} && cd ${{ env.WORK_DIR }}
             rm -f .env
             
             echo "DB_MONGO_URL=${{ secrets.DB_MONGO_URL }}" >> .env
@@ -82,6 +83,28 @@ jobs:
             echo "DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}" >> .env
             echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" >> .env       
 
+      - name: Copy upstream
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          source: "./.github/nginx-config/backend.conf"
+          target: ${{ env.WORK_DIR}}
+          overwrite: true
+
+      - name: Copy upstream
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          source: "./.github/nginx-config/upstream/"
+          target: ${{ env.WORK_DIR}}
+          overwrite: true
+
       - name: Copy docker-compose.yml to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -89,8 +112,8 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
-          source: "./docker-compose.yml"
-          target: ${{ env.WORK_SPACE}}
+          source: "./.github/docker-compose.yml"
+          target: ${{ env.WORK_DIR}}
           overwrite: true
 
   deploy:
@@ -110,15 +133,36 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
           script: |
-            cd ${{ env.WORK_SPACE}}
-            
-            # 기존 서비스 종료
-            docker compose stop blue 
-            docker compose rm blue
+            COMPSE_PATH="${{ env.WORK_DIR }}/docker-compose.yml"
+            mkdir -p ${{ env.NGINX_DIR }}
+            cp -f ${{ env.WORK_DIR }}/backend.conf ${{ env.NGINX_DIR }}/backend.conf
+            # 실행 중인 서비스 확인
+            ACTIVE_SERVICE=$(docker ps --format "{{.Names}}" | grep -E "lfr-backend-blue|lfr-backend-green" | head -n1)
+            if [ "$ACTIVE_SERVICE" = "lfr-backend-blue" ]; then
+              NEW_SERVICE="green"
+              OLD_SERVICE="blue"
+              # apply new service upstream
+              cp -f ${{ env.WORK_DIR }}/upstream/green.conf ${{ env.NGINX_DIR }}/back-active-upstream.conf
+            else
+              NEW_SERVICE="blue"
+              OLD_SERVICE="green"
+              # apply new service upstream
+              cp -f ${{ env.WORK_DIR }}/upstream/blue.conf ${{ env.NGINX_DIR }}/back-active-upstream.conf
+            fi
             
             # 새 서비스 실행
-            docker compose pull blue
-            docker compose up -d blue
+            docker compose -f "$COMPSE_PATH" pull "$NEW_SERVICE"
+            docker compose -f "$COMPSE_PATH" up -d "$NEW_SERVICE"
+            
+            # health check, Todo
+            sleep 15 
+            
+            # reload nginx config
+            docker exec -it nginx nginx -s reload
+            
+            # 기존 서비스 종료
+            docker compose -f "$COMPSE_PATH" stop "$OLD_SERVICE"
+            docker compose -f "$COMPSE_PATH" rm "$OLD_SERVICE"
             
             # 사용하지 않는 이미지 삭제
             docker image prune -f
