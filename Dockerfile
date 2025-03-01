@@ -4,7 +4,7 @@ FROM eclipse-temurin:21-alpine
 WORKDIR /app
 
 # Copy the build files into the container
-COPY ./build/libs/lostark-for-rice.jar /app/lostark-for-rice.jar
+COPY build/libs/lostark-for-rice.jar /app/lostark-for-rice.jar
 
 # Expose the port your Spring app will run on (default: 8080)
 EXPOSE 8080

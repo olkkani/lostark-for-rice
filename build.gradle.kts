@@ -33,12 +33,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-
-//    implementation("org.springframework.boot:spring-boot-starter-hateoas")
-//    implementation("org.springframework.data:spring-data-rest-hal-explorer")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     implementation("org.springframework.boot:spring-boot-starter-quartz")
     implementation("org.springframework.boot:spring-boot-starter-undertow")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
     implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.3")
     implementation("com.github.f4b6a3:tsid-creator:5.2.6")
