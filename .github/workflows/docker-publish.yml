@@ -134,7 +134,7 @@ jobs:
           script: |
             COMPSE_PATH="${{ env.WORK_DIR }}/docker-compose.yml"
             mkdir -p ${{ env.NGINX_DIR }}
-            cp -f ${{ env.WORK_DIR }}/backend.conf ${{ env.NGINX_DIR }}/backend.conf
+            sudo cp -f ${{ env.WORK_DIR }}/backend.conf ${{ env.NGINX_DIR }}/backend.conf
             # 실행 중인 서비스 확인
             ACTIVE_SERVICE=$(docker ps --format "{{.Names}}" | grep -E "lfr-backend-blue|lfr-backend-green" | head -n1)
             if [ "$ACTIVE_SERVICE" = "lfr-backend-blue" ]; then
@@ -151,7 +151,7 @@ jobs:
             
             # 기존 서비스 종료
             docker compose -f "$COMPSE_PATH" stop "$OLD_SERVICE"
-            docker compose -f "$COMPSE_PATH" rm "$OLD_SERVICE"
+            docker compose -f "$COMPSE_PATH" rm -f "$OLD_SERVICE"
             
             # 새 서비스 실행
             docker compose -f "$COMPSE_PATH" pull "$NEW_SERVICE"
