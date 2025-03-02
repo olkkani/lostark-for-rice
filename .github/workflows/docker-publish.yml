@@ -141,12 +141,12 @@ jobs:
               NEW_SERVICE="green"
               OLD_SERVICE="blue"
               # apply new service upstream
-              cp -f ${{ env.WORK_DIR }}/upstream/green.conf ${{ env.NGINX_DIR }}/back-active-upstream.conf
+              sudo cp -f ${{ env.WORK_DIR }}/upstream/green.conf ${{ env.NGINX_DIR }}/back-active-upstream.conf
             else
               NEW_SERVICE="blue"
               OLD_SERVICE="green"
               # apply new service upstream
-              cp -f ${{ env.WORK_DIR }}/upstream/blue.conf ${{ env.NGINX_DIR }}/back-active-upstream.conf
+              sudo cp -f ${{ env.WORK_DIR }}/upstream/blue.conf ${{ env.NGINX_DIR }}/back-active-upstream.conf
             fi
             
             # 기존 서비스 종료
