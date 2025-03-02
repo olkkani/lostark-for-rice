@@ -86,7 +86,8 @@ jobs:
           source: "./.github/nginx-config/upstream/"
           target: "${{ env.WORK_DIR }}"
           overwrite: true
-          strip_components: 2
+          rm: true
+          strip_components: 3
 
       - name: Copy docker-compose.yml to server
         uses: appleboy/scp-action@v0.1.7
