@@ -64,25 +64,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: serve-env
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          script: |
-            mkdir -p ${{ env.WORK_DIR }} && cd ${{ env.WORK_DIR }}
-            rm -f .env
-            
-            echo "DB_MONGO_URL=${{ secrets.DB_MONGO_URL }}" >> .env
-            echo "DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL }}" >> .env
-            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
-            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
-            echo "API_KEY=${{ secrets.API_KEY }}" >> .env 
-            echo "DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}" >> .env
-            echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" >> .env       
-
       - name: Copy upstream
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -92,21 +73,8 @@ jobs:
           port: ${{ secrets.PORT }}
           source: "./.github/nginx-config/backend.conf"
           target: ${{ env.WORK_DIR}}
-          overwrite: true
-          strip_components: 2
-
-      - name: Copy upstream
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.PORT }}
-          source: "./.github/nginx-config/upstream/"
-          target: ${{ env.WORK_DIR}}/upstream
-          overwrite: true
+          rm: true
           strip_components: 3
-
       - name: Copy docker-compose.yml to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -116,9 +84,35 @@ jobs:
           port: ${{ secrets.PORT }}
           source: "./.github/docker-compose.yml"
           target: ${{ env.WORK_DIR}}
-          overwrite: true
           strip_components: 1
+      - name: Copy upstream
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          source: "./.github/nginx-config/upstream/"
+          target: ${{ env.WORK_DIR}}/upstream
+          strip_components: 3
 
+      - name: serve-env
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ${{ env.WORK_DIR }}
+            
+            echo "DB_MONGO_URL=${{ secrets.DB_MONGO_URL }}" >> .env
+            echo "DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL }}" >> .env
+            echo "DB_USER=${{ secrets.DB_USER }}" >> .env
+            echo "DB_PASSWORD=${{ secrets.DB_PASSWORD }}" >> .env
+            echo "API_KEY=${{ secrets.API_KEY }}" >> .env 
+            echo "DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}" >> .env
+            echo "IMAGE_NAME=${{ env.IMAGE_NAME }}" >> .env
   deploy:
     runs-on: ubuntu-24.04
     needs: serve-file
