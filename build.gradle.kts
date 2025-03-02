@@ -87,7 +87,16 @@ kotlin {
         freeCompilerArgs.addAll("-Xjsr305=strict")
     }
 }
-
+tasks.bootBuildImage {
+    builder.set("paketobuilder/builder:base")
+    runImage.set("eclipse-temurin:21-alpine")
+    environment.set(
+        mapOf(
+            "BP_JVM_VERSION" to "21",
+            "PORT" to "8080"
+        )
+    )
+}
 tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     jvmArgs("-Xshare:off")
