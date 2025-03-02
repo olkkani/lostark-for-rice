@@ -19,6 +19,7 @@ services:
     networks:
       - olkkani_network
     restart: always
+
   green:
     container_name: lfr-backend-green
     image:  ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
