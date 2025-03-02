@@ -77,7 +77,6 @@ jobs:
           strip_components: 3
 
       - name: Copy upstream conf files
-        if: steps.check_version.outputs.is_blue == 'true'
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
