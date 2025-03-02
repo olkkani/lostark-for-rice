@@ -41,7 +41,7 @@ jobs:
         run: df -h
 
       - name: Build with Gradle
-        run: ./gradlew bootBuildImage
+        run: ./gradlew build
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -149,6 +149,10 @@ jobs:
               cp -f ${{ env.WORK_DIR }}/upstream/blue.conf ${{ env.NGINX_DIR }}/back-active-upstream.conf
             fi
             
+            # 기존 서비스 종료
+            docker compose -f "$COMPSE_PATH" stop "$OLD_SERVICE"
+            docker compose -f "$COMPSE_PATH" rm "$OLD_SERVICE"
+            
             # 새 서비스 실행
             docker compose -f "$COMPSE_PATH" pull "$NEW_SERVICE"
             docker compose -f "$COMPSE_PATH" up -d "$NEW_SERVICE"
@@ -158,10 +162,6 @@ jobs:
             
             # reload nginx config
             docker exec -it nginx nginx -s reload
-            
-            # 기존 서비스 종료
-            docker compose -f "$COMPSE_PATH" stop "$OLD_SERVICE"
-            docker compose -f "$COMPSE_PATH" rm "$OLD_SERVICE"
             
             # 사용하지 않는 이미지 삭제
             docker image prune -f
