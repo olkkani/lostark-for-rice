@@ -46,8 +46,6 @@ dependencies {
     implementation("io.kotest.extensions:kotest-extensions-spring:1.3.0")
     implementation("org.apache.commons:commons-text:1.13.0")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
-    kapt("jakarta.annotation:jakarta.annotation-api")
-    kapt("jakarta.persistence:jakarta.persistence-api")
     implementation("io.github.oshai:kotlin-logging:7.0.0")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
