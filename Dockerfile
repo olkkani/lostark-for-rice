@@ -1,13 +1,12 @@
-FROM eclipse-temurin:21-alpine
-
-# Set the working directory in the container
+# 빌드 스테이지
+FROM gradle:8.13-jdk21-alpine AS build
 WORKDIR /app
+COPY . .
+RUN gradle build --no-daemon
 
-# Copy the build files into the container
-COPY build/libs/lostark-for-rice.jar /app/lostark-for-rice.jar
-
-# Expose the port your Spring app will run on (default: 8080)
+# 실행 스테이지
+FROM eclipse-temurin:21-alpine
+WORKDIR /app
+COPY --from=build /app/build/libs/lostark-for-rice.jar /app/lostark-for-rice.jar
 EXPOSE 8080
-
-# Command to run the application
 CMD ["java", "-jar", "lostark-for-rice.jar"]
