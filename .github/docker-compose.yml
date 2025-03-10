@@ -37,3 +37,34 @@ services:
     networks:
       - olkkani_network
     restart: always
+
+  mongo:
+    container_name: lfr-mongo
+    image: mongodb/mongodb-community-server:latest
+    networks:
+      - olkkani_network
+    volumes:
+      - lfr-mongodb:/data/db
+    ports:
+      - "27017:27017"
+    restart: always
+    environment:
+      - MONGODB_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+      - MONGODB_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+      - TZ=Asia/Seoul
+
+  postgres:
+    container_name: lfr-postgres
+    image: postgres:latest
+    networks:
+      - olkkani_network
+    volumes:
+      - lfr-postgres:/var/lib/postgresql/data
+    ports:
+      - "55431:54327"
+    restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USERNAME}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=lfr
+      - TZ=Asia/Seoul
