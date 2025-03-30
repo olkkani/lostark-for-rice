@@ -1,11 +1,11 @@
 plugins {
-    kotlin("jvm") version "2.1.10"
-    kotlin("plugin.spring") version "2.1.10"
-    kotlin("plugin.jpa") version "2.1.10"
-    kotlin("kapt") version "2.1.10"
-    id("org.springframework.boot") version "3.3.5"
-    id("io.spring.dependency-management") version "1.1.6"
-    id("com.google.osdetector") version "1.7.3"
+    alias(libs.plugins.kotlin)
+    alias(libs.plugins.springBoot)
+    alias(libs.plugins.dependencyManagement)
+    alias(libs.plugins.osDetector)
+    alias(libs.plugins.kapt)
+    alias(libs.plugins.spring)
+    alias(libs.plugins.jpa)
 }
 
 group = "io.oikkani"
@@ -27,47 +27,45 @@ repositories {
     mavenCentral()
 }
 
-val coroutinesVersion = "1.10.1"
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-web") { exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat") }
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-data-mongodb")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    implementation("org.springframework.boot:spring-boot-starter-quartz")
-    implementation("org.springframework.boot:spring-boot-starter-undertow")
-    implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.18.2")
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions:1.2.3")
-    implementation("com.github.f4b6a3:tsid-creator:5.2.6")
-    implementation("org.postgresql:postgresql")
-    implementation("io.hypersistence:hypersistence-utils-hibernate-60:3.9.0")
-    implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.10.0")
-    implementation("io.kotest.extensions:kotest-extensions-spring:1.3.0")
-    implementation("org.apache.commons:commons-text:1.13.0")
+    // Spring
+    implementation(libs.bundles.spring) { exclude(group = "org.springframework.boot", module = "spring-boot-starter-tomcat") }
     kapt("org.springframework.boot:spring-boot-configuration-processor")
-    implementation("io.github.oshai:kotlin-logging:7.0.0")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
-    implementation(kotlin("reflect"))
-    runtimeOnly("com.h2database:h2")
+    implementation(libs.spring.quartz)
+    developmentOnly(libs.spring.devtools)
+    // DB
+    implementation(libs.mongodb)
+    implementation(libs.postgresql)
+    implementation(libs.hibernate.utils)
+
+    // Test and Logging
+    implementation(libs.kotlin.logging)
+    developmentOnly(libs.embed.mongo)
+    testImplementation(libs.bundles.spring.test)
+    testImplementation(libs.kotest.junit.runner)
+    testImplementation(libs.reactor.test)
+    testImplementation(libs.kotest.extensions.spring)
+    testImplementation(libs.junit.kotlin)
+    testRuntimeOnly(libs.junit.launcher)
+    runtimeOnly(libs.h2)
+
+    // the other
+    implementation(libs.jackson.kotlin)
+    implementation(libs.reactor.kotlin.extensions)
+    implementation(libs.tsid.creator)
+    implementation(libs.p6spy)
+    implementation(libs.commons.text)
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.reactor)
+    implementation(libs.reflect.kotlin)
+
     if (osdetector.arch.equals("aarch_64")) {
-        implementation("io.netty:netty-resolver-dns-native-macos:4.1.115.Final") {
+        implementation(libs.dns.native.mac) {
             artifact {
                 classifier = "osx-aarch_64"
             }
         }
     }
-    developmentOnly("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:4.18.0")
-    testImplementation("de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x:4.18.0")
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
-    testImplementation("io.kotest:kotest-runner-junit5-jvm:5.9.1")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("io.projectreactor:reactor-test")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit5:1.9.25")
-    testRuntimeOnly("com.h2database:h2")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.11.3")
 }
 val generated = file("build/generated/kapt/main/kotlin")
 sourceSets {
