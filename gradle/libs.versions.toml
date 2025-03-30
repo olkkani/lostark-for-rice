@@ -1,0 +1,69 @@
+[versions]
+# Plugin versions
+kotlin = "2.1.20"
+springBoot = "3.4.4"
+dependencyManagement = "1.1.7"
+osDetector = "1.7.3"
+coroutines = "1.10.1"
+
+# Library versions
+jacksonKotlin = "2.18.2"
+tsidCreator = "5.2.6"
+hypersistenceUtils = "3.9.0"
+p6spy = "1.10.0"
+kotestExtensionsSpring = "1.3.0"
+junitLauncher = "1.11.3"
+kotest = "5.9.1"
+
+[libraries]
+# Spring
+spring-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springBoot" }
+spring-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "springBoot" }
+spring-config-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "springBoot"}
+spring-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
+spring-quartz = { module = "org.springframework.boot:spring-boot-starter-quartz", version.ref = "springBoot" }
+spring-undertow = { module = "org.springframework.boot:spring-boot-starter-undertow", version.ref = "springBoot" }
+spring-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "springBoot" }
+spring-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "springBoot"}
+# DB
+mongodb = { module = "org.springframework.boot:spring-boot-starter-data-mongodb", version.ref = "springBoot" }
+spring-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springBoot" }
+postgresql = { module = "org.postgresql:postgresql", version = "42.7.5"}
+hibernate-utils = { module = "io.hypersistence:hypersistence-utils-hibernate-60", version.ref = "hypersistenceUtils" }
+
+# Test and logging
+spring-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springBoot" }
+kotlin-logging = { module = "io.github.oshai:kotlin-logging", version = "7.0.0" }
+p6spy = { module = "com.github.gavlyukovskiy:p6spy-spring-boot-starter", version.ref = "p6spy" }
+kotest-junit-runner = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
+kotest-extensions-spring = { module = "io.kotest.extensions:kotest-extensions-spring", version.ref = "kotestExtensionsSpring" }
+junit-kotlin = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version = "1.9.25"}
+junit-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitLauncher" }
+spring-security-test = { module = "org.springframework.security:spring-security-test", version = "6.4.4"}
+embed-mongo = { module = "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x", version = "4.20.0" }
+h2 = { module = "com.h2database:h2", version = "2.3.232" }
+reactor-test = { module = "io.projectreactor:reactor-test", version = "3.7.4" }
+
+# Other
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines"}
+coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "coroutines"}
+reactor-kotlin-extensions = { module = "io.projectreactor.kotlin:reactor-kotlin-extensions", version = "1.2.3" }
+tsid-creator = { module = "com.github.f4b6a3:tsid-creator", version.ref = "tsidCreator" }
+commons-text = { module = "org.apache.commons:commons-text", version = "1.13.0" }
+jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jacksonKotlin" }
+dns-native-mac = { module = "io.netty:netty-resolver-dns-native-macos", version = "4.1.115.Final"}
+reflect-kotlin = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin"}
+
+[bundles]
+spring = ["spring-web", "spring-config-processor", "spring-jpa", "spring-actuator", "spring-security", "spring-undertow", "spring-webflux"]
+spring-test = ["spring-test", "spring-security-test"]
+
+[plugins]
+# Kotlin and Spring plugins
+kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+springBoot = { id = "org.springframework.boot", version.ref = "springBoot" }
+dependencyManagement = { id = "io.spring.dependency-management", version.ref = "dependencyManagement" }
+osDetector = { id = "com.google.osdetector", version.ref = "osDetector" }
+kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
