@@ -6,7 +6,7 @@ import io.olkkani.lfr.dao.toRequest
 import io.olkkani.lfr.dto.extractPrices
 import io.olkkani.lfr.dto.toTodayItemPrices
 import io.olkkani.lfr.entity.jpa.AuctionPriceIndex
-import io.olkkani.lfr.entity.mongo.PriceRecord
+import io.olkkani.lfr.entity.mongo.TodayPriceGap
 import io.olkkani.lfr.entity.mongo.RecentPriceIndexTrend
 import io.olkkani.lfr.repository.jpa.AuctionPriceIndexRepo
 import io.olkkani.lfr.repository.mongo.RecentPriceIndexTrendMongoRepo
@@ -121,7 +121,7 @@ class LostarkAuctionScheduler(
                         } ?: run {
                         // 오늘자 데이터가 없다면 오늘자 기록을 새로 추가
                         trend.priceRecords.add(
-                            PriceRecord(
+                            TodayPriceGap(
                                 date = today,
                                 price = todayIndex.closePrice,
                                 prevGapPrice = prevGep,
@@ -138,7 +138,7 @@ class LostarkAuctionScheduler(
                         RecentPriceIndexTrend(
                             itemCode = gem.itemCode,
                             priceRecords = mutableListOf(
-                                PriceRecord(
+                                TodayPriceGap(
                                     date = today,
                                     price = todayIndex.closePrice,
                                     prevGapPrice = prevGep,

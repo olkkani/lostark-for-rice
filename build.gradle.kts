@@ -40,7 +40,7 @@ dependencies {
 
     // Test and Logging
     implementation(libs.kotlin.logging)
-    developmentOnly(libs.embed.mongo)
+    testImplementation(libs.embed.mongo)
     testImplementation(libs.bundles.spring.test)
     testImplementation(libs.kotest.junit.runner)
     testImplementation(libs.reactor.test)

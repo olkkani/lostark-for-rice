@@ -2,12 +2,12 @@ package io.olkkani.lfr.repository.mongo
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
+import io.olkkani.lfr.entity.mongo.TodayPriceGap
 import io.olkkani.lfr.entity.mongo.RecentPriceIndexTrend
-import io.olkkani.lfr.entity.mongo.PriceRecord
 import io.olkkani.lfr.entity.mongo.toResponse
 import java.time.LocalDate
 
-class IndexTrendDTOTest : DescribeSpec() {
+class RecentIndexTrendDTOTest : DescribeSpec() {
 
     init {
         this.describe("DTOSortTest"){
@@ -20,7 +20,7 @@ class IndexTrendDTOTest : DescribeSpec() {
                 numbers.shuffle()
 
                 numbers.forEach { number ->
-                    indexTrend.priceRecords.add(PriceRecord(
+                    indexTrend.priceRecords.add(TodayPriceGap(
                         date = LocalDate.now().minusDays(number.toLong()),
                         price = number,
                         prevGapPrice = number,

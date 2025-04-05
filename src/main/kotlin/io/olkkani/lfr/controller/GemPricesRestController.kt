@@ -4,7 +4,7 @@ import io.olkkani.lfr.dto.CandleChartResponse
 import io.olkkani.lfr.dto.ItemPreview
 import io.olkkani.lfr.entity.jpa.toChartResponse
 import io.olkkani.lfr.entity.jpa.toPreviewResponse
-import io.olkkani.lfr.entity.mongo.PriceRecord
+import io.olkkani.lfr.entity.mongo.TodayPriceGap
 import io.olkkani.lfr.entity.mongo.toResponse
 import io.olkkani.lfr.service.GemPriceService
 import org.springframework.http.ResponseEntity
@@ -33,7 +33,7 @@ class GemPricesRestController(
     }
 
     @GetMapping("/{itemCode}/trend")
-    fun getPrevIndexTrendByItemCode(@PathVariable itemCode: Int): ResponseEntity<List<PriceRecord>> {
+    fun getPrevIndexTrendByItemCode(@PathVariable itemCode: Int): ResponseEntity<List<TodayPriceGap>> {
         return ResponseEntity.ok().body(
             service.getPrevTenDaysIndexTrendByItemCode(itemCode).toResponse()
         )

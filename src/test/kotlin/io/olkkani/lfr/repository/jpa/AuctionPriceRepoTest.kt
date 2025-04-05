@@ -8,20 +8,17 @@ import io.olkkani.lfr.entity.jpa.AuctionPriceIndex
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
-@ActiveProfiles("test")
 @DataJpaTest
-class ItemPriceIndexRepositoryTest : DescribeSpec() {
+@ActiveProfiles("test")
+class AuctionPriceRepoTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
     @Autowired
     private lateinit var repository: AuctionPriceIndexRepo
 
     init {
-
-        @Transactional
         this.describe("Transactional Update") {
             context("가져온 값의 Close Price 를 2000으로 변경하면") {
                 it("저장하지 않고 새롭게 값을 가져왔을 때 값이 변경되어있음") {

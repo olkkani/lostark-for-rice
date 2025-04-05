@@ -6,14 +6,14 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDate
 
 
-@Document(collection = "RecentPriceIndexTrend")
+@Document(collection = "recentPriceIndexTrend")
 class RecentPriceIndexTrend(
     @Id
     val id: ObjectId? = null,
     val itemCode: Int,
-    var priceRecords: MutableList<PriceRecord> = mutableListOf<PriceRecord>(),
+    var priceRecords: MutableList<TodayPriceGap> = mutableListOf<TodayPriceGap>(),
 )
-class PriceRecord (
+class TodayPriceGap (
     val date: LocalDate,
     var price: Int,
     var prevGapPrice: Int,
@@ -22,6 +22,6 @@ class PriceRecord (
     var pairGapPriceRate: Double,
 )
 
-fun RecentPriceIndexTrend.toResponse(): List<PriceRecord> {
+fun RecentPriceIndexTrend.toResponse(): List<TodayPriceGap> {
     return priceRecords.sortedByDescending { it.date }
 }

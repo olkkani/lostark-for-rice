@@ -61,7 +61,6 @@ class JpaConfig (
     mongoTemplateRef = "mongoTemplate"
 )
 class MongoConfig {
-
     @Bean
     fun mongoTemplate(
         mongoDbFactory: MongoDatabaseFactory,

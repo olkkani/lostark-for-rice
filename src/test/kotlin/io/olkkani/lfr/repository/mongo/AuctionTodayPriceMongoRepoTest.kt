@@ -6,9 +6,9 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.olkkani.lfr.LostarkForRiceApplication
-import io.olkkani.lfr.entity.mongo.RecentPriceIndexTrend
-import io.olkkani.lfr.entity.mongo.PriceRecord
 import io.olkkani.lfr.entity.mongo.AuctionTodayPrice
+import io.olkkani.lfr.entity.mongo.TodayPriceGap
+import io.olkkani.lfr.entity.mongo.RecentPriceIndexTrend
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.test.context.ActiveProfiles
@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 @ActiveProfiles("test")
 @DataMongoTest
 @ContextConfiguration(classes = [LostarkForRiceApplication::class])
-class TodayItemPriceRepositoryTest : DescribeSpec() {
+class AuctionTodayPriceMongoRepoTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
     @Autowired
@@ -123,10 +123,10 @@ class TodayItemPriceRepositoryTest : DescribeSpec() {
             val sampleIndexTrend = mutableListOf<RecentPriceIndexTrend>()
 
             for ( j in 0..3 ) {
-                val samplePriceRecord = mutableListOf<PriceRecord>()
+                val samplePriceRecord = mutableListOf<TodayPriceGap>()
                 for (i in 0..9) {
                     samplePriceRecord.add(
-                        PriceRecord(
+                        TodayPriceGap(
                             date = today.minusDays(i.toLong()),
                             price = i * 1000,
                             prevGapPrice = i * 1000,
