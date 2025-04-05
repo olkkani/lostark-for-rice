@@ -1,26 +1,26 @@
 package io.olkkani.lfr.service
 
-import io.olkkani.lfr.entity.jpa.ItemPriceIndex
-import io.olkkani.lfr.entity.mongo.ItemPriceIndexTrend
-import io.olkkani.lfr.repository.jpa.ItemPriceIndexRepository
-import io.olkkani.lfr.repository.mongo.ItemPriceIndexTrendRepository
+import io.olkkani.lfr.entity.jpa.AuctionPriceIndex
+import io.olkkani.lfr.entity.mongo.RecentPriceIndexTrend
+import io.olkkani.lfr.repository.jpa.AuctionPriceIndexRepo
+import io.olkkani.lfr.repository.mongo.RecentPriceIndexTrendMongoRepo
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
 @Service
 class GemPriceServiceImpl(
-    private val indexRepository: ItemPriceIndexRepository,
-    private val indexTrendRepository: ItemPriceIndexTrendRepository,
+    private val indexRepository: AuctionPriceIndexRepo,
+    private val indexTrendRepository: RecentPriceIndexTrendMongoRepo,
 ) : GemPriceService {
-    override fun getAllKindsTodayPrice(): List<ItemPriceIndex> {
+    override fun getAllKindsTodayPrice(): List<AuctionPriceIndex> {
         return indexRepository.findAllByRecordedDate(LocalDate.now())
     }
 
-    override fun getPriceIndexByItemCode(itemCode: Int): List<ItemPriceIndex> {
+    override fun getPriceIndexByItemCode(itemCode: Int): List<AuctionPriceIndex> {
         return indexRepository.findAllByItemCodeOrderByRecordedDateAsc(itemCode)
     }
 
-    override fun getPrevTenDaysIndexTrendByItemCode(itemCode: Int): ItemPriceIndexTrend {
-        return indexTrendRepository.findByItemCode(itemCode) ?: ItemPriceIndexTrend(itemCode = itemCode)
+    override fun getPrevTenDaysIndexTrendByItemCode(itemCode: Int): RecentPriceIndexTrend {
+        return indexTrendRepository.findByItemCode(itemCode) ?: RecentPriceIndexTrend(itemCode = itemCode)
     }
 }

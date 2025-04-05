@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Profile
 
 @Configuration
 @Profile("prod")
-class AuctionQuartzTrigger {
+class QuartzTrigger {
     @Bean
     fun todayOpeningJobDetail(): JobDetail {
         return JobBuilder.newJob(TodayOpeningJob::class.java)
@@ -20,14 +20,6 @@ class AuctionQuartzTrigger {
     fun todayFetchPricesJobDetail(): JobDetail {
         return JobBuilder.newJob(TodayFetchPricesJob::class.java)
             .withIdentity("TodayFetchPricesJob")
-            .storeDurably()
-            .build()
-    }
-
-    @Bean
-    fun todayClosingJobDetail(): JobDetail {
-        return JobBuilder.newJob(TodayClosingJob::class.java)
-            .withIdentity("TodayClosingJob")
             .storeDurably()
             .build()
     }
@@ -51,7 +43,15 @@ class AuctionQuartzTrigger {
     fun fetchPriceTriggerWed(): Trigger =
         TriggerBuilder.newTrigger()
             .withIdentity("trigger-wednesday-every-fifteen-minutes-without-maintenance-time, fetch-prices")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 */15 1-5,10-23 ? * WED"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("0 */15 1-5,11-23 ? * WED"))
+            .forJob(todayFetchPricesJobDetail())
+            .build()
+
+    @Bean
+    fun fetchPriceTriggerWedOpenSever(): Trigger =
+        TriggerBuilder.newTrigger()
+            .withIdentity("trigger-wednesday-every-fifteen-minutes-without-maintenance-time, fetch-prices")
+            .withSchedule(CronScheduleBuilder.cronSchedule("1 */15 10-11 ? * WED"))
             .forJob(todayFetchPricesJobDetail())
             .build()
 
@@ -60,7 +60,7 @@ class AuctionQuartzTrigger {
         TriggerBuilder.newTrigger()
             .withIdentity("trigger-day-last-one-minute")
             .withSchedule(CronScheduleBuilder.cronSchedule("0 59 23 ? * *"))
-            .forJob(todayClosingJobDetail())
+            .forJob(todayFetchPricesJobDetail())
             .build()
 
     @Bean

@@ -6,9 +6,9 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.olkkani.lfr.LostarkForRiceApplication
-import io.olkkani.lfr.entity.mongo.ItemPriceIndexTrend
+import io.olkkani.lfr.entity.mongo.RecentPriceIndexTrend
 import io.olkkani.lfr.entity.mongo.PriceRecord
-import io.olkkani.lfr.entity.mongo.TodayItemPrice
+import io.olkkani.lfr.entity.mongo.AuctionTodayPrice
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.test.context.ActiveProfiles
@@ -26,25 +26,25 @@ class TodayItemPriceRepositoryTest : DescribeSpec() {
     private lateinit var repository: TodayItemPriceRepository
 
     @Autowired
-    private lateinit var indexTrendRepository: ItemPriceIndexTrendRepository
+    private lateinit var indexTrendRepository: RecentPriceIndexTrendMongoRepo
 
     init {
         this.describe("데이터 중복 방지 삽입 테스트") {
             context("10개의 값이 이미 존재하는 상태에서 중복되는 값 5개 새로운 값 5개를 추가하면") {
-                val todayPrices = mutableListOf<TodayItemPrice>()
+                val todayPrices = mutableListOf<AuctionTodayPrice>()
                 val fixedTime = LocalDateTime.of(2025, 1, 1, 10, 10, 10)
                 val itemCode = 1
                 // 기존 데이터 추가
                 for (i in 1..5) {
                     todayPrices.add(
-                        TodayItemPrice(
+                        AuctionTodayPrice(
                             itemCode = itemCode,
                             endDate = fixedTime.plusSeconds(i.toLong()),
                             price = i * 1000,
                         )
                     )
                     todayPrices.add(
-                        TodayItemPrice(
+                        AuctionTodayPrice(
                             itemCode = itemCode + 1,
                             endDate = fixedTime.plusSeconds(i.toLong()),
                             price = i * 1000,
@@ -56,14 +56,14 @@ class TodayItemPriceRepositoryTest : DescribeSpec() {
                 // 중복된 값과 새로운 값을 포함하여 삽입
                 for (i in 1..5) {
                     todayPrices.add(
-                        TodayItemPrice(
+                        AuctionTodayPrice(
                             itemCode = itemCode,
                             endDate = fixedTime.plusSeconds(i.toLong()),
                             price = i * 2000,
                         )
                     )
                     todayPrices.add(
-                        TodayItemPrice(
+                        AuctionTodayPrice(
                             itemCode = itemCode + 2,
                             endDate = fixedTime.plusSeconds(i.toLong()),
                             price = i * 1000,
@@ -85,20 +85,20 @@ class TodayItemPriceRepositoryTest : DescribeSpec() {
         }
         this.describe("특정 itemCode로 조회 테스트") {
             context("itemCode가 10인 todayPrices 를 가져오면") {
-                val todayPrices = mutableListOf<TodayItemPrice>()
+                val todayPrices = mutableListOf<AuctionTodayPrice>()
                 val fixedTime = LocalDateTime.of(2025, 1, 1, 10, 10, 10)
                 val itemCode = 10
                 // 기존 데이터 추가
                 for (i in 1..5) {
                     todayPrices.add(
-                        TodayItemPrice(
+                        AuctionTodayPrice(
                             itemCode = itemCode,
                             endDate = fixedTime.plusSeconds(i.toLong()),
                             price = i * 1000,
                         )
                     )
                     todayPrices.add(
-                        TodayItemPrice(
+                        AuctionTodayPrice(
                             itemCode = itemCode + 1,
                             endDate = fixedTime.plusSeconds(i.toLong()),
                             price = i * 1000,
@@ -120,7 +120,7 @@ class TodayItemPriceRepositoryTest : DescribeSpec() {
         this.describe("indexTrend Document Test") {
             val itemCode = 65021100
             val today = LocalDate.now()
-            val sampleIndexTrend = mutableListOf<ItemPriceIndexTrend>()
+            val sampleIndexTrend = mutableListOf<RecentPriceIndexTrend>()
 
             for ( j in 0..3 ) {
                 val samplePriceRecord = mutableListOf<PriceRecord>()
@@ -137,7 +137,7 @@ class TodayItemPriceRepositoryTest : DescribeSpec() {
                     )
                 }
                 sampleIndexTrend.add(
-                    ItemPriceIndexTrend(
+                    RecentPriceIndexTrend(
                         itemCode = itemCode + j,
                         priceRecords = samplePriceRecord
                     )
