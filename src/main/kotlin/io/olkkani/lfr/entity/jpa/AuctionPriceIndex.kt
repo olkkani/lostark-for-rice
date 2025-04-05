@@ -9,18 +9,18 @@ import jakarta.persistence.Id
 import java.time.LocalDate
 
 @Entity
-class ItemPriceIndex(
+class AuctionPriceIndex(
     @Id @Tsid
     val id: Long? = null,
     val itemCode: Int,
     val recordedDate: LocalDate,
-    var closePrice: Int,
     var openPrice: Int,
+    var closePrice: Int,
     var highPrice: Int,
     var lowPrice: Int,
 )
 
-fun ItemPriceIndex.toPreviewResponse() = ItemPreview(
+fun AuctionPriceIndex.toPreviewResponse() = ItemPreview(
     itemCode = itemCode,
     price = closePrice,
     highPrice = highPrice,
@@ -29,7 +29,7 @@ fun ItemPriceIndex.toPreviewResponse() = ItemPreview(
     priceChangeRate = PercentageCalculation().calc(closePrice, openPrice),
 )
 
-fun ItemPriceIndex.toChartResponse() = CandleChartResponse(
+fun AuctionPriceIndex.toChartResponse() = CandleChartResponse(
     open = openPrice,
     high = highPrice,
     low = lowPrice,

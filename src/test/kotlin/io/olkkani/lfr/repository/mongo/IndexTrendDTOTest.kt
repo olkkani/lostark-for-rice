@@ -2,7 +2,7 @@ package io.olkkani.lfr.repository.mongo
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import io.olkkani.lfr.entity.mongo.ItemPriceIndexTrend
+import io.olkkani.lfr.entity.mongo.RecentPriceIndexTrend
 import io.olkkani.lfr.entity.mongo.PriceRecord
 import io.olkkani.lfr.entity.mongo.toResponse
 import java.time.LocalDate
@@ -12,7 +12,7 @@ class IndexTrendDTOTest : DescribeSpec() {
     init {
         this.describe("DTOSortTest"){
             context("무작위 정렬로 생성된 날짜 데이터를 정렬하면"){
-                var indexTrend: ItemPriceIndexTrend = ItemPriceIndexTrend(
+                var indexTrend: RecentPriceIndexTrend = RecentPriceIndexTrend(
                     itemCode = 1
                 )
 

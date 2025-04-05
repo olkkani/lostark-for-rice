@@ -6,8 +6,8 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.time.LocalDate
 
 
-@Document(collection = "itemPriceIndexTrend")
-class ItemPriceIndexTrend(
+@Document(collection = "RecentPriceIndexTrend")
+class RecentPriceIndexTrend(
     @Id
     val id: ObjectId? = null,
     val itemCode: Int,
@@ -22,6 +22,6 @@ class PriceRecord (
     var pairGapPriceRate: Double,
 )
 
-fun ItemPriceIndexTrend.toResponse(): List<PriceRecord> {
+fun RecentPriceIndexTrend.toResponse(): List<PriceRecord> {
     return priceRecords.sortedByDescending { it.date }
 }

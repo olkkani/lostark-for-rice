@@ -3,7 +3,10 @@ package io.olkkani.lfr.util
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.olkkani.lfr.dto.AuctionRequest
 import io.olkkani.lfr.dto.AuctionResponse
+import io.olkkani.lfr.dto.MarketRequest
+import io.olkkani.lfr.dto.MarketResponse
 import kotlinx.coroutines.reactor.awaitSingle
+import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
@@ -42,5 +45,22 @@ class LostarkAPIClient(
         return fetchAuctionItems(auctionRequest)
             .subscribeOn(Schedulers.boundedElastic())
             .awaitSingle()
+    }
+    private fun fetchMarketItem(marketRequest: MarketRequest): Mono<MarketResponse> {
+        return client.post()
+            .uri("/market/items")
+            .bodyValue(marketRequest)
+            .retrieve()
+            .bodyToMono(MarketResponse::class.java)
+            .onErrorResume { error ->
+                exceptionNotification.sendErrorNotification(error.message.toString(), "fetch_market_item_error")
+                logger.error {"Error occurred: ${error.message}"}
+                Mono.empty()
+            }
+    }
+    suspend fun fetchMarketItemPriceSubscribe(marketRequest: MarketRequest): MarketResponse? {
+        return fetchMarketItem(marketRequest)
+            .subscribeOn(Schedulers.boundedElastic())
+            .awaitSingleOrNull()
     }
 }

@@ -1,7 +1,7 @@
 package io.olkkani.lfr.repository.jpa
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.olkkani.lfr.entity.jpa.ItemPriceIndex
+import io.olkkani.lfr.entity.jpa.AuctionPriceIndex
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -16,7 +16,7 @@ import java.time.LocalDate
 @DataJpaTest
 @ActiveProfiles("test")
 class ItemTodayItemPricesPriceRepositoryTestRecord @Autowired constructor(
-    private val repository: ItemPriceIndexRepository
+    private val repository: AuctionPriceIndexRepo
 ){
 
     private val logger = KotlinLogging.logger {}
@@ -24,7 +24,7 @@ class ItemTodayItemPricesPriceRepositoryTestRecord @Autowired constructor(
     @DisplayName("아이템 저장 테스트")
     fun saveItemTest() {
 //         given
-        val item = ItemPriceIndex(
+        val item = AuctionPriceIndex(
             itemCode = 65021100,
             closePrice = 11111,
             openPrice = 11000,
