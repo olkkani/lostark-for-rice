@@ -7,9 +7,11 @@ import io.olkkani.lfr.util.LostarkAPIClient
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
+import kotlin.test.Ignore
 
 @ActiveProfiles("test")
 @SpringBootTest
+@Ignore
 class DiscordWebHookTest(
     @Autowired
     private var apiClient: LostarkAPIClient

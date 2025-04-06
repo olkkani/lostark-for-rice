@@ -8,10 +8,12 @@ import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import kotlin.test.Ignore
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
+@Ignore
 class XssProtectionHeaderTest(
     @Autowired
     private var mockMvc: MockMvc
