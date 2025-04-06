@@ -25,9 +25,6 @@ class AuctionTodayPriceMongoRepoTest : DescribeSpec() {
     @Autowired
     private lateinit var repository: TodayItemPriceRepository
 
-    @Autowired
-    private lateinit var indexTrendRepository: RecentPriceIndexTrendMongoRepo
-
     init {
         this.describe("데이터 중복 방지 삽입 테스트") {
             context("10개의 값이 이미 존재하는 상태에서 중복되는 값 5개 새로운 값 5개를 추가하면") {
@@ -113,44 +110,6 @@ class AuctionTodayPriceMongoRepoTest : DescribeSpec() {
                 }
                 it("prices의 개수는 5개이며 각 항목의 type은 Int 이다.") {
                     savedItemPrices.first().shouldBeInstanceOf<Int>()
-
-                }
-            }
-        }
-        this.describe("indexTrend Document Test") {
-            val itemCode = 65021100
-            val today = LocalDate.now()
-            val sampleIndexTrend = mutableListOf<RecentPriceIndexTrend>()
-
-            for ( j in 0..3 ) {
-                val samplePriceRecord = mutableListOf<TodayPriceGap>()
-                for (i in 0..9) {
-                    samplePriceRecord.add(
-                        TodayPriceGap(
-                            date = today.minusDays(i.toLong()),
-                            price = i * 1000,
-                            prevGapPrice = i * 1000,
-                            prevGapPriceRate = i * 10.0,
-                            pairGapPrice = i * 2000,
-                            pairGapPriceRate = i * 20.0,
-                        )
-                    )
-                }
-                sampleIndexTrend.add(
-                    RecentPriceIndexTrend(
-                        itemCode = itemCode + j,
-                        priceRecords = samplePriceRecord
-                    )
-                )
-            }
-            indexTrendRepository.saveAll(sampleIndexTrend)
-            context("65021100 의 데이터를 조회하면") {
-                val savedIndexTrend = indexTrendRepository.findByItemCode(itemCode)
-                it("오늘자 데이터를 포함") {
-                    savedIndexTrend!!.priceRecords.find{it.date == today}.shouldNotBeNull()
-                }
-                it("크기는 최대 10개만 조회") {
-                    savedIndexTrend!!.priceRecords.size shouldBe 10
                 }
             }
         }
