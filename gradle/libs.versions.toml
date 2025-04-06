@@ -40,7 +40,7 @@ kotest-extensions-spring = { module = "io.kotest.extensions:kotest-extensions-sp
 junit-kotlin = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version = "1.9.25"}
 junit-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitLauncher" }
 spring-security-test = { module = "org.springframework.security:spring-security-test", version = "6.4.4"}
-embed-mongo = { module = "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x", version = "4.20.0" }
+embed-mongo = { module = "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x", version = "4.18.0" }
 h2 = { module = "com.h2database:h2", version = "2.3.232" }
 reactor-test = { module = "io.projectreactor:reactor-test", version = "3.7.4" }
 
