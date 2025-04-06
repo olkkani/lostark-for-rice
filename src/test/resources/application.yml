@@ -81,4 +81,10 @@ spring:
   data:
     mongodb:
       auto-index-creation: true
-      port: 27017
+      port: 0
+de:
+  flapdoodle:
+    mongodb:
+      embedded:
+        version: 6.0.8
+        tools-version: 100.7.47
