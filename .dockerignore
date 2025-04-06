@@ -1,6 +1,5 @@
 .gradle
 .git
 .idea
-build
 *.md
 *.log
