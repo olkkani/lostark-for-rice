@@ -26,36 +26,36 @@ class LostarkMarketScheduler(
     suspend fun fetchPriceAndUpdatePrice(isUpdateYesterdayAvgPrice: Boolean = false): Unit = coroutineScope {
         async {
             try {
-                val response = apiClient.fetchMarketItemPriceSubscribe(abidos)
+                val response = apiClient.fetchMarketItemPriceSubscribe(abidos)?.items[0]
                 if (response != null) {
                     // save today prices
                     todayPriceRepo.saveIfNotExists(response.toMarketTodayPrice())
                     // update today price index
-                    val todayPrices = todayPriceRepo.findPricesByItemCode(response.items.id).map { it.getPrice() }
+                    val todayPrices = todayPriceRepo.findPricesByItemCode(response.id).map { it.getPrice() }
                     val savedTodayPriceIndex =
-                        indexRepo.findByItemCodeAndRecordedDate(itemCode = response.items.id, recordedDate = LocalDate.now())
+                        indexRepo.findByItemCodeAndRecordedDate(itemCode = response.id, recordedDate = LocalDate.now())
                     savedTodayPriceIndex?.apply {
-                        savedTodayPriceIndex.closePrice = response.items.currentMinPrice
+                        savedTodayPriceIndex.closePrice = response.currentMinPrice
                         savedTodayPriceIndex.highPrice = todayPrices.max()
                         savedTodayPriceIndex.lowPrice = todayPrices.min()
                     }?.also {
                         indexRepo.save(it)
                     } ?: run {
                         indexRepo.save(MarketPriceIndex(
-                            itemCode = response.items.id,
+                            itemCode = response.id,
                             recordedDate = LocalDate.now(),
-                            openPrice = response.items.currentMinPrice,
+                            openPrice = response.currentMinPrice,
                             lowPrice = todayPrices.min(),
                             highPrice = todayPrices.max(),
-                            closePrice = response.items.currentMinPrice
+                            closePrice = response.currentMinPrice
                         ))
                     }
 
                     if(isUpdateYesterdayAvgPrice){
                         // add yesterday avg price
-                        val yesterdayIndex = indexRepo.findByItemCodeAndRecordedDate(itemCode = response.items.id, recordedDate = LocalDate.now().minusDays(1))
+                        val yesterdayIndex = indexRepo.findByItemCodeAndRecordedDate(itemCode = response.id, recordedDate = LocalDate.now().minusDays(1))
                         yesterdayIndex?.apply {
-                            avgPrice = response.items.yDayAvgPrice
+                            avgPrice = response.yDayAvgPrice
                         }?.also {
                             indexRepo.save(it)
                         }

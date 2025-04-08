@@ -1,5 +1,6 @@
 package io.olkkani.lfr.dto
 
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import io.olkkani.lfr.entity.jpa.MarketPriceIndex
@@ -12,26 +13,16 @@ class MarketRequest(
     var pageNo: Int = 1,
 )
 
-class MarketResponse (
-    val items: Items
+data class MarketResponse (
+   @JsonProperty("Items") val items: List<Items>
 )
-@JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
-class Items (
-    val id: Int,
-    val currentMinPrice: Int,
-    val yDayAvgPrice: Double,
-)
-
-fun MarketResponse.toMarketTodayPrice() = MarketTodayPrice(
-    itemCode = items.id,
-    price = items.currentMinPrice,
+data class Items (
+    @JsonProperty("Id") val id: Int,
+    @JsonProperty("CurrentMinPrice") val currentMinPrice: Int,
+    @JsonProperty("YDayAvgPrice") val yDayAvgPrice: Double,
 )
 
-fun MarketResponse.toMarketPriceIndex() = MarketPriceIndex(
-    itemCode = items.id,
-    recordedDate = LocalDate.now(),
-    openPrice = items.currentMinPrice,
-    closePrice = items.currentMinPrice,
-    highPrice = items.currentMinPrice,
-    lowPrice = items.currentMinPrice,
+fun Items.toMarketTodayPrice() = MarketTodayPrice(
+    itemCode = id,
+    price = currentMinPrice,
 )

@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 
 @Component
 class DiscordExceptionNotificationImpl(
-    @Value("\${webhook.url.discord:url}") private val webhookUrl: String
+    @Value("\${webhook.url.discord:must_not_empty_url}") private val webhookUrl: String
 ) : ExceptionNotification {
 
     private val webClient: WebClient = WebClient.builder().baseUrl(webhookUrl).build()

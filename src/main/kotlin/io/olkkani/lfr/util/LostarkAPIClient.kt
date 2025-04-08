@@ -17,7 +17,7 @@ import reactor.core.scheduler.Schedulers
 
 @Component
 class LostarkAPIClient(
-    @Value("\${lostark.api.key:key}") private val apiKey: String,
+    @Value("\${lostark.api.key:must_not_empty_key}") private val apiKey: String,
     private val exceptionNotification: ExceptionNotification,
 ) {
     private val logger = KotlinLogging.logger {}
@@ -48,7 +48,7 @@ class LostarkAPIClient(
     }
     private fun fetchMarketItem(marketRequest: MarketRequest): Mono<MarketResponse> {
         return client.post()
-            .uri("/market/items")
+            .uri("/markets/items")
             .bodyValue(marketRequest)
             .retrieve()
             .bodyToMono(MarketResponse::class.java)
@@ -58,6 +58,7 @@ class LostarkAPIClient(
                 Mono.empty()
             }
     }
+
     suspend fun fetchMarketItemPriceSubscribe(marketRequest: MarketRequest): MarketResponse? {
         return fetchMarketItem(marketRequest)
             .subscribeOn(Schedulers.boundedElastic())
