@@ -14,9 +14,11 @@ class MarketTodayPriceTemplateRepoImpl (
 ): MarketTodayPriceTemplateRepo {
     override fun saveIfNotExists(marketTodayPrice: MarketTodayPrice) {
         val query = Query(
-            Criteria.where("price").`is`(marketTodayPrice.price)
+            Criteria.where("itemCode").`is`(marketTodayPrice.itemCode).and("price").`is`(marketTodayPrice.price)
         )
-        if (!mongoTemplate.exists(query, MarketTodayPrice::class.java)) {
+
+        val exists = mongoTemplate.exists(query, MarketTodayPrice::class.java)
+        if(!exists) {
             mongoTemplate.insert(marketTodayPrice)
         }
     }
