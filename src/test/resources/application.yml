@@ -32,10 +32,10 @@ spring:
       on-profile: api
 lostark:
   api:
-    key: ${API_KEY}
+    key: ${API_KEY:must_not_empty_key}
 webhook:
   url:
-    discord: ${DISCORD_WEBHOOK_URL}
+    discord: ${DISCORD_WEBHOOK_URL:must_not_empty_key}
 --- # db-prod
 spring:
   config:
