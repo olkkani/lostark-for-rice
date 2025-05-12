@@ -5,7 +5,7 @@ spring:
         - common
         - db-jpa-common
         - server-local
-        - db-local
+        - persistence-local
         - db-mongo-embedded
       prod:
         - common
@@ -29,10 +29,10 @@ management:
         exclude: "*"
 lostark:
   api:
-    key: ${API_KEY}
+    key: ${API_KEY:mustnotnullapikey}
 webhook:
   url:
-    discord: ${DISCORD_WEBHOOK_URL}
+    discord: ${DISCORD_WEBHOOK_URL:mustnotnullurl}
 --- # local-server
 spring:
   config:
@@ -107,11 +107,11 @@ decorator:
   datasource:
     p6spy:
       enable-logging: false
---- # db-local
+--- # persistence-local
 spring:
   config:
     activate:
-      on-profile: db-local
+      on-profile: persistence-local
   datasource:
     url: jdbc:h2:mem:local;MODE=PostgreSQL
     username: sa
@@ -127,3 +127,6 @@ spring:
   sql:
     init:
       mode: always
+
+    # start redis config
+    

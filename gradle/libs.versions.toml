@@ -26,6 +26,7 @@ spring-undertow = { module = "org.springframework.boot:spring-boot-starter-under
 spring-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "springBoot" }
 spring-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "springBoot"}
 # DB
+spring-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis", version.ref = "springBoot"}
 mongodb = { module = "org.springframework.boot:spring-boot-starter-data-mongodb", version.ref = "springBoot" }
 spring-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springBoot" }
 postgresql = { module = "org.postgresql:postgresql", version = "42.7.5"}
@@ -44,6 +45,7 @@ spring-security-test = { module = "org.springframework.security:spring-security-
 embed-mongo = { module = "de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring3x", version = "4.18.0" }
 h2 = { module = "com.h2database:h2", version = "2.3.232" }
 reactor-test = { module = "io.projectreactor:reactor-test", version = "3.7.4" }
+embedded-redis = { module = "it.ozimov:embedded-redis", version = "0.7.3" }
 
 # Other
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines"}
@@ -56,8 +58,11 @@ dns-native-mac = { module = "io.netty:netty-resolver-dns-native-macos", version 
 reflect-kotlin = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin"}
 
 [bundles]
-spring = ["spring-web", "spring-config-processor", "spring-jpa", "spring-actuator", "spring-security", "spring-undertow", "spring-webflux"]
-spring-test = ["spring-test", "spring-security-test"]
+spring = ["spring-web", "spring-config-processor", "spring-actuator", "spring-security", "spring-undertow", "spring-webflux", "spring-quartz"]
+spring-test = ["spring-test", "spring-security-test", "kotest-extensions-spring"]
+persistence = ["spring-redis", "mongodb", "spring-jpa", "postgresql", "hibernate-utils", "tsid-creator"]
+persistence-database-embedded = ["h2", "embed-mongo", "embedded-redis"]
+test = ["kotest-junit-runner", "mockk", "reactor-test", "junit-kotlin", "junit-launcher"]
 
 [plugins]
 # Kotlin and Spring plugins
