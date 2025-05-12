@@ -31,7 +31,7 @@ mongodb = { module = "org.springframework.boot:spring-boot-starter-data-mongodb"
 spring-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springBoot" }
 postgresql = { module = "org.postgresql:postgresql", version = "42.7.5"}
 hibernate-utils = { module = "io.hypersistence:hypersistence-utils-hibernate-60", version.ref = "hypersistenceUtils" }
-
+hikaricp = { module = "com.zaxxer:HikariCP", version = "6.3.0"}
 # Test and logging
 spring-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springBoot" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version = "7.0.0" }
@@ -60,8 +60,8 @@ reflect-kotlin = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 [bundles]
 spring = ["spring-web", "spring-config-processor", "spring-actuator", "spring-security", "spring-undertow", "spring-webflux", "spring-quartz"]
 spring-test = ["spring-test", "spring-security-test", "kotest-extensions-spring"]
-persistence = ["spring-redis", "mongodb", "spring-jpa", "postgresql", "hibernate-utils", "tsid-creator"]
-persistence-database-embedded = ["h2", "embed-mongo", "embedded-redis"]
+persistence = ["mongodb", "spring-jpa", "postgresql", "hibernate-utils", "tsid-creator", "hikaricp"]
+persistence-database-embedded = ["h2", "embed-mongo"]
 test = ["kotest-junit-runner", "mockk", "reactor-test", "junit-kotlin", "junit-launcher"]
 
 [plugins]

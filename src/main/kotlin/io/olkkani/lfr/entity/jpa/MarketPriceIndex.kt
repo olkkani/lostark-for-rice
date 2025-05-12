@@ -15,5 +15,5 @@ class MarketPriceIndex (
     var closePrice: Int,
     var highPrice: Int,
     var lowPrice: Int,
-    var avgPrice: Double = 0.0,
+    var avgPrice: Float = 0F,
 )
