@@ -56,6 +56,7 @@ spring:
   config:
     activate:
       on-profile: db-local
+
   datasource:
     url: jdbc:h2:mem:local;MODE=PostgreSQL
     username: sa
@@ -73,6 +74,8 @@ spring:
   sql:
     init:
       mode: always
+  flyway:
+    enabled: false
 --- # db-local-mongodb
 spring:
   config:
