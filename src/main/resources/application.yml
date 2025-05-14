@@ -3,15 +3,15 @@ spring:
     group:
       local:
         - common
-        - db-jpa-common
-        - server-local
+        - persistence-common
         - persistence-local
+        - server-local
         - db-mongo-embedded
       prod:
         - common
-        - db-jpa-common
+        - persistence-common
+        - persistence-prod
         - server-prod
-        - db-prod
         - db-mongo-prod
 --- # common
 spring:
@@ -29,10 +29,10 @@ management:
         exclude: "*"
 lostark:
   api:
-    key: ${API_KEY:mustnotnullapikey}
+    key: ${API_KEY:must_not_null_apikey}
 webhook:
   url:
-    discord: ${DISCORD_WEBHOOK_URL:mustnotnullurl}
+    discord: ${DISCORD_WEBHOOK_URL:must_not_null_url}
 --- # local-server
 spring:
   config:
@@ -58,7 +58,7 @@ server:
 spring:
   config:
     activate:
-      on-profile: db-jpa-common
+      on-profile: persistence-common
   jpa:
     properties:
       hibernate: # jpaEntityManagerFactory 에서 수동으로 DataSource 생성하고 해당 값을 가져오기 때문에 key naming 이 다름
@@ -88,30 +88,23 @@ spring:
     mongodb:
       uri: ${DB_MONGO_URL}
       auto-index-creation: true
---- # db-prod
-spring:
-  config:
-    activate:
-      on-profile: db-prod
-  datasource:
-    url: ${DB_CONNECTION_URL}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
-decorator:
-  datasource:
-    p6spy:
-      enable-logging: false
+
 --- # persistence-local
 spring:
   config:
     activate:
       on-profile: persistence-local
+  jpa:
+    generate-ddl: true
+    hibernate:
+          ddl-auto: create-drop
+  #    generate-ddl: false
+  flyway:
+    enabled: true # 명시적 선언
+    baseline-on-migrate: true # springboot 2 이상에서 안되는 문제가 있어. 명시적 선언
+    locations: classpath:db/migration
+    baseline-version: 1
+  #    locations: classpath:db/migration,classpath:db/seed
   datasource:
     url: jdbc:h2:mem:local;MODE=PostgreSQL
     username: sa
@@ -120,13 +113,29 @@ spring:
     console:
       enabled: true
       path: /h2-console
+--- # db-prod
+spring:
+  config:
+    activate:
+      on-profile: persistence-prod
+
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    defer-datasource-initialization: true
-  sql:
-    init:
-      mode: always
-
-    # start redis config
-    
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: false
+  flyway:
+    enabled: true # 명시적 선언
+    baseline-on-migrate: true # springboot 2 이상에서 안되는 문제가 있어. 명시적 선언
+    locations: classpath:db/migration
+    baseline-version: 1
+  datasource:
+    url: ${DB_CONNECTION_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: false

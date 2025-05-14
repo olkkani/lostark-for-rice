@@ -2,6 +2,7 @@ package io.olkkani.lfr.util
 
 import io.kotest.common.runBlocking
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.floats.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.mockk
@@ -29,6 +30,7 @@ class LostarkAPIClientTest(
                         if (apiKey != "must_not_empty_key") {
                             response shouldNotBe null
                             response!!.id shouldBe 6861012
+                            response.yDayAvgPrice shouldBeGreaterThan 0F
                         }
                     }
                 }
