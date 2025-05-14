@@ -118,7 +118,6 @@ spring:
   config:
     activate:
       on-profile: persistence-prod
-
   jpa:
     hibernate:
       ddl-auto: validate
