@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.olkkani.lfr.dao.GemDAO
-import io.olkkani.lfr.entity.jpa.AuctionPriceIndex
+import io.olkkani.lfr.entity.jpa.AuctionItemOhlcPrice
 import io.olkkani.lfr.repository.jpa.AuctionPriceIndexRepo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -25,7 +25,7 @@ class SchedulerJobTest() : DescribeSpec() {
     init {
         this.describe("price index trend test") {
             val today = LocalDate.now()
-            val sampleIndex = mutableListOf<AuctionPriceIndex>()
+            val sampleIndex = mutableListOf<AuctionItemOhlcPrice>()
             val gemDAO = listOf(
             GemDAO(itemCode = 65021100, pairItemCode = 65022100, name = "10레벨 멸화의 보석"),
             GemDAO(itemCode = 65022100, pairItemCode = 65021100, name = "10레벨 홍염의 보석"),
@@ -38,7 +38,7 @@ class SchedulerJobTest() : DescribeSpec() {
             gemDAO.forEach { gem ->
                 for (i in 0..1) {
                     sampleIndex.add(
-                        AuctionPriceIndex(
+                        AuctionItemOhlcPrice(
                             itemCode = gem.itemCode,
                             closePrice = 1000 * (i + 1),
                             recordedDate = today.minusDays(i.toLong()),

@@ -1,9 +1,7 @@
 package io.olkkani.lfr.controller
 
 import io.olkkani.lfr.dto.CandleChartResponse
-import io.olkkani.lfr.dto.ItemPreview
-import io.olkkani.lfr.entity.jpa.toChartResponse
-import io.olkkani.lfr.entity.jpa.toPreviewResponse
+import io.olkkani.lfr.dto.ItemPreviewDTO
 import io.olkkani.lfr.entity.mongo.TodayPriceGap
 import io.olkkani.lfr.entity.mongo.toResponse
 import io.olkkani.lfr.service.GemPriceService
@@ -21,7 +19,7 @@ class GemPricesRestController(
 ) {
 
     @GetMapping("/prices/today")
-    fun getAllKindsTodayPrice(): ResponseEntity<List<ItemPreview>> {
+    fun getAllKindsTodayPrice(): ResponseEntity<List<ItemPreviewDTO>> {
         return ResponseEntity.ok().body(service.getAllKindsTodayPrice().map { it.toPreviewResponse()  })
     }
 

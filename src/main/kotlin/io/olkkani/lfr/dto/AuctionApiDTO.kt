@@ -17,7 +17,9 @@ data class AuctionRequest(
 
 data class AuctionResponse(
     @JsonProperty("Items")val items: List<AuctionItem>
-)
+){
+
+}
 data class AuctionItem(
     @JsonProperty("AuctionInfo")val auctionInfo: AuctionInfo,
 )

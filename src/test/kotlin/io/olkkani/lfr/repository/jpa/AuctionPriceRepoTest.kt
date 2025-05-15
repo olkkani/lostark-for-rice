@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.olkkani.lfr.entity.jpa.AuctionPriceIndex
+import io.olkkani.lfr.entity.jpa.AuctionItemOhlcPrice
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
 import org.springframework.test.context.ActiveProfiles
@@ -25,7 +25,7 @@ class AuctionPriceRepoTest : DescribeSpec() {
                     val itemCode = 1
                     val today = LocalDate.now()
 
-                    val priceIndex = AuctionPriceIndex(
+                    val priceIndex = AuctionItemOhlcPrice(
                         itemCode = itemCode,
                         recordedDate = today,
                         openPrice = 1000,
@@ -61,10 +61,10 @@ class AuctionPriceRepoTest : DescribeSpec() {
                     savedPriceIndex shouldBe null
                 }
                 it("값이 존재하지 않아 생성된 값은 DB에 존재") {
-                    var createdPriceIndex: AuctionPriceIndex? = null
+                    var createdPriceIndex: AuctionItemOhlcPrice? = null
                     if (savedPriceIndex == null) {
                         repository.save(
-                            AuctionPriceIndex(
+                            AuctionItemOhlcPrice(
                                 itemCode = itemCode, recordedDate = today,
                                 closePrice = 1000,
                                 openPrice = 1000,

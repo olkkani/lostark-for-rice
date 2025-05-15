@@ -6,20 +6,19 @@ import io.olkkani.lfr.dto.MarketRequest
 class FusionMaterialDAO(
     val categoryCode: Int,
     val name: String,
-)
+) {
+    fun toRequest() = MarketRequest(
+        categoryCode = categoryCode,
+        itemName = name,
+    )
+}
 
-fun FusionMaterialDAO.toRequest() = MarketRequest(
-    categoryCode = categoryCode,
-    itemName = name,
-)
-
-
-class GemDAO (
+class GemDAO(
     val itemCode: Int,
     val pairItemCode: Int,
     val name: String,
-)
-
-fun GemDAO.toRequest() = AuctionRequest(
-    itemName = name,
-)
+){
+   fun toRequest() = AuctionRequest(
+       itemName = name,
+   )
+}

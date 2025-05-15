@@ -16,9 +16,9 @@ data class Items (
     @JsonProperty("Id") val id: Int,
     @JsonProperty("CurrentMinPrice") val currentMinPrice: Int,
     @JsonProperty("YDayAvgPrice") val yDayAvgPrice: Float,
-)
-
-fun Items.toMarketTodayPrice() = MarketTodayPrice(
-    itemCode = id,
-    price = currentMinPrice,
-)
+){
+   fun toMarketTodayPrice() = MarketTodayPrice(
+       itemCode = id,
+       price = currentMinPrice,
+   )
+}

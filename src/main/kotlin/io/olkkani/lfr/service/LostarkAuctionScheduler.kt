@@ -2,12 +2,11 @@ package io.olkkani.lfr.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.olkkani.lfr.dao.GemDAO
-import io.olkkani.lfr.dao.toRequest
 import io.olkkani.lfr.dto.extractPrices
 import io.olkkani.lfr.dto.toTodayItemPrices
-import io.olkkani.lfr.entity.jpa.AuctionPriceIndex
-import io.olkkani.lfr.entity.mongo.TodayPriceGap
+import io.olkkani.lfr.entity.jpa.AuctionItemOhlcPrice
 import io.olkkani.lfr.entity.mongo.RecentPriceIndexTrend
+import io.olkkani.lfr.entity.mongo.TodayPriceGap
 import io.olkkani.lfr.repository.jpa.AuctionPriceIndexRepo
 import io.olkkani.lfr.repository.mongo.RecentPriceIndexTrendMongoRepo
 import io.olkkani.lfr.repository.mongo.TodayItemPriceRepository
@@ -65,7 +64,7 @@ class LostarkAuctionScheduler(
                             indexRepository.save(it)
                         }?: run {
                             indexRepository.save(
-                                AuctionPriceIndex(
+                                AuctionItemOhlcPrice(
                                     itemCode = gem.itemCode,
                                     recordedDate = today,
                                     openPrice = todayIqrCal.getMin(),

@@ -2,8 +2,7 @@ package io.olkkani.lfr.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.olkkani.lfr.dto.MarketRequest
-import io.olkkani.lfr.dto.toMarketTodayPrice
-import io.olkkani.lfr.entity.jpa.MarketPriceIndex
+import io.olkkani.lfr.entity.jpa.MarketItemOhlcPrice
 import io.olkkani.lfr.repository.jpa.MarketPriceIndexRepo
 import io.olkkani.lfr.repository.mongo.MarketTodayPriceMongoRepo
 import io.olkkani.lfr.util.LostarkAPIClient
@@ -56,7 +55,7 @@ class LostarkMarketScheduler(
             lowPrice = todayPrices.min()
         } ?: run {
             indexRepo.save(
-                MarketPriceIndex(
+                MarketItemOhlcPrice(
                     itemCode = itemCode,
                     recordedDate = today,
                     openPrice = currentPrice,

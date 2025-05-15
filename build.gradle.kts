@@ -45,13 +45,6 @@ dependencies {
     jooqCodegen(libs.postgresql)
     jooqCodegen(libs.jooq.codgen)
 
-//    val jooqVersion = "3.20.3" // jooq {} 블록에 설정된 버전과 일치시킵니다.
-//    jooqGenerator("org.jooq:jooq:$jooqVersion")
-//    jooqGenerator("org.jooq:jooq-meta:$jooqVersion")
-//    jooqGenerator("org.jooq:jooq-meta-extensions:$jooqVersion")
-//
-//    jooqGenerator(libs.bundles.persistence)
-//    jooqGenerator(libs.h2)
     // Test and Logging
     implementation(libs.kotlin.logging)
     implementation(libs.p6spy)
