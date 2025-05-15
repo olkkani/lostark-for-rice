@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.kapt)
     alias(libs.plugins.spring)
     alias(libs.plugins.jpa)
+    alias(libs.plugins.jooq.monosoul)
 }
 
 group = "io.oikkani"
@@ -40,6 +41,9 @@ dependencies {
     // DB
     implementation(libs.bundles.persistence)
     implementation(libs.bundles.persistence.database)
+    implementation(libs.jooq)
+    jooqCodegen(libs.postgresql)
+    jooqCodegen(libs.jooq.codgen)
 
 //    val jooqVersion = "3.20.3" // jooq {} 블록에 설정된 버전과 일치시킵니다.
 //    jooqGenerator("org.jooq:jooq:$jooqVersion")
@@ -55,6 +59,7 @@ dependencies {
     testImplementation(libs.bundles.spring.test)
     developmentOnly(libs.bundles.persistence.database.embedded)
     testImplementation(libs.bundles.persistence.database.embedded)
+    testImplementation(libs.bundles.testcontainer)
     // the other
     implementation(libs.jackson.kotlin)
     implementation(libs.reactor.kotlin.extensions)
@@ -72,16 +77,19 @@ dependencies {
     }
 }
 val generated = file("build/generated/kapt/main/kotlin")
-//val jooqGenerated = file("build/generated-src/jooq/main")
+val jooqGeneratedOutput = project.layout.buildDirectory.dir("generated-jooq") // 경로 변수화
+
 sourceSets {
     main {
-        kotlin.srcDirs += generated
-//        kotlin.srcDirs += jooqGenerated
+        kotlin.srcDirs(generated)
+        kotlin.srcDirs(jooqGeneratedOutput)
     }
 }
+
 tasks.named("clean") {
     doLast {
         generated.deleteRecursively()
+        jooqGeneratedOutput.get().asFile.deleteRecursively()
     }
 }
 kotlin {
@@ -93,56 +101,19 @@ tasks.withType<Test>().configureEach {
     useJUnitPlatform()
     jvmArgs("-Xshare:off")
 }
-//jooq {
-//    version.set("3.20.3")  // default (can be omitted), libs.versions jooq 과 버전 통일
-//    edition.set(nu.studer.gradle.jooq.JooqEdition.OSS)  // default (can be omitted)
-//
-//    configurations {
-//        create("main") {
-//            generateSchemaSourceOnCompilation.set(false)
-//
-//            jooqConfiguration.apply {
-//                logging = org.jooq.meta.jaxb.Logging.WARN
-//
-//                jdbc = null // JDBC 연결을 사용하지 않음 (JPA 엔티티로부터 생성)
-//
-//                generator.apply {
-//                    name = "org.jooq.codegen.KotlinGenerator" // Kotlin 코드 생성
-//                    database.apply {
-//                        name = "org.jooq.meta.extensions.jpa.JPADatabase"
-//                        properties = listOf(
-//                            org.jooq.meta.jaxb.Property().apply {
-//                                key = "packages"
-//                                value = "io.olkkani.lfr.entity.jpa" // JPA 엔티티 패키지 경로
-//                            },
-//                            org.jooq.meta.jaxb.Property().apply {
-//                                key = "useAttributeConverters"
-//                                value = "true"
-//                            },
-//                            org.jooq.meta.jaxb.Property().apply {
-//                                key = "dialect"
-//                                value = "POSTGRES" // PostgreSQL 방언 사용
-//                            }
-//                        )
-//                    }
-//
-//                    generate.apply {
-//                        isDeprecated = false
-//                        isRecords = true
-//                        isImmutablePojos = true
-//                        isFluentSetters = true
-//                        isJavaTimeTypes = true
-//                        isPojosEqualsAndHashCode = true
-//                    }
-//
-//                    target.apply {
-//                        packageName = "io.olkkani.generated.jooq" // 생성된 코드 패키지 경로
-//                        directory = "build/generated-src/jooq/main" // 생성된 코드 저장 위치
-//                    }
-//
-//                    strategy.name = "org.jooq.codegen.DefaultGeneratorStrategy"
-//                }
-//            }
-//        }
-//    }
-//}
+tasks {
+    generateJooqClasses {
+        schemas.set(listOf("public"))
+        basePackageName.set("org.jooq.generated")
+        migrationLocations.setFromFilesystem("src/main/resources/db/migration")
+        outputDirectory.set(project.layout.buildDirectory.dir("generated-jooq"))
+        flywayProperties.put("flyway.placeholderReplacement", "false")
+        includeFlywayTable.set(true)
+        outputSchemaToDefault.add("public")
+        schemaToPackageMapping.put("public", "model")
+
+        usingJavaConfig {
+            /* "this" here is the org.jooq.meta.jaxb.Generator configure it as you please */
+        }
+    }
+}
