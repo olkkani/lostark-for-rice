@@ -9,7 +9,7 @@ import org.jooq.impl.DSL.*
 import org.springframework.stereotype.Repository
 
 interface AuctionItemPriceSnapshotRepo {
-    fun saveAllIgnoreDuplicates(items: List<AuctionItemPriceSnapshot>)
+    fun saveAllIgnoreDuplicates(itemPriceSnapshots: List<AuctionItemPriceSnapshot>)
     fun findFilteredPriceRangeByItemCode(itemCode: Int): PriceRange
     fun truncateTable()
 }
