@@ -29,7 +29,7 @@ class RelicEngravingRecipeDAO(
 ){
     fun toRequest(pageNo: Int = 1) = MarketRequest(
         categoryCode = categoryCode,
-        itemName = itemGrade,
+        itemGrade = itemGrade,
         pageNo = pageNo,
     )
 }

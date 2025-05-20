@@ -94,19 +94,18 @@ class LostarkMarketSchedulerImpl(
             val relicEngravingRecipeDAO = RelicEngravingRecipeDAO().toRequest(pageNo++)
             try {
                 val response = apiClient.fetchMarketItemPriceSubscribe(relicEngravingRecipeDAO)?.items
-                if (!response.isNullOrEmpty()) {
-                    // 1. Save Market Item Now Price
-                    priceSnapshotRepo.saveAllIgnoreDuplicates(response.map { it.toEntity() })
-                    response.forEach { item ->
-                        // 2. Update Today HLC Price
-                        updateTodayHlcPrice(item.id, item.currentMinPrice)
-                        // 3. 어제 평균 가격 업데이트 (필요한 경우)
-                        if (isUpdateYesterdayAvgPrice) {
-                            updateYesterdayAvgPrice(item.id, item.yDayAvgPrice)
-                        }
+                if (response.isNullOrEmpty()) break
+                // 1. Save Market Item Now Price
+                priceSnapshotRepo.saveAllIgnoreDuplicates(response.map { it.toEntity() })
+                response.forEach { item ->
+                    // 2. Update Today HLC Price
+                    updateTodayHlcPrice(item.id, item.currentMinPrice)
+                    // 3. 어제 평균 가격 업데이트 (필요한 경우)
+                    if (isUpdateYesterdayAvgPrice) {
+                        updateYesterdayAvgPrice(item.id, item.yDayAvgPrice)
                     }
-                    if (response.size < 10) break
                 }
+                if (response.size < 10) break
             } catch (error: Exception) {
                 logger.error { "Error in fetchPriceAndUpdatePrice: ${error.message}" }
 //             재시도 로직 이외의 예외는 트랜잭션을 롤백하기 위해 다시 던짐

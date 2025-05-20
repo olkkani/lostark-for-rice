@@ -3,9 +3,10 @@ package io.olkkani.lfr.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.olkkani.lfr.entity.MarketItemPriceSnapshot
 
-class MarketRequest(
+data class MarketRequest(
     val categoryCode: Int,
-    val itemName: String,
+    val itemName: String? = null,
+    val itemGrade: String? = null,
     var pageNo: Int = 1,
 )
 
