@@ -6,7 +6,6 @@ spring:
         - api
         - persistence-common
         - db-test_container
-        - db-mongodb-local
 --- # common
 spring:
   config:
@@ -84,18 +83,3 @@ spring:
     enabled: true
     baseline-on-migrate: true # springboot 2 이상에서 안되는 문제가 있어. 명시적 선언
     locations: classpath:db/migration
---- # db-local-mongodb
-spring:
-  config:
-    activate:
-      on-profile: db-mongodb-local
-  data:
-    mongodb:
-      auto-index-creation: true
-      port: 0
-de:
-  flapdoodle:
-    mongodb:
-      embedded:
-        version: 6.0.8
-        tools-version: 100.7.47

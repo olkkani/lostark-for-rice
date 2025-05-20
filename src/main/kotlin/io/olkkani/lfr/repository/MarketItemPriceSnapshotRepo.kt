@@ -17,7 +17,7 @@ interface MarketItemPriceSnapshotRepo : JpaRepository<MarketItemPriceSnapshot, L
 
 interface MarketItemPriceSnapshotRepoSupport {
     fun saveIgnoreDuplicates(itemPriceSnapshot: MarketItemPriceSnapshot)
-    fun saveAllIgnoreDuplicates(itemPriceSnapshot: List<MarketItemPriceSnapshot>)
+    fun saveAllIgnoreDuplicates(itemPriceSnapshots: List<MarketItemPriceSnapshot>)
     fun findFilteredPriceRangeByItemCode(itemCode: Int): PriceRange
     fun truncateTable()
 }

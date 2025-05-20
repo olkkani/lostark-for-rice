@@ -6,13 +6,11 @@ spring:
         - persistence-common
         - persistence-local
         - server-local
-        - db-mongo-embedded
       prod:
         - common
         - persistence-common
         - persistence-prod
         - server-prod
-        - db-mongo-prod
 --- # common
 spring:
   config:
@@ -113,7 +111,7 @@ spring:
     console:
       enabled: true
       path: /h2-console
---- # db-prod
+--- # persistence-prod
 spring:
   config:
     activate:
