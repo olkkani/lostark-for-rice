@@ -14,6 +14,7 @@ import io.olkkani.lfr.util.PercentageCalculation
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
@@ -29,7 +30,7 @@ class LostarkAuctionSchedulerImpl(
     private val ohlcPriceRepo: DailyAuctionItemOhlcPriceRepo,
     private val todayPriceRepo: AuctionItemPriceSnapshotRepo,
     private val itemPreviousPriceChangeRepo: ItemPreviousPriceChangeRepo,
-    private val apiClient: LostarkAPIClient
+    @Qualifier("auctionAPIClient") private val apiClient: LostarkAPIClient,
 ): LostarkAuctionScheduler {
     private val logger = KotlinLogging.logger {}
 

@@ -7,17 +7,14 @@ import io.olkkani.lfr.dto.MarketRequest
 import io.olkkani.lfr.dto.MarketResponse
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
-import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
-import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import reactor.core.publisher.Mono
 import reactor.core.scheduler.Schedulers
 
-@Component
 class LostarkAPIClient(
-    @Value("\${lostark.api.key:must_not_empty_key}") private val apiKey: String,
+    private val apiKey: String,
     private val exceptionNotification: ExceptionNotification,
 ) {
     private val logger = KotlinLogging.logger {}

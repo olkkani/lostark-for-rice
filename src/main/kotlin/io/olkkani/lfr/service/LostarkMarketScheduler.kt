@@ -4,10 +4,11 @@ import io.github.oshai.kotlinlogging.KotlinLogging
 import io.olkkani.lfr.dao.RelicEngravingRecipeDAO
 import io.olkkani.lfr.dto.MarketRequest
 import io.olkkani.lfr.entity.DailyMarketItemOhlcaPrice
-import io.olkkani.lfr.repository.MarketItemPriceSnapshotRepo
 import io.olkkani.lfr.repository.DailyMarketItemOhlcaPriceRepo
 import io.olkkani.lfr.repository.ItemPreviousPriceChangeRepo
+import io.olkkani.lfr.repository.MarketItemPriceSnapshotRepo
 import io.olkkani.lfr.util.LostarkAPIClient
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Propagation
@@ -27,7 +28,7 @@ class LostarkMarketSchedulerImpl(
     private val ohlcPriceRepo: DailyMarketItemOhlcaPriceRepo,
     private val priceSnapshotRepo: MarketItemPriceSnapshotRepo,
     private val itemPreviousPriceChangeRepo: ItemPreviousPriceChangeRepo,
-    private val apiClient: LostarkAPIClient,
+    @Qualifier("marketAPIClient") private val apiClient: LostarkAPIClient,
 ) : LostarkMarketScheduler {
     private val logger = KotlinLogging.logger {}
 

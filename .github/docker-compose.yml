@@ -6,11 +6,11 @@ services:
     container_name: lfr-backend-blue
     image:  ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
     environment:
-      - DB_MONGO_URL=${DB_MONGO_URL}
       - DB_CONNECTION_URL=${DB_CONNECTION_URL}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - API_KEY=${API_KEY}
+      - AUCTION_API_KEY=${AUCTION_API_KEY}
+      - MARKET_API_KEY=${MARKET_API_KEY}
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
       - TZ=Asia/Seoul
       - SPRING_PROFILES_ACTIVE=prod
@@ -24,11 +24,11 @@ services:
     container_name: lfr-backend-green
     image:  ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
     environment:
-      - DB_MONGO_URL=${DB_MONGO_URL}
       - DB_CONNECTION_URL=${DB_CONNECTION_URL}
       - DB_USER=${DB_USER}
       - DB_PASSWORD=${DB_PASSWORD}
-      - API_KEY=${API_KEY}
+      - AUCTION_API_KEY=${AUCTION_API_KEY}
+      - MARKET_API_KEY=${MARKET_API_KEY}
       - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
       - TZ=Asia/Seoul
       - SPRING_PROFILES_ACTIVE=prod
