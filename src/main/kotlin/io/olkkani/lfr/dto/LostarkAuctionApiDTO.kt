@@ -3,7 +3,7 @@ package io.olkkani.lfr.dto
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
-import io.olkkani.lfr.entity.mongo.AuctionTodayPrice
+import io.olkkani.lfr.entity.AuctionItemPriceSnapshot
 import java.time.LocalDateTime
 
 @JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
@@ -17,7 +17,15 @@ data class AuctionRequest(
 
 data class AuctionResponse(
     @JsonProperty("Items")val items: List<AuctionItem>
-)
+){
+    fun toEntity(itemCode: Int) = items.map {
+        AuctionItemPriceSnapshot(
+            itemCode = itemCode,
+            endDate = it.auctionInfo.endDate,
+            price = it.auctionInfo.buyPrice,
+        )
+    }
+}
 data class AuctionItem(
     @JsonProperty("AuctionInfo")val auctionInfo: AuctionInfo,
 )
@@ -29,18 +37,3 @@ data class AuctionInfo(
 fun AuctionResponse.extractPrices(): List<Int> {
     return items.map { it.auctionInfo.buyPrice }
 }
-
-fun AuctionResponse.toTodayItemPrices(itemCode: Int): List<AuctionTodayPrice> {
-    return items.map {
-        AuctionTodayPrice(
-            itemCode = itemCode,
-            endDate = it.auctionInfo.endDate,
-            price = it.auctionInfo.buyPrice,
-        )
-    }
-}
-
-
-
-
-

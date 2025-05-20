@@ -1,6 +1,6 @@
 package io.olkkani.lfr.dto
 
-class ItemPreview(
+class ItemPreviewDTO(
     val itemCode: Int,
     val price: Int,
     val highPrice: Int,
