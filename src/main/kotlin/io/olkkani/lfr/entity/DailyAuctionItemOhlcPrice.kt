@@ -1,4 +1,4 @@
-package io.olkkani.lfr.entity.jpa
+package io.olkkani.lfr.entity
 
 import io.hypersistence.utils.hibernate.id.Tsid
 import io.olkkani.lfr.dto.CandleChartResponse
@@ -10,8 +10,8 @@ import jakarta.persistence.Table
 import java.time.LocalDate
 
 @Entity
-@Table(name = "daily_auction_item_ohlc")
-class AuctionItemOhlcPrice(
+@Table(name = "daily_auction_item_ohlc_prices")
+class DailyAuctionItemOhlcPrice(
     @Id @Tsid
     val id: Long? = null,
     val itemCode: Int,

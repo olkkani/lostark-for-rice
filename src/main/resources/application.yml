@@ -60,10 +60,10 @@ spring:
     activate:
       on-profile: persistence-common
   jpa:
-    properties:
-      hibernate: # jpaEntityManagerFactory 에서 수동으로 DataSource 생성하고 해당 값을 가져오기 때문에 key naming 이 다름
-        physical_naming_strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
-        implicit_naming_strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
 ---
 spring:
   config:

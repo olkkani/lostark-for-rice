@@ -1,7 +1,7 @@
 package io.olkkani.lfr.dto
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.olkkani.lfr.entity.mongo.MarketTodayPrice
+import io.olkkani.lfr.entity.MarketItemPriceSnapshot
 
 class MarketRequest(
     val categoryCode: Int,
@@ -9,16 +9,18 @@ class MarketRequest(
     var pageNo: Int = 1,
 )
 
-data class MarketResponse (
-   @JsonProperty("Items") val items: List<Items>
+data class MarketResponse(
+    @JsonProperty("Items") val items: List<Item>
 )
-data class Items (
+
+data class Item(
     @JsonProperty("Id") val id: Int,
     @JsonProperty("CurrentMinPrice") val currentMinPrice: Int,
     @JsonProperty("YDayAvgPrice") val yDayAvgPrice: Float,
-){
-   fun toMarketTodayPrice() = MarketTodayPrice(
-       itemCode = id,
-       price = currentMinPrice,
-   )
+) {
+    fun toEntity() =
+        MarketItemPriceSnapshot(
+            itemCode = id,
+            price = currentMinPrice
+        )
 }

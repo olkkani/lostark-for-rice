@@ -1,8 +1,6 @@
 create table auction_price_index
 (
-    id            bigint  not null
-        constraint item_price_index_pkey
-            primary key,
+    id            bigint  not null primary key,
     recorded_date date    not null,
     item_code     integer not null,
     close_price   integer not null,

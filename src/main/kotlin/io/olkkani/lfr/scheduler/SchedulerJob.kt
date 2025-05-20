@@ -1,5 +1,6 @@
 package io.olkkani.lfr.scheduler
 
+import io.olkkani.lfr.service.ItemPriceSnapshotScheduler
 import io.olkkani.lfr.service.LostarkAuctionScheduler
 import io.olkkani.lfr.service.LostarkMarketScheduler
 import kotlinx.coroutines.runBlocking
@@ -11,13 +12,14 @@ import org.springframework.stereotype.Component
 class TodayOpeningJob(
     private val auctionScheduler: LostarkAuctionScheduler,
     private val marketScheduler: LostarkMarketScheduler,
+    private val itemPriceSnapshotScheduler: ItemPriceSnapshotScheduler
 ) : QuartzJobBean() {
     override fun executeInternal(context: JobExecutionContext) {
         runBlocking {
-            auctionScheduler.clearOldPriceRecord()
+            itemPriceSnapshotScheduler.deleteSnapshotData()
             auctionScheduler.fetchPriceAndUpdatePrice()
-            marketScheduler.clearOldPriceRecord()
-            marketScheduler.fetchPriceAndUpdatePrice(isUpdateYesterdayAvgPrice = true)
+            marketScheduler.fetchMaterialPriceAndUpdatePrice(isUpdateYesterdayAvgPrice = true)
+            marketScheduler.fetchEngravingRecipePriceAndUpdatePrice(isUpdateYesterdayAvgPrice = true)
         }
     }
 }
@@ -30,7 +32,8 @@ class TodayFetchPricesJob(
     override fun executeInternal(context: JobExecutionContext) {
         runBlocking {
             auctionScheduler.fetchPriceAndUpdatePrice()
-            marketScheduler.fetchPriceAndUpdatePrice()
+            marketScheduler.fetchMaterialPriceAndUpdatePrice()
+            marketScheduler.fetchEngravingRecipePriceAndUpdatePrice()
         }
     }
 }

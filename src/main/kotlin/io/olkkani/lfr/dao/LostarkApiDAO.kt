@@ -22,3 +22,19 @@ class GemDAO(
        itemName = name,
    )
 }
+
+class RelicEngravingRecipeDAO(
+    val categoryCode: Int = 40000,
+    val itemGrade: String = "유물",
+){
+    fun toRequest(pageNo: Int = 1) = MarketRequest(
+        categoryCode = categoryCode,
+        itemName = itemGrade,
+        pageNo = pageNo,
+    )
+}
+
+
+
+
+

@@ -69,19 +69,14 @@ dependencies {
         }
     }
 }
-val generated = file("build/generated/kapt/main/kotlin")
 val jooqGeneratedOutput = project.layout.buildDirectory.dir("generated-jooq") // 경로 변수화
-
 sourceSets {
     main {
-        kotlin.srcDirs(generated)
         kotlin.srcDirs(jooqGeneratedOutput)
     }
 }
-
 tasks.named("clean") {
     doLast {
-        generated.deleteRecursively()
         jooqGeneratedOutput.get().asFile.deleteRecursively()
     }
 }
