@@ -8,7 +8,7 @@ on:
       - main
 
 env:
-  IMAGE_NAME: "ghcr.io/${{ github.repository }}:$(date +'%Y%m%d')-${{ github.sha }}0:8"
+  IMAGE_NAME: "ghcr.io/${{ github.repository }}:${{ github.sha }}"
   WORK_DIR: "/home/${{ secrets.USERNAME }}/lfr/back"
   NGINX_DIR: "/home/${{ secrets.USERNAME }}/lfr/nginx"
 jobs:
