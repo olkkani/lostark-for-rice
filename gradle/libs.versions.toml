@@ -1,7 +1,8 @@
 [versions]
 # Plugin versions
 kotlin = "2.1.20"
-springBoot = "3.4.4"
+spring = "6.2.5"  # sync springBoot version
+springBoot = "3.4.4" # sync spring version
 dependencyManagement = "1.1.7"
 osDetector = "1.7.3"
 coroutines = "1.10.1"
@@ -16,17 +17,24 @@ kotest = "5.9.1"
 jooq = "3.19.21" # See spring-boot-stater-jooq and sync spring version
 flyway = "11.8.1"
 testcontainer = "1.20.6" # See spring-boot-testcontainers and sync spring version
-
+jjwt = "0.12.6"
 [libraries]
 # Spring
 spring-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springBoot" }
 spring-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "springBoot" }
 spring-config-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "springBoot" }
-spring-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
 spring-quartz = { module = "org.springframework.boot:spring-boot-starter-quartz", version.ref = "springBoot" }
 spring-undertow = { module = "org.springframework.boot:spring-boot-starter-undertow", version.ref = "springBoot" }
 spring-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "springBoot" }
 spring-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "springBoot" }
+
+# security
+spring-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
+spring-oauth2 = { module = "org.springframework.security:spring-security-oauth2-client", version.ref = "spring"}
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref="jjwt"}
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref="jjwt"}
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref="jjwt"}
+
 # Persistence and DB
 spring-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springBoot" }
 spring-jooq = { module = "org.springframework.boot:spring-boot-starter-jooq", version.ref = "springBoot" }
@@ -68,12 +76,14 @@ jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin"
 dns-native-mac = { module = "io.netty:netty-resolver-dns-native-macos", version = "4.1.115.Final" }
 reflect-kotlin = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 
+
 [bundles]
 spring = ["spring-web", "spring-config-processor", "spring-actuator", "spring-security", "spring-undertow", "spring-webflux", "spring-quartz"]
 spring-test = ["spring-test", "spring-security-test", "kotest-extensions-spring"]
 persistence = ["spring-jpa", "hibernate-utils", "hibernate-core", "tsid-creator", "hikaricp", "flyway", "flyway-postgresql"]
 persistence-database = ["postgresql"]
 persistence-database-embedded = ["h2"]
+security = ["spring-security", "jjwt-api"]
 test = ["kotest-junit-runner", "mockk", "reactor-test", "junit-kotlin", "junit-launcher"]
 testcontainer = ["spring-testcontainer", "testcontainer-junit", "testcontainer-postgresql"]
 

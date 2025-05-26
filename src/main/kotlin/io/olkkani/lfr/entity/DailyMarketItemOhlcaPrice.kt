@@ -11,7 +11,7 @@ import java.time.LocalDate
 class DailyMarketItemOhlcaPrice (
     @Id @Tsid
     val id: Long? = null,
-    val itemCode: Int,
+    val itemCode: Int?,
     val recordedDate: LocalDate,
     var openPrice: Int,
     var highPrice: Int,

@@ -8,16 +8,16 @@ import java.time.LocalDateTime
 
 @JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
 data class AuctionRequest(
+    val categoryCode: Int,
     val itemName: String,
-    val categoryCode: Int = 210000,
-    val pageNo: Int = 0,
-    val sort: String = "BUY_PRICE",
-    val sortCondition: String = "ASC",
+    val pageNo: Int,
+    val sort: String,
+    val sortCondition: String,
 )
 
 data class AuctionResponse(
-    @JsonProperty("Items")val items: List<AuctionItem>
-){
+    @JsonProperty("Items") val items: List<AuctionItem>
+) {
     fun toEntity(itemCode: Int) = items.map {
         AuctionItemPriceSnapshot(
             itemCode = itemCode,
@@ -26,12 +26,14 @@ data class AuctionResponse(
         )
     }
 }
+
 data class AuctionItem(
-    @JsonProperty("AuctionInfo")val auctionInfo: AuctionInfo,
+    @JsonProperty("AuctionInfo") val auctionInfo: AuctionInfo,
 )
+
 data class AuctionInfo(
-    @JsonProperty("BuyPrice")val buyPrice: Int,
-    @JsonProperty("EndDate")val endDate: LocalDateTime
+    @JsonProperty("BuyPrice") val buyPrice: Int,
+    @JsonProperty("EndDate") val endDate: LocalDateTime
 )
 
 fun AuctionResponse.extractPrices(): List<Int> {

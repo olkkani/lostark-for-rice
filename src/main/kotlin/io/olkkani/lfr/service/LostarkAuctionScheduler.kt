@@ -1,7 +1,7 @@
 package io.olkkani.lfr.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.olkkani.lfr.dao.GemDAO
+import io.olkkani.lfr.dao.AuctionDAO
 import io.olkkani.lfr.dto.extractPrices
 import io.olkkani.lfr.entity.DailyAuctionItemOhlcPrice
 import io.olkkani.lfr.entity.ItemPreviousPriceChange
@@ -35,12 +35,12 @@ class LostarkAuctionSchedulerImpl(
     private val logger = KotlinLogging.logger {}
 
     val gemDAO = listOf(
-        GemDAO(itemCode = 65021100, pairItemCode = 65022100, name = "10레벨 멸화의 보석"),
-        GemDAO(itemCode = 65022100, pairItemCode = 65021100, name = "10레벨 홍염의 보석"),
-        GemDAO(itemCode = 65031080, pairItemCode = 65032080, name = "8레벨 겁화의 보석"),
-        GemDAO(itemCode = 65032080, pairItemCode = 65031080, name = "8레벨 작열의 보석"),
-        GemDAO(itemCode = 65031100, pairItemCode = 65032100, name = "10레벨 겁화의 보석"),
-        GemDAO(itemCode = 65032100, pairItemCode = 65031100, name = "10레벨 작열의 보석")
+        AuctionDAO(itemCode = 65021100, pairItemCode = 65022100, itemName = "10레벨 멸화의 보석"),
+        AuctionDAO(itemCode = 65022100, pairItemCode = 65021100, itemName = "10레벨 홍염의 보석"),
+        AuctionDAO(itemCode = 65031080, pairItemCode = 65032080, itemName = "8레벨 겁화의 보석"),
+        AuctionDAO(itemCode = 65032080, pairItemCode = 65031080, itemName = "8레벨 작열의 보석"),
+        AuctionDAO(itemCode = 65031100, pairItemCode = 65032100, itemName = "10레벨 겁화의 보석"),
+        AuctionDAO(itemCode = 65032100, pairItemCode = 65031100, itemName = "10레벨 작열의 보석")
     )
 
     @Transactional
@@ -48,7 +48,7 @@ class LostarkAuctionSchedulerImpl(
         gemDAO.map { gem ->
             async {
                 try {
-                    val response = apiClient.fetchAuctionItemsSubscribe(gem.toRequest())
+                    val response = apiClient.fetchAuctionItemsSubscribe(gem.toGemRequest())
                     if (response.items.isNotEmpty()) {
                         //  1. Save Item Now Price
                         val fetchedPrices = response.toEntity(itemCode = gem.itemCode)
@@ -113,6 +113,7 @@ class LostarkAuctionSchedulerImpl(
             highPrice = priceRange.max
             lowPrice = priceRange.min
             closePrice = currentPrice
+            ohlcPriceRepo.save(this)
         } ?: run {
             ohlcPriceRepo.save(
                 DailyAuctionItemOhlcPrice(

@@ -45,6 +45,11 @@ dependencies {
     jooqCodegen(libs.postgresql)
     jooqCodegen(libs.jooq.codgen)
 
+    // security
+    implementation(libs.bundles.security)
+    runtimeOnly(libs.jjwt.impl)
+    runtimeOnly(libs.jjwt.jackson)
+
     // Test and Logging
     implementation(libs.kotlin.logging)
     implementation(libs.p6spy)
@@ -60,6 +65,7 @@ dependencies {
     implementation(libs.coroutines.core)
     implementation(libs.coroutines.reactor)
     implementation(libs.reflect.kotlin)
+
 
     if (osdetector.arch.equals("aarch_64")) {
         implementation(libs.dns.native.mac) {

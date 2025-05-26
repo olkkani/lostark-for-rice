@@ -1,8 +1,7 @@
 package io.olkkani.lfr.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.olkkani.lfr.dao.RelicEngravingRecipeDAO
-import io.olkkani.lfr.dto.MarketRequest
+import io.olkkani.lfr.dao.MarketDAO
 import io.olkkani.lfr.entity.DailyMarketItemOhlcaPrice
 import io.olkkani.lfr.repository.DailyMarketItemOhlcaPriceRepo
 import io.olkkani.lfr.repository.ItemPreviousPriceChangeRepo
@@ -41,6 +40,7 @@ class LostarkMarketSchedulerImpl(
             highPrice = priceRange.max
             lowPrice = priceRange.min
             closePrice = currentPrice
+            ohlcPriceRepo.save(this)
         } ?: run {
             ohlcPriceRepo.save(
                 DailyMarketItemOhlcaPrice(
@@ -60,14 +60,19 @@ class LostarkMarketSchedulerImpl(
         val yesterday = LocalDate.now().minusDays(1)
         ohlcPriceRepo.findByItemCodeAndRecordedDate(itemCode = itemCode, recordedDate = yesterday)?.apply {
             avgPrice = yesterdayAvgPrice
+            ohlcPriceRepo.save(this)
         }
     }
 
     @Transactional
     override suspend fun fetchMaterialPriceAndUpdatePrice(isUpdateYesterdayAvgPrice: Boolean) {
-        val abidos = MarketRequest(50010, "아비도스 융화 재료")
+        val abidosFusionMaterialDAO = MarketDAO(
+            categoryCode = 50010,
+            itemCode = 6861012,
+            itemName = "아비도스 융화 재료"
+        )
         try {
-            val response = apiClient.fetchMarketItemPriceSubscribe(abidos)?.items?.firstOrNull()
+            val response = apiClient.fetchMarketItemPriceSubscribe(abidosFusionMaterialDAO.toFusionMaterialRequest())?.items?.firstOrNull()
             if (response != null) {
                 // 1. Save Market Item Now Price
                 priceSnapshotRepo.saveIgnoreDuplicates(response.toEntity())
@@ -90,10 +95,14 @@ class LostarkMarketSchedulerImpl(
     @Transactional
     override suspend fun fetchEngravingRecipePriceAndUpdatePrice(isUpdateYesterdayAvgPrice: Boolean) {
         var pageNo = 1
+        val relicEngravingRecipeDAO = MarketDAO(
+            categoryCode = 40000,
+            itemGrade = "유물"
+        )
         while (true) {
-            val relicEngravingRecipeDAO = RelicEngravingRecipeDAO().toRequest(pageNo++)
+            val  request = relicEngravingRecipeDAO.toRelicEngravingRecipeRequest(pageNo++)
             try {
-                val response = apiClient.fetchMarketItemPriceSubscribe(relicEngravingRecipeDAO)?.items
+                val response = apiClient.fetchMarketItemPriceSubscribe(request)?.items
                 if (response.isNullOrEmpty()) break
                 // 1. Save Market Item Now Price
                 priceSnapshotRepo.saveAllIgnoreDuplicates(response.map { it.toEntity() })
