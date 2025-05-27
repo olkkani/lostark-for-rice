@@ -1,11 +1,11 @@
-package io.olkkani.lfr.scheduler
+package io.olkkani.lfr.market
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.floats.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
-import io.olkkani.lfr.config.TestContainersConfig
+import io.olkkani.lfr.config.PostgresqlTestContainersConfig
 import io.olkkani.lfr.dao.MarketDAO
 import io.olkkani.lfr.entity.DailyMarketItemOhlcaPrice
 import io.olkkani.lfr.repository.DailyMarketItemOhlcaPriceRepo
@@ -20,7 +20,7 @@ import java.time.LocalDate
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(TestContainersConfig::class)
+@Import(PostgresqlTestContainersConfig::class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class LostarkMarketSchedulerTest(
 ) : DescribeSpec() {

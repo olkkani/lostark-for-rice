@@ -1,11 +1,12 @@
-package io.olkkani.lfr.repository
+package io.olkkani.lfr.market
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
-import io.olkkani.lfr.config.TestContainersConfig
+import io.olkkani.lfr.config.PostgresqlTestContainersConfig
 import io.olkkani.lfr.entity.MarketItemPriceSnapshot
+import io.olkkani.lfr.repository.MarketItemPriceSnapshotRepo
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
@@ -13,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(TestContainersConfig::class)
+@Import(PostgresqlTestContainersConfig::class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MarketItemPriceSnapshotRepoTest(
     private val marketItemPriceSnapshotRepo: MarketItemPriceSnapshotRepo

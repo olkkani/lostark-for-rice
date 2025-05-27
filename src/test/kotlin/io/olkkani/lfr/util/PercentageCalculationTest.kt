@@ -1,10 +1,9 @@
-package io.olkkani.lfr
+package io.olkkani.lfr.util
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
-import io.olkkani.lfr.util.PercentageCalculation
 
-class PercentageCalculationTest: DescribeSpec() {
+class rePercentageCalculationTest: DescribeSpec() {
     init {
         describe("Percentage calculation") {
             context("110가 비교값, 100이 비교하고 싶은 비교값으로 지정하면"){
