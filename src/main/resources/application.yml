@@ -128,9 +128,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: validate
-    properties:
-      hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
     generate-ddl: false
   flyway:
     enabled: true # 명시적 선언
