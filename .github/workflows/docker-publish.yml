@@ -12,8 +12,18 @@ env:
   WORK_DIR: "/home/${{ secrets.USERNAME }}/lfr/back"
   NGINX_DIR: "/home/${{ secrets.USERNAME }}/lfr/nginx"
 jobs:
+  get-short-sha:
+    runs-on: ubuntu-latest
+    outputs:
+      short_sha: ${{ steps.set-sha.outputs.short_sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Get short SHA
+        id: set-sha
+        run: echo "short_sha=$(git rev-parse --short HEAD)" >> $GITHUB_OUTPUT
   build:
     runs-on: ubuntu-24.04
+    needs: get-short-sha
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -23,9 +33,6 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '21'
-
-      - name: Get short SHA
-        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Cache Gradle dependencies
         uses: actions/cache@v4
@@ -58,7 +65,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ env.IMAGE_NAME }}:${{env.SHORT_SHA}}
+          tags: ${{ env.IMAGE_NAME }}:${{ needs.get-short-sha.outputs.short_sha }}
 
   serve-file:
     runs-on: ubuntu-24.04
@@ -66,9 +73,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Get short SHA
-        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
 
       - name: Copy upstream conf files
         uses: appleboy/scp-action@v0.1.7
@@ -111,7 +115,7 @@ jobs:
             echo "AUCTION_API_KEY=${{ secrets.AUCTION_API_KEY }}" >> .env 
             echo "MARKET_API_KEY=${{ secrets.MARKET_API_KEY }}" >> .env 
             echo "DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}" >> .env
-            echo "IMAGE_NAME=${{ env.IMAGE_NAME }}:${{env.SHORT_SHA}}" >> .env
+            echo "IMAGE_NAME=${{ env.IMAGE_NAME }}:${{ needs.get-short-sha.outputs.short_sha }}" >> .env
   deploy:
     runs-on: ubuntu-24.04
     needs: serve-file
