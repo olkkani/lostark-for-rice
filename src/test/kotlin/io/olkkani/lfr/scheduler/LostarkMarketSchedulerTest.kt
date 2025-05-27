@@ -61,6 +61,14 @@ class LostarkMarketSchedulerTest(
                     closePrice = 1000
                 )
             )
+            context("데이터를 가져와서 어제자 평균값을 업데이트하면"){
+                scheduler.fetchMaterialPriceAndUpdatePrice(true)
+                it("어제 평균가가 0 보다 크다."){
+                    val yesterdayOhlcaPrice = dailyMarketItemOhlcaPriceRepo.findByItemCodeAndRecordedDate(itemCode = requestItemCode, recordedDate = yesterday)
+                    yesterdayOhlcaPrice.shouldNotBeNull()
+                    yesterdayOhlcaPrice.avgPrice shouldBeGreaterThan 0F
+                }
+            }
            context("데이터를 가져와서 어제자 평균값을 업데이트하면"){
                scheduler.fetchMaterialPriceAndUpdatePrice(true)
                it("어제 평균가가 0 보다 크다."){
