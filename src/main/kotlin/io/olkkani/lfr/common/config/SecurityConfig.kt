@@ -1,4 +1,4 @@
-package io.olkkani.lfr.config
+package io.olkkani.lfr.common.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import org.springframework.context.annotation.Bean
@@ -15,9 +15,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 
 @Configuration
 @EnableWebSecurity
-class SecurityConfig (
+class SecurityConfig(
     private val objectMapper: ObjectMapper
-){
+) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
@@ -25,14 +25,27 @@ class SecurityConfig (
                 header.xssProtection { xss ->
                     xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
                 }
-                header.frameOptions{ it.deny() }
+                header.frameOptions { it.deny() }
+//                header.contentSecurityPolicy { it.policyDirectives("script-src 'self'") }
+//                header.httpStrictTransportSecurity {
+//                    it.includeSubDomains(true)
+//                    it.maxAgeInSeconds(31536000)
+//                }
             }
-            .sessionManagement{ session ->
+            .sessionManagement { session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .authorizeHttpRequests { authorize ->
+//                authorize.requestMatchers("/api/alerts/**").authenticated()
                 authorize.anyRequest().permitAll()
             }
+//            .oauth2Login { succeeHandler ->
+//                succeeHandler.userInfoEndpoint {
+//                    it.oidcUserService(OidcUserService())
+//                }
+//                succeeHandler.defaultSuccessUrl("/api/alerts/fetch", true)
+
+//            }
             .cors { cors ->
                 cors.configurationSource(corsConfigurationSourceLocal())
             }
@@ -42,12 +55,13 @@ class SecurityConfig (
 
     @Bean
     fun corsConfigurationSourceLocal(): CorsConfigurationSource {
-        val configuration = CorsConfiguration()
-        configuration.allowedOrigins = listOf("http://localhost:5173, https://gemspi.kro.kr/")
-        configuration.allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
-        configuration.allowedHeaders = listOf("*")
-        configuration.allowCredentials = true
-
+        val configuration = CorsConfiguration().apply {
+            allowedOrigins = listOf("http://localhost:5173, https://gemspi.kro.kr/")
+            allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            allowedHeaders = listOf("*")
+            allowCredentials = true
+//            maxAge = 3600L
+        }
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)
         return source
