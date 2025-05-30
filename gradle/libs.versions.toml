@@ -64,7 +64,7 @@ mockk = { module = "io.mockk:mockk", version = "1.13.17" }
 spring-security-test = { module = "org.springframework.security:spring-security-test", version = "6.4.4" }
 h2 = { module = "com.h2database:h2", version = "2.3.232" }
 reactor-test = { module = "io.projectreactor:reactor-test", version = "3.7.4" }
-embedded-redis = { module = "it.ozimov:embedded-redis", version = "0.7.3" }
+embedded-redis = { module = "com.github.codemonstur:embedded-redis", version = "1.4.3" }
 
 # Other
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
@@ -81,8 +81,8 @@ reflect-kotlin = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref =
 spring = ["spring-web", "spring-config-processor", "spring-actuator", "spring-security", "spring-undertow", "spring-webflux", "spring-quartz"]
 spring-test = ["spring-test", "spring-security-test", "kotest-extensions-spring"]
 persistence = ["spring-jpa", "hibernate-utils", "hibernate-core", "tsid-creator", "hikaricp", "flyway", "flyway-postgresql"]
-persistence-database = ["postgresql"]
-persistence-database-embedded = ["h2"]
+persistence-database = ["postgresql", "spring-redis"]
+persistence-database-embedded = ["h2", "embedded-redis"]
 security = ["spring-security", "jjwt-api"]
 test = ["kotest-junit-runner", "mockk", "reactor-test", "junit-kotlin", "junit-launcher"]
 testcontainer = ["spring-testcontainer", "testcontainer-junit", "testcontainer-postgresql"]

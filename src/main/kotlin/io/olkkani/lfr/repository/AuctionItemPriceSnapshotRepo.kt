@@ -1,8 +1,8 @@
 package io.olkkani.lfr.repository
 
 import com.github.f4b6a3.tsid.TsidCreator
-import io.olkkani.lfr.dao.PriceRange
-import io.olkkani.lfr.entity.AuctionItemPriceSnapshot
+import io.olkkani.lfr.repository.dto.PriceRange
+import io.olkkani.lfr.repository.entity.AuctionItemPriceSnapshot
 import org.jooq.DSLContext
 import org.jooq.generated.Tables
 import org.jooq.impl.DSL.*

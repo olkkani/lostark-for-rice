@@ -2,6 +2,7 @@ package io.olkkani.lfr.util
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
+import io.olkkani.lfr.common.util.PercentageCalculation
 
 class rePercentageCalculationTest: DescribeSpec() {
     init {

@@ -1,6 +1,6 @@
 package io.olkkani.lfr.repository
 
-import io.olkkani.lfr.entity.DailyMarketItemOhlcaPrice
+import io.olkkani.lfr.repository.entity.DailyMarketItemOhlcaPrice
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDate

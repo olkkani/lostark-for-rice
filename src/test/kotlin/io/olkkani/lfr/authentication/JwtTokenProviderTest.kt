@@ -6,7 +6,7 @@ import io.jsonwebtoken.security.Keys
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotBeEmpty
-import io.olkkani.lfr.util.JwtTokenProvider
+import io.olkkani.lfr.common.util.JwtTokenProvider
 import java.util.*
 import javax.crypto.SecretKey
 

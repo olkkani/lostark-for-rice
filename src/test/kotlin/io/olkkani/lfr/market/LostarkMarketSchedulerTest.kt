@@ -5,11 +5,11 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.floats.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
-import io.olkkani.lfr.config.PostgresqlTestContainersConfig
-import io.olkkani.lfr.dao.MarketDAO
-import io.olkkani.lfr.entity.DailyMarketItemOhlcaPrice
 import io.olkkani.lfr.repository.DailyMarketItemOhlcaPriceRepo
 import io.olkkani.lfr.repository.MarketItemPriceSnapshotRepo
+import io.olkkani.lfr.repository.entity.DailyMarketItemOhlcaPrice
+import io.olkkani.lfr.config.PostgresqlTestContainersConfig
+import io.olkkani.lfr.adapter.external.dao.MarketDAO
 import io.olkkani.lfr.service.LostarkMarketScheduler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase

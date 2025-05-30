@@ -1,12 +1,12 @@
 package io.olkkani.lfr.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.olkkani.lfr.dao.MarketDAO
-import io.olkkani.lfr.entity.DailyMarketItemOhlcaPrice
+import io.olkkani.lfr.adapter.external.LostarkAPIClient
 import io.olkkani.lfr.repository.DailyMarketItemOhlcaPriceRepo
 import io.olkkani.lfr.repository.ItemPreviousPriceChangeRepo
 import io.olkkani.lfr.repository.MarketItemPriceSnapshotRepo
-import io.olkkani.lfr.util.LostarkAPIClient
+import io.olkkani.lfr.adapter.external.dao.MarketDAO
+import io.olkkani.lfr.repository.entity.DailyMarketItemOhlcaPrice
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.dao.OptimisticLockingFailureException
 import org.springframework.stereotype.Service

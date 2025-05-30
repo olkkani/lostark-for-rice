@@ -3,13 +3,17 @@ spring:
     group:
       local:
         - common
+        - security
         - persistence-common
         - persistence-local
+        - database-redis-local
         - server-local
       prod:
         - common
+        - security
         - persistence-common
         - persistence-prod
+        - database-redis-server
         - server-prod
 --- # common
 spring:
@@ -63,7 +67,7 @@ spring:
             user-name-attribute: id
 secret:
     jwt:
-      secret: ${JWT_DISCORD_SECRET:must_null_null}
+      secret: ${JWT_DISCORD_SECRET:dVyUSSGqhfyWt5d23IZ1gS0P0OkjgZl03t20V32jfsjg}
       expiration: 604800000 # 7days
 --- # local-server
 spring:
@@ -146,18 +150,21 @@ decorator:
 spring:
   config:
     activate:
+      on-profile: database-h2
+
+---
+spring:
+  config:
+    activate:
       on-profile: database-redis-local
-  data:
-    redis:
-      host: localhost
-      port: 6379
-#    host:
+redis:
+    host: localhost
+    port: 6379
 --- # db-prod-mongodb
 spring:
   config:
     activate:
       on-profile: database-redis-server
-  data:
-    redis:
-      host: ${DB_REDIS_HOST}
-      port: ${DB_REDIS_PORT}
+redis:
+  host: ${DB_REDIS_HOST}
+  port: ${DB_REDIS_PORT}

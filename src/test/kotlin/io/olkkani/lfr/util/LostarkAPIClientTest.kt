@@ -7,7 +7,9 @@ import io.kotest.matchers.floats.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.mockk
-import io.olkkani.lfr.dao.MarketDAO
+import io.olkkani.lfr.adapter.external.dao.MarketDAO
+import io.olkkani.lfr.common.util.ExceptionNotification
+import io.olkkani.lfr.adapter.external.LostarkAPIClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
