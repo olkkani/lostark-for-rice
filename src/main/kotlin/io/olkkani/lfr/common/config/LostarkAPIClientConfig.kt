@@ -1,7 +1,7 @@
 package io.olkkani.lfr.common.config
 
-import io.olkkani.lfr.common.util.ExceptionNotification
 import io.olkkani.lfr.adapter.external.LostarkAPIClient
+import io.olkkani.lfr.common.util.ExceptionNotification
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -11,7 +11,7 @@ class LostarkAPIClientConfig {
 
     @Bean("auctionAPIClient")
     fun auctionAPIClient(
-        @Value("\${lostark.auction.api.key}") apiKey: String,
+        @Value("\${lostark.auction.api.key:must_not_null_apikey}") apiKey: String,
         exceptionNotification: ExceptionNotification
     ): LostarkAPIClient {
         return LostarkAPIClient(apiKey, exceptionNotification)
@@ -19,7 +19,7 @@ class LostarkAPIClientConfig {
 
     @Bean("marketAPIClient")
     fun marketAPIClient(
-        @Value("\${lostark.market.api.key}") apiKey: String,
+        @Value("\${lostark.market.api.key:must_not_null_apikey}") apiKey: String,
         exceptionNotification: ExceptionNotification
     ): LostarkAPIClient {
         return LostarkAPIClient(apiKey, exceptionNotification)

@@ -1,16 +1,16 @@
-package io.olkkani.lfr.market
+package io.olkkani.lfr.service
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.floats.shouldBeGreaterThan
 import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.shouldBe
+import io.olkkani.lfr.adapter.external.dao.MarketDAO
+import io.olkkani.lfr.config.PostgresqlTestContainersConfig
 import io.olkkani.lfr.repository.DailyMarketItemOhlcaPriceRepo
 import io.olkkani.lfr.repository.MarketItemPriceSnapshotRepo
 import io.olkkani.lfr.repository.entity.DailyMarketItemOhlcaPrice
-import io.olkkani.lfr.config.PostgresqlTestContainersConfig
-import io.olkkani.lfr.adapter.external.dao.MarketDAO
-import io.olkkani.lfr.service.LostarkMarketScheduler
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
 import org.springframework.boot.test.context.SpringBootTest
@@ -42,6 +42,14 @@ class LostarkMarketSchedulerTest(
             }
 
         }
+        describe("Update Today HLC Price Test"){
+            context(""){
+
+                it(""){
+
+                }
+            }
+        }
         xdescribe("전날 가격 업데이트 테스트"){
             val abidos = MarketDAO(
                 categoryCode = 50010,
@@ -61,17 +69,17 @@ class LostarkMarketSchedulerTest(
                     closePrice = 1000
                 )
             )
-            context("데이터를 가져와서 어제자 평균값을 업데이트하면"){
-                scheduler.fetchMaterialPriceAndUpdatePrice(true)
-                it("어제 평균가가 0 보다 크다."){
+            context("데이터를 가져와서 업데이트하면"){
+                scheduler.fetchMaterialPriceAndUpdatePrice()
+                it("어제 평균가가 0과 같음"){
                     val yesterdayOhlcaPrice = dailyMarketItemOhlcaPriceRepo.findByItemCodeAndRecordedDate(itemCode = requestItemCode, recordedDate = yesterday)
                     yesterdayOhlcaPrice.shouldNotBeNull()
-                    yesterdayOhlcaPrice.avgPrice shouldBeGreaterThan 0F
+                    yesterdayOhlcaPrice.avgPrice shouldBe 0F
                 }
             }
            context("데이터를 가져와서 어제자 평균값을 업데이트하면"){
                scheduler.fetchMaterialPriceAndUpdatePrice(true)
-               it("어제 평균가가 0 보다 크다."){
+               it("어제 평균가가 0 보다 큼"){
                    val yesterdayOhlcaPrice = dailyMarketItemOhlcaPriceRepo.findByItemCodeAndRecordedDate(itemCode = requestItemCode, recordedDate = yesterday)
                    yesterdayOhlcaPrice.shouldNotBeNull()
                    yesterdayOhlcaPrice.avgPrice shouldBeGreaterThan 0F
