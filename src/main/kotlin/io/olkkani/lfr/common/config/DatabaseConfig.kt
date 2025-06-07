@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
-import org.springframework.data.redis.core.RedisTemplate
+import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories
 import redis.embedded.RedisServer
 import java.io.BufferedReader
@@ -19,8 +19,8 @@ import java.io.InputStreamReader
 @Configuration
 @EnableRedisRepositories
 class RedisConfiguration(
-    @Value("\${redis.host}") private val host: String,
-    @Value("\${redis.port}") private val redisPort: Int
+    @Value("\${redis.host:localhost}") private val host: String,
+    @Value("\${redis.port:6379}") private val redisPort: Int
 ) {
     @Bean
     fun redisConnectionFactory(): LettuceConnectionFactory {
@@ -28,11 +28,12 @@ class RedisConfiguration(
     }
 
     @Bean
-    fun redisTemplate(connectionFactory: LettuceConnectionFactory?): RedisTemplate<*, *> {
-        val template = RedisTemplate<ByteArray?, ByteArray?>()
-        template.connectionFactory = connectionFactory
+    fun stringRedisTemplate(redisConnectionFactory: LettuceConnectionFactory): StringRedisTemplate {
+        val template = StringRedisTemplate()
+        template.connectionFactory = redisConnectionFactory
         return template
     }
+
 }
 
 @Profile("local")

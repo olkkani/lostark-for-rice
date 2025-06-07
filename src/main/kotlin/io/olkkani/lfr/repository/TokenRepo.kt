@@ -4,16 +4,15 @@ import io.olkkani.lfr.repository.entity.RefreshToken
 import org.springframework.data.redis.core.RedisTemplate
 import org.springframework.data.repository.CrudRepository
 import org.springframework.stereotype.Repository
-import java.time.Duration
 
 
 @Repository
-interface TokenRepo : CrudRepository<RefreshToken, Long>, TokenRepoSupport {
-    fun existsByUserAndDeviceIdAndRefreshToken(userAndDeviceId: String, refreshToken: String): Boolean
+interface TokenRepo : CrudRepository<RefreshToken, String>, TokenRepoSupport {
+
 }
 
-interface TokenRepoSupport {
-
+fun interface TokenRepoSupport {
+     fun existTokenByClientIdAndToken(clientId: String, token: String): Boolean
 }
 
 @Repository
@@ -21,15 +20,13 @@ class TokenRepoSupportImpl(
     private val redisTemplate: RedisTemplate<String, String>
 ) : TokenRepoSupport {
     companion object {
-        private const val KEY_PREFIX = "refresh_token:"
-        private val TTL = Duration.ofDays(7)
+        private const val REDIS_KEY_PREFIX = "refresh_token:"
     }
 
-    fun save(userName: String, refreshToken: String) {
-        redisTemplate.opsForValue().set(
-            "$KEY_PREFIX$userName",
-            refreshToken,
-            TTL
-        )
+    override fun existTokenByClientIdAndToken(clientId: String, token: String): Boolean {
+        val redisKey = REDIS_KEY_PREFIX + clientId
+        val storedToken = redisTemplate.opsForHash<String, String>()[redisKey, "token"]
+        return storedToken == token
     }
+
 }
