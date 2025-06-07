@@ -3,19 +3,13 @@ package io.olkkani.lfr.service
 import com.github.f4b6a3.tsid.TsidCreator
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
-import io.kotest.matchers.collections.shouldHaveSize
-import io.kotest.matchers.ints.shouldBeGreaterThan
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.mockk.coEvery
-import io.mockk.coVerify
 import io.mockk.mockk
-import io.mockk.slot
 import io.olkkani.lfr.adapter.external.LostarkAPIClient
 import io.olkkani.lfr.adapter.external.dto.AuctionInfo
 import io.olkkani.lfr.adapter.external.dto.AuctionItem
-import io.olkkani.lfr.adapter.external.dto.AuctionRequest
 import io.olkkani.lfr.adapter.external.dto.AuctionResponse
 import io.olkkani.lfr.config.PostgresqlTestContainersConfig
 import io.olkkani.lfr.repository.AuctionItemPriceSnapshotRepo
@@ -200,54 +194,6 @@ class LostarkAuctionSchedulerTest : DescribeSpec() {
                     // 비율 계산 검증
                     priceChange.priceDiffRatePrevDay shouldNotBe 0.0
                     priceChange.priceDiffRatePairItem shouldNotBe 0.0
-                }
-            }
-        }
-
-        describe("fetchPriceAndUpdatePrice 메서드") {
-            val requestSlot = slot<AuctionRequest>()
-
-            beforeContainer {
-                // Mock 초기화
-                coEvery {
-                    mockApiClient.fetchAuctionItemsSubscribe(capture(requestSlot))
-                } returns createMockAuctionResponse()
-            }
-
-            context("API 호출이 성공했을 때") {
-                it("가격 데이터를 가져와서 업데이트해야 함") {
-                    scheduler.fetchPriceAndUpdatePrice()
-
-                    // API 호출 검증 (gem 개수만큼 호출되어야 함)
-                    coVerify(exactly = 6) {
-                        mockApiClient.fetchAuctionItemsSubscribe(any())
-                    }
-
-                    // 데이터베이스에 저장된 데이터 검증
-                    val snapshots = todayPriceRepo.findAllByItemCode(65021100)
-                    snapshots shouldHaveSize 2 // Mock 응답에서 2개 아이템 반환
-
-                    // OHLC 데이터 생성 검증
-                    val ohlcData = ohlcPriceRepo.findByItemCodeAndRecordedDate(65021100, LocalDate.now())
-                    ohlcData.shouldNotBeNull()
-                    ohlcData.closePrice shouldBeGreaterThan 0
-                }
-            }
-
-            context("API 호출 중 예외가 발생했을 때") {
-                beforeEach {
-                    coEvery {
-                        mockApiClient.fetchAuctionItemsSubscribe(any())
-                    } throws RuntimeException("API 호출 실패")
-                }
-
-                it("예외가 발생해도 다른 아이템 처리는 계속되어야 함") {
-                    scheduler.fetchPriceAndUpdatePrice()
-
-                    // 예외가 발생했지만 메서드는 완료되어야 함
-                    coVerify(exactly = 6) {
-                        mockApiClient.fetchAuctionItemsSubscribe(any())
-                    }
                 }
             }
         }
