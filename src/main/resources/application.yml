@@ -32,10 +32,10 @@ management:
 lostark:
   auction:
     api:
-      key: ${AUCTION_API_KEY:must_not_null_apikey}
+      key: ${AUCTION_API_KEY:must_not_null_auction_apikey}
   market:
     api:
-      key: ${MARKET_API_KEY:must_not_null_apikey}
+      key: ${MARKET_API_KEY:must_not_null_market_apikey}
 webhook:
   url:
     discord: ${DISCORD_WEBHOOK_URL:must_not_null_url}

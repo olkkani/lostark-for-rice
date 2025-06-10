@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface TokenRepo : CrudRepository<RefreshToken, String>, TokenRepoSupport {
-
+ fun deleteByClientId(clientId: String)
+ fun deleteByToken(token: String)
 }
 
 fun interface TokenRepoSupport {

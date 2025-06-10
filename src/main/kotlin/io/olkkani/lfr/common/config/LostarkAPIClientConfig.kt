@@ -11,7 +11,7 @@ class LostarkAPIClientConfig {
 
     @Bean("auctionAPIClient")
     fun auctionAPIClient(
-        @Value("\${lostark.auction.api.key:must_not_null_apikey}") apiKey: String,
+        @Value("\${lostark.auction.api.key:must-not-null-auction-apikey}") apiKey: String,
         exceptionNotification: ExceptionNotification
     ): LostarkAPIClient {
         return LostarkAPIClient(apiKey, exceptionNotification)
@@ -19,7 +19,7 @@ class LostarkAPIClientConfig {
 
     @Bean("marketAPIClient")
     fun marketAPIClient(
-        @Value("\${lostark.market.api.key:must_not_null_apikey}") apiKey: String,
+        @Value("\${lostark.market.api.key:must-not-null-market-apikey}") apiKey: String,
         exceptionNotification: ExceptionNotification
     ): LostarkAPIClient {
         return LostarkAPIClient(apiKey, exceptionNotification)

@@ -1,6 +1,8 @@
 package io.olkkani.lfr.common.config
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import io.olkkani.lfr.common.security.JwtAuthenticationFilter
+import io.olkkani.lfr.common.security.JwtTokenProvider
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
@@ -8,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
 import org.springframework.security.web.header.writers.XXssProtectionHeaderWriter
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
@@ -16,8 +19,9 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 @EnableWebSecurity
 class SecurityConfig(
-    private val objectMapper: ObjectMapper
-) {
+    private val objectMapper: ObjectMapper,
+    private val jwtTokenProvider: JwtTokenProvider,
+    ) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http
@@ -27,16 +31,12 @@ class SecurityConfig(
                 }
                 header.frameOptions { it.deny() }
 //                header.contentSecurityPolicy { it.policyDirectives("script-src 'self'") }
-//                header.httpStrictTransportSecurity {
-//                    it.includeSubDomains(true)
-//                    it.maxAgeInSeconds(31536000)
-//                }
             }
             .sessionManagement { session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
             .authorizeHttpRequests { authorize ->
-//                authorize.requestMatchers("/api/alerts/**").authenticated()
+                authorize.requestMatchers("/api/alerts/**").authenticated()
                 authorize.anyRequest().permitAll()
             }
 //            .oauth2Login { succeeHandler ->
@@ -46,6 +46,10 @@ class SecurityConfig(
 //                succeeHandler.defaultSuccessUrl("/api/alerts/fetch", true)
 
 //            }
+            .addFilterBefore(
+                JwtAuthenticationFilter(jwtTokenProvider),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
             .cors { cors ->
                 cors.configurationSource(corsConfigurationSourceLocal())
             }

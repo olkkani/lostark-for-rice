@@ -197,6 +197,7 @@ class LostarkAuctionSchedulerTest : DescribeSpec() {
                 }
             }
         }
+
     }
 
     private fun createMockAuctionResponse(): AuctionResponse {
