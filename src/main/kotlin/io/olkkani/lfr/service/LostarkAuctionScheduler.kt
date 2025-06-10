@@ -1,16 +1,16 @@
 package io.olkkani.lfr.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.olkkani.lfr.dao.AuctionDAO
-import io.olkkani.lfr.dto.extractPrices
-import io.olkkani.lfr.entity.DailyAuctionItemOhlcPrice
-import io.olkkani.lfr.entity.ItemPreviousPriceChange
+import io.olkkani.lfr.adapter.external.dao.AuctionDAO
+import io.olkkani.lfr.adapter.external.LostarkAPIClient
+import io.olkkani.lfr.adapter.external.dto.extractPrices
+import io.olkkani.lfr.common.util.IQRCalculator
+import io.olkkani.lfr.common.util.PercentageCalculation
 import io.olkkani.lfr.repository.AuctionItemPriceSnapshotRepo
 import io.olkkani.lfr.repository.DailyAuctionItemOhlcPriceRepo
 import io.olkkani.lfr.repository.ItemPreviousPriceChangeRepo
-import io.olkkani.lfr.util.IQRCalculator
-import io.olkkani.lfr.util.LostarkAPIClient
-import io.olkkani.lfr.util.PercentageCalculation
+import io.olkkani.lfr.repository.entity.DailyAuctionItemOhlcPrice
+import io.olkkani.lfr.repository.entity.ItemPreviousPriceChange
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope

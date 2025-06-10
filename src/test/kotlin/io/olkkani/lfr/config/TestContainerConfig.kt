@@ -1,5 +1,6 @@
 package io.olkkani.lfr.config
 
+import com.redis.testcontainers.RedisContainer
 import org.springframework.boot.test.context.TestConfiguration
 import org.springframework.boot.testcontainers.service.connection.ServiceConnection
 import org.springframework.context.annotation.Bean
@@ -7,7 +8,7 @@ import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.utility.DockerImageName
 
 @TestConfiguration(proxyBeanMethods = false)
-class TestContainersConfig {
+class PostgresqlTestContainersConfig {
 
     companion object {
         val postgresContainer: PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:17-alpine"))
@@ -31,3 +32,21 @@ class TestContainersConfig {
     @ServiceConnection
     fun postgresContainer(): PostgreSQLContainer<*> = postgresContainer
 }
+
+@TestConfiguration(proxyBeanMethods = false)
+class RedisTestContainersConfig {
+
+    companion object {
+        val redisContainer: RedisContainer = RedisContainer(DockerImageName.parse("redis:7-alpine"))
+            .withReuse(true)
+
+        init {
+            redisContainer.start()
+        }
+    }
+
+    @Bean
+    fun redisContainer(): RedisContainer = redisContainer
+}
+
+

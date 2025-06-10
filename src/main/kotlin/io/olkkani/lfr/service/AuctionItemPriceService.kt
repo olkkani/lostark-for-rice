@@ -1,9 +1,9 @@
 package io.olkkani.lfr.service
 
-import io.olkkani.lfr.entity.DailyAuctionItemOhlcPrice
-import io.olkkani.lfr.entity.ItemPreviousPriceChange
 import io.olkkani.lfr.repository.DailyAuctionItemOhlcPriceRepo
 import io.olkkani.lfr.repository.ItemPreviousPriceChangeRepo
+import io.olkkani.lfr.repository.entity.DailyAuctionItemOhlcPrice
+import io.olkkani.lfr.repository.entity.ItemPreviousPriceChange
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 

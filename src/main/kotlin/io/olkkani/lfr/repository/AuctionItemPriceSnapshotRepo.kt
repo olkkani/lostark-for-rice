@@ -1,21 +1,26 @@
 package io.olkkani.lfr.repository
 
 import com.github.f4b6a3.tsid.TsidCreator
-import io.olkkani.lfr.dao.PriceRange
-import io.olkkani.lfr.entity.AuctionItemPriceSnapshot
+import io.olkkani.lfr.repository.dto.PriceRange
+import io.olkkani.lfr.repository.entity.AuctionItemPriceSnapshot
 import org.jooq.DSLContext
 import org.jooq.generated.Tables
 import org.jooq.impl.DSL.*
+import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
-interface AuctionItemPriceSnapshotRepo {
+interface AuctionItemPriceSnapshotRepo: JpaRepository<AuctionItemPriceSnapshot, Long>, AuctionItemPriceSnapshotRepoSupport{
+    fun findAllByItemCode(itemCode: Long): List<AuctionItemPriceSnapshot>
+}
+
+interface AuctionItemPriceSnapshotRepoSupport{
     fun saveAllIgnoreDuplicates(itemPriceSnapshots: List<AuctionItemPriceSnapshot>)
     fun findFilteredPriceRangeByItemCode(itemCode: Int): PriceRange
     fun truncateTable()
 }
 
 @Repository
-class AuctionItemPriceSnapshotRepoImpl(private val dsl: DSLContext): AuctionItemPriceSnapshotRepo {
+class AuctionItemPriceSnapshotRepoSupportImpl(private val dsl: DSLContext): AuctionItemPriceSnapshotRepoSupport {
     override fun saveAllIgnoreDuplicates(itemPriceSnapshots: List<AuctionItemPriceSnapshot>) {
         if (itemPriceSnapshots.isEmpty()) return
         val itemPriceSnapshot = Tables.AUCTION_ITEM_PRICE_SNAPSHOTS

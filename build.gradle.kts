@@ -55,8 +55,7 @@ dependencies {
     implementation(libs.p6spy)
     testImplementation(libs.bundles.test)
     testImplementation(libs.bundles.spring.test)
-    developmentOnly(libs.bundles.persistence.database.embedded)
-    testImplementation(libs.bundles.persistence.database.embedded)
+    implementation(libs.bundles.persistence.database.embedded)
     testImplementation(libs.bundles.testcontainer)
     // the other
     implementation(libs.jackson.kotlin)
@@ -66,6 +65,9 @@ dependencies {
     implementation(libs.coroutines.reactor)
     implementation(libs.reflect.kotlin)
 
+    configurations.all {
+        exclude(group = "org.slf4j", module = "slf4j-simple")
+    }
 
     if (osdetector.arch.equals("aarch_64")) {
         implementation(libs.dns.native.mac) {

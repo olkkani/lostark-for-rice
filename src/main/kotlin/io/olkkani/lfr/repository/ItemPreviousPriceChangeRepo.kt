@@ -1,6 +1,6 @@
 package io.olkkani.lfr.repository
 
-import io.olkkani.lfr.entity.ItemPreviousPriceChange
+import io.olkkani.lfr.repository.entity.ItemPreviousPriceChange
 import jakarta.persistence.EntityManager
 import org.jooq.DSLContext
 import org.jooq.generated.Tables
