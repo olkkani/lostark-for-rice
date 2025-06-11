@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Profile
+import org.springframework.data.redis.connection.RedisStandaloneConfiguration
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory
 import org.springframework.data.redis.core.StringRedisTemplate
 import org.springframework.data.redis.repository.configuration.EnableRedisRepositories
@@ -20,11 +21,19 @@ import java.io.InputStreamReader
 @EnableRedisRepositories
 class RedisConfiguration(
     @Value("\${redis.host:localhost}") private val host: String,
-    @Value("\${redis.port:6379}") private val redisPort: Int
+    @Value("\${redis.port:6379}") private val redisPort: Int,
+    @Value("\${redis.password:}") private val redisPassword: String,
 ) {
     @Bean
     fun redisConnectionFactory(): LettuceConnectionFactory {
-        return LettuceConnectionFactory(host, redisPort)
+        val config = RedisStandaloneConfiguration().apply {
+            hostName = host
+            port = redisPort
+            if (redisPassword.isNotEmpty()) {
+                setPassword(redisPassword)
+            }
+        }
+        return LettuceConnectionFactory(config)
     }
 
     @Bean

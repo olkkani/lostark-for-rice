@@ -111,6 +111,9 @@ jobs:
             echo "AUCTION_API_KEY=${{ secrets.AUCTION_API_KEY }}" >> .env 
             echo "MARKET_API_KEY=${{ secrets.MARKET_API_KEY }}" >> .env 
             echo "DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}" >> .env
+            echo "DB_REDIS_HOST=${{ secrets.DB_REDIS_HOST }}" >> .env
+            echo "DB_REDIS_PORT=${{ secrets.DB_REDIS_PORT }}" >> .env
+            echo "DB_REDIS_PASSWORD=${{ secrets.DB_REDIS_PASSWORD }}" >> .env
             echo "IMAGE_NAME=${{ env.IMAGE_NAME }}:${{env.SHORT_SHA}}" >> .env
   deploy:
     runs-on: ubuntu-24.04

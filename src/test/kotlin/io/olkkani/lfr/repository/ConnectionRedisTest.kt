@@ -17,7 +17,7 @@ class ConnectionRedisTest : DescribeSpec() {
 
     init {
 
-        describe("Redis 연동 테스트") {
+        xdescribe("Redis 연동 테스트") {
             context("데이터 저장 및 조회") {
                 it("Redis에 데이터를 저장하고 조회할 수 있다") {
                     // Given

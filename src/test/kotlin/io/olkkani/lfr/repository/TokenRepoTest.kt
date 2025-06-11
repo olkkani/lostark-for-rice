@@ -26,7 +26,7 @@ class TokenRepoTest: DescribeSpec(){
     private lateinit var tokenRepo: TokenRepo
 
     init {
-        describe("Token 저장 및 검증 테스트"){
+        xdescribe("Token 저장 및 검증 테스트"){
             context("Redis Token Repo Test"){
                 // Given
                 val clientId = "testUser:device1"

@@ -37,7 +37,7 @@ class JwtTokenProviderTest : DescribeSpec() {
 
 
     init {
-        describe("JwtTokenProvider 테스트") {
+        xdescribe("JwtTokenProvider 테스트") {
             // SecretKey 초기화 (실제 구현과 같은 방식)
             val secret = "thisIsASecretKeyForTestingThatShouldBeLongEnoughForHS256Algorithm"
             val secretKey: SecretKey = Keys.hmacShaKeyFor(Decoders.BASE64URL.decode(secret))

@@ -168,3 +168,4 @@ spring:
 redis:
   host: ${DB_REDIS_HOST}
   port: ${DB_REDIS_PORT}
+  password: ${DB_REDIS_PASSWORD}
