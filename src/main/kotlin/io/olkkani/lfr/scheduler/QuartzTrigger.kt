@@ -67,7 +67,7 @@ class QuartzTrigger {
     fun midnightTrigger(): Trigger =
         TriggerBuilder.newTrigger()
             .withIdentity("trigger-midnight")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 ? * *"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("1 0 0 ? * *"))
             .forJob(todayOpeningJobDetail())
             .build()
 
