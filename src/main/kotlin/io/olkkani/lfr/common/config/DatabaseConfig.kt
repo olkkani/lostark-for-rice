@@ -47,7 +47,7 @@ class RedisConfiguration(
 
 @Profile("local")
 @Configuration
-public class RedisEmbeddedConfig(
+class RedisEmbeddedConfig(
     @Value("\${redis.port:0}") private var redisPort: Int
 ) {
     private val logger = KotlinLogging.logger {  }

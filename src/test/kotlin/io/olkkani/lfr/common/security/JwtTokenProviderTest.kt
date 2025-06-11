@@ -72,7 +72,7 @@ class JwtTokenProviderTest : DescribeSpec() {
 
                 it("만료된 토큰은 검증에 실패해야 한다") {
                     // 만료된 토큰을 생성하기 위해 커스텀 메서드 작성
-                    val expiredToken = createExpiredToken(secretKey, userName)
+                    val expiredToken = createExpiredToken(secretKey)
                     val isValid = jwtTokenProvider.isExpired(expiredToken)
 
                     isValid shouldBe false
@@ -94,12 +94,13 @@ class JwtTokenProviderTest : DescribeSpec() {
 /**
  * 테스트용 만료된 토큰 생성 메서드
  */
-private fun createExpiredToken(secretKey: SecretKey, username: String): String {
+private fun createExpiredToken(secretKey: SecretKey): String {
     val now = Date()
     val expiredDate = Date(now.time - 1000) // 1초 전에 만료됨
+    val testUsername = "testUser"
 
     return Jwts.builder()
-        .audience().add(username).and()
+        .audience().add(testUsername).and()
         .issuedAt(now)
         .expiration(expiredDate) // 만료된 시간 설정
         .signWith(secretKey)
