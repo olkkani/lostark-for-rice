@@ -66,15 +66,6 @@ class LostarkMarketSchedulerTest(
             val requestItemCode: Int = abidos.itemCode!!
             val yesterday = LocalDate.now().minusDays(1)
             val requestSlot = slot<MarketRequest>()
-            val testYesterdayData = DailyMarketItemOhlcaPrice(
-                itemCode = requestItemCode,
-                recordedDate = yesterday,
-                openPrice = 1000,
-                highPrice = 1000,
-                lowPrice = 1000,
-                closePrice = 1000
-            )
-
 
             beforeContainer {
                 // 각 테스트 전에 데이터 정리
