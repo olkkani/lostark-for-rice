@@ -21,6 +21,22 @@ spring:
   config:
     activate:
       on-profile: security
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration
+    oauth2:
+      client:
+        registration:
+          test:
+            client-id: test-client-id
+            client-secret: test-client-secret
+            provider: test
+        provider:
+          test:
+            authorization-uri: https://example.com/auth
+            token-uri: https://example.com/token
+            user-info-uri: https://example.com/userinfo
 secret:
   jwt:
     secret: ${JWT_DISCORD_SECRET:dVyUSSGqhfyWt5d23IZ1gS0P0OkjgZl03t20V32jfsjg}

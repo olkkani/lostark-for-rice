@@ -7,25 +7,23 @@ import io.kotest.matchers.floats.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.mockk
+import io.olkkani.lfr.adapter.external.LostarkAPIClient
 import io.olkkani.lfr.adapter.external.dao.MarketDAO
 import io.olkkani.lfr.common.util.ExceptionNotification
-import io.olkkani.lfr.adapter.external.LostarkAPIClient
-import org.springframework.beans.factory.annotation.Value
-import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.ActiveProfiles
 
-@SpringBootTest
 @ActiveProfiles("test")
 class LostarkAPIClientTest(
-    @Value("\${lostark.market.api.key:must_not_empty_key}") private val apiKey: String
 ) : DescribeSpec() {
     val exceptionNotification = mockk<ExceptionNotification>(relaxed = true)
+    private val apiKey = System.getenv("AUCTION_API_KEY") ?: "must_not_empty_key"
+
     val apiClient = LostarkAPIClient(apiKey, exceptionNotification)
 
     private val logger = KotlinLogging.logger {}
 
     init {
-        xdescribe("Lostark API Market Test") {
+        describe("Lostark API Market Test") {
             context("abidos 아이템을 가져오면") {
                 val request = MarketDAO(
                     categoryCode = 50010,

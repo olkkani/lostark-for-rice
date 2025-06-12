@@ -30,7 +30,7 @@ spring-devtools = { module = "org.springframework.boot:spring-boot-devtools", ve
 
 # security
 spring-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
-spring-oauth2 = { module = "org.springframework.security:spring-security-oauth2-client", version.ref = "spring"}
+spring-oauth2 = { module = "org.springframework.boot:spring-boot-starter-oauth2-client", version.ref = "springBoot"}
 jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref="jjwt"}
 jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref="jjwt"}
 jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref="jjwt"}
@@ -84,7 +84,7 @@ spring-test = ["spring-test", "spring-security-test", "kotest-extensions-spring"
 persistence = ["spring-jpa", "hibernate-utils", "hibernate-core", "tsid-creator", "hikaricp", "flyway", "flyway-postgresql"]
 persistence-database = ["postgresql", "spring-redis"]
 persistence-database-embedded = ["h2", "embedded-redis"]
-security = ["spring-security", "jjwt-api"]
+security = ["spring-security", "jjwt-api", "spring-oauth2"]
 test = ["kotest-junit-runner", "mockk", "reactor-test", "junit-kotlin", "junit-launcher"]
 testcontainer = ["spring-testcontainer", "testcontainer-junit", "testcontainer-postgresql", "testcontainer-redis"]
 

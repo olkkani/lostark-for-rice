@@ -114,6 +114,7 @@ jobs:
             echo "DB_REDIS_HOST=${{ secrets.DB_REDIS_HOST }}" >> .env
             echo "DB_REDIS_PORT=${{ secrets.DB_REDIS_PORT }}" >> .env
             echo "DB_REDIS_PASSWORD=${{ secrets.DB_REDIS_PASSWORD }}" >> .env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET}}" >> .env
             echo "IMAGE_NAME=${{ env.IMAGE_NAME }}:${{env.SHORT_SHA}}" >> .env
   deploy:
     runs-on: ubuntu-24.04

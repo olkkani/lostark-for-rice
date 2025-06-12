@@ -7,6 +7,7 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import io.olkkani.lfr.config.PostgresqlTestContainersConfig
+import io.olkkani.lfr.config.TestSecurityConfig
 import io.olkkani.lfr.service.LostarkMarketSchedulerTest
 import org.quartz.CronTrigger
 import org.quartz.Scheduler
@@ -19,7 +20,7 @@ import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
 @ActiveProfiles("prod") // QuartzTrigger 빈을 로드하기 위해 "prod" 프로필을 활성화합니다.
-@Import(PostgresqlTestContainersConfig::class, LostarkMarketSchedulerTest.TestConfig::class) // DB와 Mock 빈 설정을 재사용합니다.
+@Import(PostgresqlTestContainersConfig::class, LostarkMarketSchedulerTest.TestConfig::class, TestSecurityConfig::class) // DB와 Mock 빈 설정을 재사용합니다.
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class QuartzTriggerTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)

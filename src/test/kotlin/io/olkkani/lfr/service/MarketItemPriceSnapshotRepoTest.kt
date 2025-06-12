@@ -5,6 +5,7 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.olkkani.lfr.config.PostgresqlTestContainersConfig
+import io.olkkani.lfr.config.TestSecurityConfig
 import io.olkkani.lfr.repository.MarketItemPriceSnapshotRepo
 import io.olkkani.lfr.repository.entity.MarketItemPriceSnapshot
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -14,7 +15,7 @@ import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(PostgresqlTestContainersConfig::class)
+@Import(PostgresqlTestContainersConfig::class, TestSecurityConfig::class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class MarketItemPriceSnapshotRepoTest(
     private val marketItemPriceSnapshotRepo: MarketItemPriceSnapshotRepo

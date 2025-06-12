@@ -7,6 +7,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotBeEmpty
 import io.olkkani.lfr.config.RedisTestContainersConfig
+import io.olkkani.lfr.config.TestSecurityConfig
 import io.olkkani.lfr.repository.TokenRepo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -18,7 +19,7 @@ import java.util.*
 import javax.crypto.SecretKey
 
 @SpringBootTest
-@Import(RedisTestContainersConfig::class, JwtTokenProviderTest.TestConfig::class)
+@Import(RedisTestContainersConfig::class, JwtTokenProviderTest.TestConfig::class, TestSecurityConfig::class)
 class JwtTokenProviderTest : DescribeSpec() {
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider

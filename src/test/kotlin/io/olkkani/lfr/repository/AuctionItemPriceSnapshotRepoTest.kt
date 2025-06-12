@@ -8,6 +8,7 @@ import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.olkkani.lfr.config.PostgresqlTestContainersConfig
+import io.olkkani.lfr.config.TestSecurityConfig
 import io.olkkani.lfr.repository.entity.AuctionItemPriceSnapshot
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -17,7 +18,7 @@ import java.time.LocalDateTime
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(PostgresqlTestContainersConfig::class)
+@Import(PostgresqlTestContainersConfig::class, TestSecurityConfig::class)
 class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 

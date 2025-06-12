@@ -12,6 +12,7 @@ import io.olkkani.lfr.adapter.external.dto.AuctionInfo
 import io.olkkani.lfr.adapter.external.dto.AuctionItem
 import io.olkkani.lfr.adapter.external.dto.AuctionResponse
 import io.olkkani.lfr.config.PostgresqlTestContainersConfig
+import io.olkkani.lfr.config.TestSecurityConfig
 import io.olkkani.lfr.repository.AuctionItemPriceSnapshotRepo
 import io.olkkani.lfr.repository.DailyAuctionItemOhlcPriceRepo
 import io.olkkani.lfr.repository.ItemPreviousPriceChangeRepo
@@ -31,7 +32,7 @@ import java.time.LocalDateTime
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(PostgresqlTestContainersConfig::class)
+@Import(PostgresqlTestContainersConfig::class, TestSecurityConfig::class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class LostarkAuctionSchedulerTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)

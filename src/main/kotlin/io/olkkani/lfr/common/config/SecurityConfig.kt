@@ -3,6 +3,7 @@ package io.olkkani.lfr.common.config
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.olkkani.lfr.common.security.JwtAuthenticationFilter
 import io.olkkani.lfr.common.security.JwtTokenProvider
+import io.olkkani.lfr.common.security.OAuth2LoginSuccessHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
@@ -21,40 +22,45 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class SecurityConfig(
     private val objectMapper: ObjectMapper,
     private val jwtTokenProvider: JwtTokenProvider,
-    ) {
+    private val oAuth2LoginSuccessHandler: OAuth2LoginSuccessHandler,
+    private val oAuth2LoginFailureHandler: OAuth2LoginFailureHandler,
+) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
-        http
+        return http
             .headers { header ->
                 header.xssProtection { xss ->
                     xss.headerValue(XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
                 }
                 header.frameOptions { it.deny() }
-//                header.contentSecurityPolicy { it.policyDirectives("script-src 'self'") }
             }
             .sessionManagement { session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
-            .authorizeHttpRequests { authorize ->
-                authorize.requestMatchers("/api/alerts/**").authenticated()
-                authorize.anyRequest().permitAll()
-            }
-//            .oauth2Login { succeeHandler ->
-//                succeeHandler.userInfoEndpoint {
-//                    it.oidcUserService(OidcUserService())
-//                }
-//                succeeHandler.defaultSuccessUrl("/api/alerts/fetch", true)
-
-//            }
-            .addFilterBefore(
-                JwtAuthenticationFilter(jwtTokenProvider),
-                UsernamePasswordAuthenticationFilter::class.java
-            )
             .cors { cors ->
                 cors.configurationSource(corsConfigurationSourceLocal())
             }
             .csrf { it.disable() }
-        return http.build()
+            .addFilterBefore(
+                JwtAuthenticationFilter(jwtTokenProvider),
+                UsernamePasswordAuthenticationFilter::class.java
+            )
+            .authorizeHttpRequests { authorize ->
+                authorize.requestMatchers("/api/alerts/**").authenticated()
+                authorize.anyRequest().permitAll()
+            }
+            .oauth2Login { oauth2 ->
+                oauth2
+                    .successHandler(oAuth2LoginSuccessHandler)
+                    .failureHandler(oAuth2LoginFailureHandler)
+                    .authorizationEndpoint { authEndpoint ->
+                        authEndpoint.baseUri("/oauth2/authorization")
+                    }
+                    .redirectionEndpoint { redirectEndpoint ->
+                        redirectEndpoint.baseUri("/login/oauth2/code/*")
+                    }
+            }
+            .build()
     }
 
     @Bean
@@ -64,7 +70,6 @@ class SecurityConfig(
             allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
             allowedHeaders = listOf("*")
             allowCredentials = true
-//            maxAge = 3600L
         }
         val source = UrlBasedCorsConfigurationSource()
         source.registerCorsConfiguration("/**", configuration)

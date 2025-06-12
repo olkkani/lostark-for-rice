@@ -1,5 +1,8 @@
 package io.olkkani.lfr.controller
 
+import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
@@ -7,14 +10,16 @@ import org.springframework.web.bind.annotation.RestController
 @RequestMapping("api/auth")
 class AuthRestController(
 ) {
-//    @PostMapping("/refresh")
-//    fun refreshToken(
-//            @CookieValue("refresh_token") refreshToken: String,
-//            @RequestHeader("device-id", required = false) deviceId: String? = null,
-//            ): ResponseEntity<Map<String, String>> {
-//        val userId = jwtTokenProvider.getUserNameByToken(refreshToken)
-//        val newAccessToken = jwtTokenProvider.createToken(userId)
-//        return ResponseEntity.ok(mapOf("accessToken" to newAccessToken))
-//    }
-//
+    @GetMapping("/discord")
+    fun loginWithDiscord(): ResponseEntity<Map<String, String>> {
+        return ResponseEntity.ok(
+            mapOf("redirectUrl" to "/oauth2/authorization/discord")
+        )
+    }
+
+    @PostMapping("/logout")
+    fun logout(): ResponseEntity<Map<String, String>> {
+        //TODO: 로그아웃 로직 구현
+        return ResponseEntity.ok(mapOf("message" to "Successfully logged out"))
+    }
 }
