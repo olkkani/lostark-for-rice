@@ -67,7 +67,7 @@ spring:
             user-name-attribute: id
 secret:
     jwt:
-      secret: ${JWT_DISCORD_SECRET:dVyUSSGqhfyWt5d23IZ1gS0P0OkjgZl03t20V32jfsjg}
+      secret: ${JWT_SECRET:dVyUSSGqhfyWt5d23IZ1gS0P0OkjgZl03t20V32jfsjg}
       expiration: 604800000 # 7days
 --- # local-server
 spring:
