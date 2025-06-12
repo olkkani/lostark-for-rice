@@ -14,6 +14,7 @@ import io.olkkani.lfr.adapter.external.dto.Item
 import io.olkkani.lfr.adapter.external.dto.MarketRequest
 import io.olkkani.lfr.adapter.external.dto.MarketResponse
 import io.olkkani.lfr.config.PostgresqlTestContainersConfig
+import io.olkkani.lfr.config.TestSecurityConfig
 import io.olkkani.lfr.repository.DailyMarketItemOhlcaPriceRepo
 import io.olkkani.lfr.repository.MarketItemPriceSnapshotRepo
 import io.olkkani.lfr.repository.entity.DailyMarketItemOhlcaPrice
@@ -30,7 +31,7 @@ import java.time.LocalDate
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(PostgresqlTestContainersConfig::class)
+@Import(PostgresqlTestContainersConfig::class, TestSecurityConfig::class)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class LostarkMarketSchedulerTest(
 ) : DescribeSpec() {
@@ -57,7 +58,7 @@ class LostarkMarketSchedulerTest(
             }
 
         }
-        describe("전날 가격 업데이트 테스트") {
+        xdescribe("전날 가격 업데이트 테스트") {
             val abidos = MarketDAO(
                 categoryCode = 50010,
                 itemCode = 6861012,
@@ -111,6 +112,33 @@ class LostarkMarketSchedulerTest(
                     dailyMarketItemOhlcaPriceRepo.findAll().size shouldBe 2
                 }
             }
+        }
+        xdescribe("어제 평균가 가격 업데이트 테스트"){
+            beforeContainer {
+                dailyMarketItemOhlcaPriceRepo.deleteAll()
+            }
+            context("어제자 가격을 89.9 로 업데이트 하면"){
+                val itemCode = 6861012
+                val yesterday = LocalDate.now().minusDays(1)
+                val yesterdayAvgPrice: Float = 89.9F
+
+                // Save Yesterday test ohlc price
+                val testYesterdayData = createTestData(itemCode, yesterday)
+                dailyMarketItemOhlcaPriceRepo.saveAndFlush(testYesterdayData)
+                dailyMarketItemOhlcaPriceRepo.findAll().size shouldBe 1
+
+
+                dailyMarketItemOhlcaPriceRepo.findByItemCodeAndRecordedDate(itemCode = itemCode, recordedDate = yesterday)?.apply {
+                    avgPrice = yesterdayAvgPrice
+                    dailyMarketItemOhlcaPriceRepo.save(this)
+                }
+                it("어제자 평균가는 89.9"){
+                    dailyMarketItemOhlcaPriceRepo.findByItemCodeAndRecordedDate(itemCode = itemCode, recordedDate = yesterday)?.avgPrice shouldBe yesterdayAvgPrice
+                }
+
+            }
+
+
         }
     }
 

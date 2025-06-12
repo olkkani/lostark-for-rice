@@ -3,13 +3,14 @@ package io.olkkani.lfr.repository
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.olkkani.lfr.config.RedisTestContainersConfig
+import io.olkkani.lfr.config.TestSecurityConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
 import org.springframework.data.redis.core.RedisTemplate
 
 @SpringBootTest
-@Import(RedisTestContainersConfig::class)
+@Import(RedisTestContainersConfig::class, TestSecurityConfig::class)
 class ConnectionRedisTest : DescribeSpec() {
 
     @Autowired

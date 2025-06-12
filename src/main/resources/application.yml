@@ -69,6 +69,8 @@ secret:
     jwt:
       secret: ${JWT_SECRET:dVyUSSGqhfyWt5d23IZ1gS0P0OkjgZl03t20V32jfsjg}
       expiration: 604800000 # 7days
+frontend:
+  domain: ${FRONTEND_DOMAIN:http//localhost:5173}
 --- # local-server
 spring:
   config:
