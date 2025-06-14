@@ -1,6 +1,5 @@
 package io.olkkani.lfr.scheduler
 
-import io.github.oshai.kotlinlogging.KotlinLogging
 import org.quartz.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -9,8 +8,6 @@ import org.springframework.context.annotation.Profile
 @Configuration
 @Profile("prod")
 class QuartzTrigger {
-    private val logger = KotlinLogging.logger {}
-    
     @Bean
     fun todayOpeningJobDetail(): JobDetail {
         return JobBuilder.newJob(TodayOpeningJob::class.java)
@@ -68,10 +65,9 @@ class QuartzTrigger {
 
     @Bean
     fun midnightTrigger(): Trigger {
-        logger.info { "Creating midnight trigger" }
         return TriggerBuilder.newTrigger()
             .withIdentity("trigger-midnight")
-            .withSchedule(CronScheduleBuilder.cronSchedule("1 45 2 * * ?"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("1 0 0 * * ?"))
             .forJob(todayOpeningJobDetail())
             .build()
     }

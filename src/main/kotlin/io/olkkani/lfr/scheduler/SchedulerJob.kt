@@ -1,6 +1,7 @@
 package io.olkkani.lfr.scheduler
 
 import io.github.oshai.kotlinlogging.KotlinLogging
+import io.olkkani.lfr.common.util.ExceptionNotification
 import io.olkkani.lfr.service.ItemPriceSnapshotScheduler
 import io.olkkani.lfr.service.LostarkAuctionScheduler
 import io.olkkani.lfr.service.LostarkMarketScheduler
@@ -13,7 +14,8 @@ import org.springframework.stereotype.Component
 class TodayOpeningJob(
     private val auctionScheduler: LostarkAuctionScheduler,
     private val marketScheduler: LostarkMarketScheduler,
-    private val itemPriceSnapshotScheduler: ItemPriceSnapshotScheduler
+    private val itemPriceSnapshotScheduler: ItemPriceSnapshotScheduler,
+    private val exceptionNotification: ExceptionNotification,
 ) : QuartzJobBean() {
     private val logger = KotlinLogging.logger {}
     
@@ -27,6 +29,7 @@ class TodayOpeningJob(
             }
         } catch (e: Exception) {
             logger.error(e) { "=== TodayOpeningJob failed with exception: ${e.message} ===" }
+            exceptionNotification.sendErrorNotification(e.message.toString(), "today_opening_job_error")
             throw e
         }
     }
