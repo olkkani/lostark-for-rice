@@ -1,5 +1,6 @@
 package io.olkkani.lfr.scheduler
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import org.quartz.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -8,8 +9,11 @@ import org.springframework.context.annotation.Profile
 @Configuration
 @Profile("prod")
 class QuartzTrigger {
+    private val logger = KotlinLogging.logger {}
+    
     @Bean
     fun todayOpeningJobDetail(): JobDetail {
+        logger.info { "Configuring TodayOpeningJob for prod profile" }
         return JobBuilder.newJob(TodayOpeningJob::class.java)
             .withIdentity("TodayOpeningJob")
             .storeDurably()
@@ -64,11 +68,24 @@ class QuartzTrigger {
             .build()
 
     @Bean
-    fun midnightTrigger(): Trigger =
-        TriggerBuilder.newTrigger()
+    fun midnightTrigger(): Trigger {
+        logger.info { "Configuring midnight trigger for TodayOpeningJob - will run at 00:00:01 daily" }
+        return TriggerBuilder.newTrigger()
             .withIdentity("trigger-midnight")
-            .withSchedule(CronScheduleBuilder.cronSchedule("1 0 0 ? * *"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("1 20 2 * * ?"))
             .forJob(todayOpeningJobDetail())
             .build()
+    }
+
+    // 임시 테스트용 - 매 5분마다 실행 (테스트 후 제거 필요)
+    @Bean 
+    fun testTrigger(): Trigger {
+        logger.info { "Configuring TEST trigger for TodayOpeningJob - will run every 5 minutes" }
+        return TriggerBuilder.newTrigger()
+            .withIdentity("trigger-test-5min")
+            .withSchedule(CronScheduleBuilder.cronSchedule("0 */5 * ? * *"))
+            .forJob(todayOpeningJobDetail())
+            .build()
+    }
 
 }

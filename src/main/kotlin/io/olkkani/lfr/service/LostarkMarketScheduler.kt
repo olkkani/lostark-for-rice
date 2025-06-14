@@ -119,23 +119,23 @@ class LostarkMarketSchedulerImpl(
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     override fun updateYesterdayAvgPrice(itemCode: Int, yesterdayAvgPrice: Float) {
-        val yesterday = LocalDate.now().minusDays(1)
-        val yesterdayPrice = ohlcPriceRepo.findByItemCodeAndRecordedDate(itemCode = itemCode, recordedDate = yesterday)
-        logger.info { "itemCode: $itemCode yesterday: $yesterday"}
-        if(yesterdayPrice != null && yesterdayAvgPrice > 0.0f){
-            logger.info { "Update $yesterday Avg Price: $yesterdayAvgPrice" }
-            yesterdayPrice.avgPrice = yesterdayAvgPrice
-            ohlcPriceRepo.save(yesterdayPrice)
-        }else {
-            logger.info { "NotFound Yesterday Price"}
-
+        try {
+            val yesterday = LocalDate.now().minusDays(1)
+            logger.info { "=== updateYesterdayAvgPrice called: itemCode=$itemCode, yesterday=$yesterday, avgPrice=$yesterdayAvgPrice ===" }
+            
+            val yesterdayPrice = ohlcPriceRepo.findByItemCodeAndRecordedDate(itemCode = itemCode, recordedDate = yesterday)
+            
+            if(yesterdayPrice != null && yesterdayAvgPrice > 0.0f){
+                logger.info { "✅ Found yesterday price record - Updating avgPrice from ${yesterdayPrice.avgPrice} to $yesterdayAvgPrice" }
+                yesterdayPrice.avgPrice = yesterdayAvgPrice
+                ohlcPriceRepo.save(yesterdayPrice)
+                logger.info { "✅ Successfully updated yesterday avgPrice for itemCode=$itemCode" }
+            } else {
+                logger.warn { "❌ Cannot update yesterday avgPrice - yesterdayPrice=${yesterdayPrice?.let { "exists" } ?: "null"}, avgPrice=$yesterdayAvgPrice" }
+            }
+        } catch (e: Exception) {
+            logger.error(e) { "❌ Exception in updateYesterdayAvgPrice for itemCode=$itemCode: ${e.message}" }
+            throw e
         }
-
-
-
-//        ohlcPriceRepo.findByItemCodeAndRecordedDate(itemCode = itemCode, recordedDate = yesterday)?.apply {
-//            avgPrice = yesterdayAvgPrice
-//            ohlcPriceRepo.save(this)
-//        }
     }
 }
