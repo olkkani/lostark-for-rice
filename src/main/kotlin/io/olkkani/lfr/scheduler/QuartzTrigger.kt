@@ -68,22 +68,11 @@ class QuartzTrigger {
 
     @Bean
     fun midnightTrigger(): Trigger {
+        logger.info { "Creating midnight trigger" }
         return TriggerBuilder.newTrigger()
             .withIdentity("trigger-midnight")
-            .withSchedule(CronScheduleBuilder.cronSchedule("1 0 0 * * ?"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("1 45 2 * * ?"))
             .forJob(todayOpeningJobDetail())
             .build()
     }
-
-    // 임시 테스트용 - 매 5분마다 실행 (테스트 후 제거 필요)
-    @Bean 
-    fun testTrigger(): Trigger {
-        logger.info { "Configuring TEST trigger for TodayOpeningJob - will run every 5 minutes" }
-        return TriggerBuilder.newTrigger()
-            .withIdentity("trigger-test-5min")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 */5 * ? * *"))
-            .forJob(todayOpeningJobDetail())
-            .build()
-    }
-
 }
