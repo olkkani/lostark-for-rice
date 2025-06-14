@@ -72,7 +72,7 @@ class QuartzTrigger {
         logger.info { "Configuring midnight trigger for TodayOpeningJob - will run at 00:00:01 daily" }
         return TriggerBuilder.newTrigger()
             .withIdentity("trigger-midnight")
-            .withSchedule(CronScheduleBuilder.cronSchedule("1 20 2 * * ?"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("1 0 0 * * ?"))
             .forJob(todayOpeningJobDetail())
             .build()
     }
