@@ -18,22 +18,12 @@ class TodayOpeningJob(
     private val logger = KotlinLogging.logger {}
     
     override fun executeInternal(context: JobExecutionContext) {
-        logger.info { "=== TodayOpeningJob started at ${java.time.LocalDateTime.now()} ===" }
         try {
             runBlocking {
-                logger.info { "Starting deleteSnapshotData..." }
                 itemPriceSnapshotScheduler.deleteSnapshotData()
-                
-                logger.info { "Starting auction price fetch..." }
                 auctionScheduler.fetchPriceAndUpdatePrice()
-                
-                logger.info { "Starting material price fetch with updateYesterdayAvgPrice=true..." }
                 marketScheduler.fetchMaterialPriceAndUpdatePrice(isUpdateYesterdayAvgPrice = true)
-                
-                logger.info { "Starting engraving recipe price fetch with updateYesterdayAvgPrice=true..." }
                 marketScheduler.fetchEngravingRecipePriceAndUpdatePrice(isUpdateYesterdayAvgPrice = true)
-                
-                logger.info { "=== TodayOpeningJob completed successfully ===" }
             }
         } catch (e: Exception) {
             logger.error(e) { "=== TodayOpeningJob failed with exception: ${e.message} ===" }

@@ -13,7 +13,6 @@ class QuartzTrigger {
     
     @Bean
     fun todayOpeningJobDetail(): JobDetail {
-        logger.info { "Configuring TodayOpeningJob for prod profile" }
         return JobBuilder.newJob(TodayOpeningJob::class.java)
             .withIdentity("TodayOpeningJob")
             .storeDurably()
@@ -69,7 +68,6 @@ class QuartzTrigger {
 
     @Bean
     fun midnightTrigger(): Trigger {
-        logger.info { "Configuring midnight trigger for TodayOpeningJob - will run at 00:00:01 daily" }
         return TriggerBuilder.newTrigger()
             .withIdentity("trigger-midnight")
             .withSchedule(CronScheduleBuilder.cronSchedule("1 0 0 * * ?"))

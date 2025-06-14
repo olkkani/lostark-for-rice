@@ -121,17 +121,10 @@ class LostarkMarketSchedulerImpl(
     override fun updateYesterdayAvgPrice(itemCode: Int, yesterdayAvgPrice: Float) {
         try {
             val yesterday = LocalDate.now().minusDays(1)
-            logger.info { "=== updateYesterdayAvgPrice called: itemCode=$itemCode, yesterday=$yesterday, avgPrice=$yesterdayAvgPrice ===" }
-            
-            val yesterdayPrice = ohlcPriceRepo.findByItemCodeAndRecordedDate(itemCode = itemCode, recordedDate = yesterday)
-            
-            if(yesterdayPrice != null && yesterdayAvgPrice > 0.0f){
-                logger.info { "✅ Found yesterday price record - Updating avgPrice from ${yesterdayPrice.avgPrice} to $yesterdayAvgPrice" }
-                yesterdayPrice.avgPrice = yesterdayAvgPrice
-                ohlcPriceRepo.save(yesterdayPrice)
-                logger.info { "✅ Successfully updated yesterday avgPrice for itemCode=$itemCode" }
-            } else {
-                logger.warn { "❌ Cannot update yesterday avgPrice - yesterdayPrice=${yesterdayPrice?.let { "exists" } ?: "null"}, avgPrice=$yesterdayAvgPrice" }
+            ohlcPriceRepo.findByItemCodeAndRecordedDate(itemCode = itemCode, recordedDate = yesterday)?.apply {
+                logger.info { "=== Update YesterdayAvgPrice for itemCode=$itemCode: $yesterdayAvgPrice ===" }
+                avgPrice = yesterdayAvgPrice
+                ohlcPriceRepo.save(this)
             }
         } catch (e: Exception) {
             logger.error(e) { "❌ Exception in updateYesterdayAvgPrice for itemCode=$itemCode: ${e.message}" }
