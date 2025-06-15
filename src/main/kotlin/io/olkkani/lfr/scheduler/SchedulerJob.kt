@@ -18,8 +18,9 @@ class TodayOpeningJob(
     private val exceptionNotification: ExceptionNotification,
 ) : QuartzJobBean() {
     private val logger = KotlinLogging.logger {}
-    
+
     override fun executeInternal(context: JobExecutionContext) {
+        logger.info { "start job"}
         try {
             runBlocking {
                 itemPriceSnapshotScheduler.deleteSnapshotData()
@@ -39,12 +40,21 @@ class TodayOpeningJob(
 class TodayFetchPricesJob(
     private val auctionScheduler: LostarkAuctionScheduler,
     private val marketScheduler: LostarkMarketScheduler,
+    private val exceptionNotification: ExceptionNotification,
 ) : QuartzJobBean() {
+    private val logger = KotlinLogging.logger {}
     override fun executeInternal(context: JobExecutionContext) {
-        runBlocking {
-            auctionScheduler.fetchPriceAndUpdatePrice()
-            marketScheduler.fetchMaterialPriceAndUpdatePrice()
-            marketScheduler.fetchEngravingRecipePriceAndUpdatePrice()
+        try {
+
+            runBlocking {
+                auctionScheduler.fetchPriceAndUpdatePrice()
+                marketScheduler.fetchMaterialPriceAndUpdatePrice()
+                marketScheduler.fetchEngravingRecipePriceAndUpdatePrice()
+            }
+        } catch (e: Exception) {
+            logger.error(e) { "=== TodayFetchPricesJob failed with exception: ${e.message} ===" }
+            exceptionNotification.sendErrorNotification(e.message.toString(), "error-fetch-prices-job")
+            throw e
         }
     }
 }

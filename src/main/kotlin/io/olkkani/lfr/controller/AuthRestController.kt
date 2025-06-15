@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("api/auth")
+@RequestMapping("/api/auth")
 class AuthRestController(
 ) {
     @GetMapping("/discord")
