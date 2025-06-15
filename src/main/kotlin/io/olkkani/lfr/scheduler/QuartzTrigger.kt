@@ -75,7 +75,7 @@ class QuartzTrigger {
     fun midnightFiveMinuteTrigger(): Trigger {
         return TriggerBuilder.newTrigger()
             .withIdentity("trigger-five-minute-midnight")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 15 0 * * ?"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("0 25 0 * * ?"))
             .forJob(todayOpeningJobDetail())
             .build()
     }
