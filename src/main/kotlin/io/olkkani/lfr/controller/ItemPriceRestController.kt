@@ -12,23 +12,23 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @RequestMapping("/api/items")
-class AuctionItemPriceRestController(
+class ItemPriceRestController(
     private val service: AuctionItemPriceService,
 ) {
 
-    @GetMapping("/prices/today")
+    @GetMapping("/auctions/prices/today")
     fun getAllKindsTodayPrice(): ResponseEntity<List<ItemPreviewDTO>> {
         return ResponseEntity.ok().body(service.getAllKindsTodayPrice().map { it.toPreviewResponse()  })
     }
 
-    @GetMapping("/{itemCode}/prices")
+    @GetMapping("/{itemCode}/auctions/prices")
     fun getAllPricesByItemCode(@PathVariable itemCode: Int): ResponseEntity<List<CandleChartResponse>> {
         return ResponseEntity.ok().body(
             service.getPriceIndexByItemCode(itemCode).map { it.toChartResponse()  }
         )
     }
 
-    @GetMapping("/{itemCode}/changes")
+    @GetMapping("/{itemCode}/auctions/changes")
     fun getPrevIndexTrendByItemCode(@PathVariable itemCode: Int): ResponseEntity<List<ItemPreviousChangeResponse>> {
         return ResponseEntity.ok().body(
             service.getItemPreviousPriceChangesByItemCode(itemCode).map { it.toResponse() }

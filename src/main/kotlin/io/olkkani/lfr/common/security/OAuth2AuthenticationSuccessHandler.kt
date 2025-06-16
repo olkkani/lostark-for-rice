@@ -17,7 +17,7 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Component
-class OAuth2LoginSuccessHandler(
+class OAuth2AuthenticationSuccessHandler(
     private val jwtTokenProvider: JwtTokenProvider,
     private val tokenRepo: TokenRepo,
     @Value("\${frontend.domain:http://localhost:5173}")
@@ -30,7 +30,7 @@ class OAuth2LoginSuccessHandler(
         authentication: Authentication,
     ) {
         val frontendSuccessUrl = "$frontendDomain/auth/success"
-
+        
         try {
             val oAuth2User = authentication.principal as OAuth2User
             val discordUser = mapToDiscordUser(oAuth2User)
@@ -48,15 +48,16 @@ class OAuth2LoginSuccessHandler(
             // TODO: Token 보안이 제대로 적용된건지 확인
             val redirectUrl = UriComponentsBuilder.fromUriString(frontendSuccessUrl)
                 .queryParam("access_token", URLEncoder.encode(accessToken, StandardCharsets.UTF_8))
-                .queryParam("device_id", URLEncoder.encode(deviceId, StandardCharsets.UTF_8))
                 .build()
                 .toUriString()
-
             // Refresh Token을 HttpOnly 쿠키로 설정
             response.addCookie(createHttpOnlyCookie(refreshToken))
+            response.addCookie(createHttpOnlyCookie(deviceId))
             response.sendRedirect(redirectUrl)
 
         } catch (e: Exception) {
+            println("OAuth2 Success Handler Error: ${e.message}")
+            e.printStackTrace()
             // 에러 발생 시 실패 페이지로 리다이렉트
             response.sendRedirect("$frontendSuccessUrl?error=oauth_failed")
         }

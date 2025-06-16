@@ -3,7 +3,7 @@ package io.olkkani.lfr.common.config
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.olkkani.lfr.common.security.JwtAuthenticationFilter
 import io.olkkani.lfr.common.security.JwtTokenProvider
-import io.olkkani.lfr.common.security.OAuth2LoginSuccessHandler
+import io.olkkani.lfr.common.security.OAuth2AuthenticationSuccessHandler
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
@@ -22,8 +22,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 class SecurityConfig(
     private val objectMapper: ObjectMapper,
     private val jwtTokenProvider: JwtTokenProvider,
-    private val oAuth2LoginSuccessHandler: OAuth2LoginSuccessHandler,
-    private val oAuth2LoginFailureHandler: OAuth2LoginFailureHandler,
+    private val oAuth2LoginSuccessHandler: OAuth2AuthenticationSuccessHandler,
+    private val oAuth2LoginFailureHandler: OAuth2AuthenticationFailureHandler,
 ) {
     @Bean
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {

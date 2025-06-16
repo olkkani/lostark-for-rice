@@ -8,7 +8,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.stereotype.Component
 
 @Component
-class OAuth2LoginFailureHandler(
+class OAuth2AuthenticationFailureHandler(
     @Value("\${frontend.domain:http://localhost:5173}")
     private val frontendDomain: String
 ) : AuthenticationFailureHandler {
