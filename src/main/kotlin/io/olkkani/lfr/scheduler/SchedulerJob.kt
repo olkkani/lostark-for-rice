@@ -20,7 +20,6 @@ class TodayOpeningJob(
     private val logger = KotlinLogging.logger {}
 
     override fun executeInternal(context: JobExecutionContext) {
-        logger.info { "start job"}
         try {
             runBlocking {
                 itemPriceSnapshotScheduler.deleteSnapshotData()

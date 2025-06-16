@@ -122,7 +122,6 @@ class LostarkMarketSchedulerImpl(
         try {
             val yesterday = LocalDate.now().minusDays(1)
             ohlcPriceRepo.findByItemCodeAndRecordedDate(itemCode = itemCode, recordedDate = yesterday)?.apply {
-                logger.info { "=== Update YesterdayAvgPrice for itemCode=$itemCode: $yesterdayAvgPrice ===" }
                 avgPrice = yesterdayAvgPrice
                 ohlcPriceRepo.save(this)
             }

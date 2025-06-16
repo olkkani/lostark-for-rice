@@ -28,7 +28,7 @@ class QuartzTrigger {
     fun fetchGemPriceTriggerDailyStart0am(): Trigger =
         TriggerBuilder.newTrigger()
             .withIdentity("trigger-every-0am-to-1am, fetch-prices")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 15,30,45 0 ? * *"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("0 30,45 0 ? * *"))
             .forJob(todayFetchPricesJobDetail())
             .build()
     @Bean
@@ -67,15 +67,7 @@ class QuartzTrigger {
     fun midnightTrigger(): Trigger {
         return TriggerBuilder.newTrigger()
             .withIdentity("trigger-midnight")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 1 0 * * ?"))
-            .forJob(todayOpeningJobDetail())
-            .build()
-    }
-    @Bean
-    fun midnightFiveMinuteTrigger(): Trigger {
-        return TriggerBuilder.newTrigger()
-            .withIdentity("trigger-five-minute-midnight")
-            .withSchedule(CronScheduleBuilder.cronSchedule("0 25 0 * * ?"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("0 15 0 * * ?"))
             .forJob(todayOpeningJobDetail())
             .build()
     }
