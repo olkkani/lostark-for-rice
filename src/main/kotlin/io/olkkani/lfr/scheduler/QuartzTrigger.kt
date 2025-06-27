@@ -51,7 +51,7 @@ class QuartzTrigger {
     fun fetchPriceTriggerWedOpenSever(): Trigger =
         TriggerBuilder.newTrigger()
             .withIdentity("trigger-wednesday-every-fifteen-minutes-after-open-server, fetch-prices")
-            .withSchedule(CronScheduleBuilder.cronSchedule("1 */15 10-11 ? * WED"))
+            .withSchedule(CronScheduleBuilder.cronSchedule("15 */15 10-11 ? * WED"))
             .forJob(todayFetchPricesJobDetail())
             .build()
 

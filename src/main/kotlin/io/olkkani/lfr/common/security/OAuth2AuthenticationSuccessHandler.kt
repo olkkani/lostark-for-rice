@@ -1,6 +1,7 @@
 package io.olkkani.lfr.common.security
 
 import com.github.f4b6a3.tsid.TsidCreator
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.olkkani.lfr.adapter.external.dto.DiscordUserDto
 import io.olkkani.lfr.repository.TokenRepo
 import io.olkkani.lfr.repository.entity.RefreshToken
@@ -20,9 +21,12 @@ import java.nio.charset.StandardCharsets
 class OAuth2AuthenticationSuccessHandler(
     private val jwtTokenProvider: JwtTokenProvider,
     private val tokenRepo: TokenRepo,
+    @Value("\${secret.jwt.expiration:2592000000}") private val refreshTokenExpiration: Long,
     @Value("\${frontend.domain:http://localhost:5173}")
-    private val frontendDomain: String
+    private val frontendDomain: String,
 ) : AuthenticationSuccessHandler {
+    //TODO: 토큰의 만료기간을 5분으로 제한
+    private val logger = KotlinLogging.logger { }
 
     override fun onAuthenticationSuccess(
         request: HttpServletRequest,
@@ -30,7 +34,7 @@ class OAuth2AuthenticationSuccessHandler(
         authentication: Authentication,
     ) {
         val frontendSuccessUrl = "$frontendDomain/auth/success"
-        
+
         try {
             val oAuth2User = authentication.principal as OAuth2User
             val discordUser = mapToDiscordUser(oAuth2User)
@@ -47,16 +51,16 @@ class OAuth2AuthenticationSuccessHandler(
             // 프론트엔드로 리다이렉트 (토큰을 쿼리 파라미터로 전달)
             // TODO: Token 보안이 제대로 적용된건지 확인
             val redirectUrl = UriComponentsBuilder.fromUriString(frontendSuccessUrl)
-                .queryParam("access_token", URLEncoder.encode(accessToken, StandardCharsets.UTF_8))
+                .queryParam("accessToken", URLEncoder.encode(accessToken, StandardCharsets.UTF_8))
                 .build()
                 .toUriString()
             // Refresh Token을 HttpOnly 쿠키로 설정
-            response.addCookie(createHttpOnlyCookie(refreshToken))
-            response.addCookie(createHttpOnlyCookie(deviceId))
+            response.addCookie(createHttpOnlyCookie(key = "refreshToken", value = refreshToken))
+            response.addCookie(createHttpOnlyCookie(key = "deviceId", value = deviceId))
             response.sendRedirect(redirectUrl)
 
         } catch (e: Exception) {
-            println("OAuth2 Success Handler Error: ${e.message}")
+            logger.error { "OAuth2 Success Handler Error: ${e.message}"}
             e.printStackTrace()
             // 에러 발생 시 실패 페이지로 리다이렉트
             response.sendRedirect("$frontendSuccessUrl?error=oauth_failed")
@@ -82,13 +86,13 @@ class OAuth2AuthenticationSuccessHandler(
         tokenRepo.save(token)
     }
 
-    private fun createHttpOnlyCookie(value: String): Cookie {
-        return Cookie("refresh_token", value).apply {
-            maxAge = 604800  // 7 days
+    private fun createHttpOnlyCookie(key: String, value: String): Cookie {
+        return Cookie(key, value).apply {
+            maxAge = (refreshTokenExpiration / 1000L).toInt()
             secure = true
             isHttpOnly = true
             path = "/"
-            setAttribute("SameSite", "Lax")
+            setAttribute("SameSite", "Strict")
         }
     }
 }

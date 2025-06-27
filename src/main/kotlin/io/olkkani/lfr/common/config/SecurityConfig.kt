@@ -4,11 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.olkkani.lfr.common.security.JwtAuthenticationFilter
 import io.olkkani.lfr.common.security.JwtTokenProvider
 import io.olkkani.lfr.common.security.OAuth2AuthenticationSuccessHandler
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Profile
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
+import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
+import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
@@ -16,6 +21,7 @@ import org.springframework.security.web.header.writers.XXssProtectionHeaderWrite
 import org.springframework.web.cors.CorsConfiguration
 import org.springframework.web.cors.CorsConfigurationSource
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+
 
 @Configuration
 @EnableWebSecurity
@@ -81,5 +87,15 @@ class SecurityConfig(
         val copy = objectMapper.copy()
         copy.factory.characterEscapes = HtmlCharacterEscapes()
         return MappingJackson2HttpMessageConverter(copy)
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = ["spring.h2.console.enabled"], havingValue = "true")
+    @Profile("local")
+    fun configureH2ConsoleEnable(): WebSecurityCustomizer {
+        return WebSecurityCustomizer { web: WebSecurity? ->
+            web!!.ignoring()
+                .requestMatchers(PathRequest.toH2Console())
+        }
     }
 }

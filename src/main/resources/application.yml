@@ -68,7 +68,7 @@ spring:
 secret:
     jwt:
       secret: ${JWT_SECRET:dVyUSSGqhfyWt5d23IZ1gS0P0OkjgZl03t20V32jfsjg}
-      expiration: 604800000 # 7days
+      expiration: 2592000000 # 30days
 frontend:
   domain: ${FRONTEND_DOMAIN:http://localhost:5173}
 --- # local-server
@@ -115,16 +115,12 @@ spring:
     activate:
       on-profile: persistence-local
   jpa:
-    generate-ddl: true
-    hibernate:
-          ddl-auto: create-drop
-  #    generate-ddl: false
+    generate-ddl: false
   flyway:
     enabled: true # 명시적 선언
     baseline-on-migrate: true # springboot 2 이상에서 안되는 문제가 있어. 명시적 선언
-    locations: classpath:db/migration
+    locations: classpath:db/migration, classpath:db/seed
     baseline-version: 1
-  #    locations: classpath:db/migration,classpath:db/seed
   datasource:
     url: jdbc:h2:mem:local;MODE=PostgreSQL
     username: sa
@@ -145,7 +141,7 @@ spring:
   flyway:
     enabled: true # 명시적 선언
     baseline-on-migrate: true # springboot 2 이상에서 안되는 문제가 있어. 명시적 선언
-    locations: classpath:db/migration
+    locations: classpath:db/migration # prod 환경에서는 migration만 포함
     baseline-version: 1
   datasource:
     url: ${DB_CONNECTION_URL}
