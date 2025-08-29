@@ -5,6 +5,9 @@ import io.oikkani.integrationservice.application.port.`in`.AuctionGemUseCase
 import io.oikkani.integrationservice.application.port.out.ExceptionNotification
 import io.oikkani.integrationservice.infrastructure.adapter.out.client.AuctionClient
 import io.oikkani.integrationservice.infrastructure.adapter.out.client.dto.request.AuctionDTO
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 import org.springframework.stereotype.Service
 
 
@@ -29,17 +32,27 @@ class AuctionGemService(
         TODO("Not yet implemented")
     }
 
-    suspend fun fetchPriceAndReciveProcessorModule() {
+    suspend fun fetchPriceAndReciveProcessorModule() = coroutineScope {
+        gems.map { gem ->
 
-        gems.forEach { gem ->
-            try {
-                val response = apiClient.fetchAuctionItemsAsync(gem.toGemRequest())
-                // 성공 시 response 처리 로직 추가
-                logger.info { "Successfully fetched price for ${gem.itemName}" }
-            } catch (ex: Exception) {
 
+            async{
+                try {
+
+                    val response = apiClient.fetchAuctionItemsAsync(gem.toGemRequest())
+                    // 성공 시 response 처리 로직 추가
+                    logger.info { "Successfully fetched price for ${gem.itemName}" }
+                    response
+
+
+
+
+                } catch (ex: Exception) {
+                    logger.error(ex) { "Failed to fetch price for ${gem.itemName}" }
+                    null
+                }
             }
-        }
+        }.awaitAll().filterNotNull()
     }
 
 }

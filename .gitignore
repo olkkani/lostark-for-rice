@@ -56,6 +56,7 @@ gradle/*
 
 !gradle/wrapper/
 gradle/wrapper/daemon
+gradle/wrapper/dists
 
 # Gradle and Maven with auto-import
 # When using Gradle or Maven with auto-import, you should exclude module files,

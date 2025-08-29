@@ -1,23 +1,10 @@
-package io.oikkani.integrationservice.service
+package io.oikkani.processorservice.infrastructure.out.repository
 
-import com.github.f4b6a3.tsid.TsidCreator
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
-import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.mockk
-import io.olkkani.lfr.adapter.external.LostarkAPIClient
-import io.olkkani.lfr.adapter.external.dto.AuctionInfo
-import io.olkkani.lfr.adapter.external.dto.AuctionItem
-import io.olkkani.lfr.adapter.external.dto.AuctionResponse
-import io.olkkani.lfr.config.PostgresqlTestContainersConfig
-import io.olkkani.lfr.config.TestSecurityConfig
-import io.olkkani.lfr.repository.AuctionItemPriceSnapshotRepo
-import io.olkkani.lfr.repository.DailyAuctionItemOhlcPriceRepo
-import io.olkkani.lfr.repository.ItemPreviousPriceChangeRepo
-import io.olkkani.lfr.repository.entity.AuctionItemPriceSnapshot
-import io.olkkani.lfr.repository.entity.DailyAuctionItemOhlcPrice
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase

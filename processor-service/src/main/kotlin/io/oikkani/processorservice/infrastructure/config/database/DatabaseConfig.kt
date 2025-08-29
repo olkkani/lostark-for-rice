@@ -1,4 +1,4 @@
-package io.oikkani.integrationservice.infrastructure.config
+package io.oikkani.processorservice.infrastructure.config.database
 
 import io.github.oshai.kotlinlogging.KotlinLogging
 import jakarta.annotation.PostConstruct
