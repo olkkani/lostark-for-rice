@@ -13,6 +13,7 @@ allOpen {
 
 
 dependencies {
+    implementation(project(":common"))
     kapt("org.springframework.boot:spring-boot-configuration-processor")
     developmentOnly(libs.spring.devtools)
     implementation(libs.bundles.kotlin.coroutines)

@@ -1,7 +1,10 @@
 package io.oikkani.integrationservice.infrastructure.config.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import io.olkkani.lfr.common.config.OAuth2AuthenticationFailureHandler
+import io.oikkani.integrationservice.infrastructure.adapter.inbound.security.JwtAuthenticationFilter
+import io.oikkani.integrationservice.infrastructure.adapter.inbound.security.JwtTokenProvider
+import io.oikkani.integrationservice.infrastructure.adapter.inbound.security.OAuth2AuthenticationFailureHandler
+import io.oikkani.integrationservice.infrastructure.adapter.inbound.security.OAuth2AuthenticationSuccessHandler
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean

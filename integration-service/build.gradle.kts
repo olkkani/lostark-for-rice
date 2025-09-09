@@ -5,20 +5,20 @@ plugins {
 
 description = "integration-service"
 
-//            allOpen {
-//                annotation("jakarta.persistence.Entity")
-//                annotation("jakarta.persistence.MappedSuperclass")
-//                annotation("jakarta.persistence.Embeddable")
-
-
-
 dependencies {
+    implementation(project(":common"))
     kapt("org.springframework.boot:spring-boot-configuration-processor")
-    developmentOnly(libs.spring.devtools)
+    implementation(libs.tsid.creator)
     implementation(libs.bundles.kotlin.coroutines)
-    testImplementation(libs.bundles.kotlin.coroutines.test)
     implementation(libs.bundles.spring.security)
+
+    implementation(libs.jjwt.api)
     runtimeOnly(libs.bundles.jjwt)
+
+
+
+    developmentOnly(libs.spring.devtools)
+    testImplementation(libs.bundles.kotlin.coroutines.test)
 
 }
 

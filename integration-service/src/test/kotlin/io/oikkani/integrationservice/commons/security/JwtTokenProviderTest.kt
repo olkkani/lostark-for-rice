@@ -8,7 +8,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldNotBeEmpty
 import io.oikkani.integrationservice.config.RedisTestContainersConfig
 import io.oikkani.integrationservice.config.TestSecurityConfig
-import io.oikkani.integrationservice.infrastructure.config.security.JwtTokenProvider
+import io.oikkani.integrationservice.infrastructure.adapter.inbound.security.JwtTokenProvider
 import io.olkkani.lfr.repository.TokenRepo
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest

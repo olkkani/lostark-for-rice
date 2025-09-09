@@ -1,19 +1,23 @@
 package io.oikkani.integrationservice.application.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.oikkani.integrationservice.application.port.`in`.AuctionGemUseCase
-import io.oikkani.integrationservice.application.port.out.ExceptionNotification
-import io.oikkani.integrationservice.infrastructure.adapter.out.client.AuctionClient
-import io.oikkani.integrationservice.infrastructure.adapter.out.client.dto.request.AuctionDTO
+import io.oikkani.integrationservice.application.port.inbound.AuctionGemUseCase
+import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
+import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.lostark.AuctionClient
+import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.lostark.dto.request.AuctionDTO
+import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.ProcessorAuctionClient
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import org.springframework.stereotype.Service
 
 
 @Service
 class AuctionGemService(
     private val apiClient: AuctionClient,
+    private val processorClient: ProcessorAuctionClient,
     private val exceptionNotification: ExceptionNotification
 ) : AuctionGemUseCase {
 
@@ -27,32 +31,16 @@ class AuctionGemService(
         AuctionDTO(itemCode = 65031100, pairItemCode = 65032100, itemName = "10레벨 겁화의 보석"),
         AuctionDTO(itemCode = 65032100, pairItemCode = 65031100, itemName = "10레벨 작열의 보석")
     )
-
-    override suspend fun fetchPrice() {
-        TODO("Not yet implemented")
-    }
-
-    suspend fun fetchPriceAndReciveProcessorModule() = coroutineScope {
+    override suspend fun fetchAndSendPriceData() = coroutineScope {
         gems.map { gem ->
-
-
-            async{
-                try {
-
-                    val response = apiClient.fetchAuctionItemsAsync(gem.toGemRequest())
-                    // 성공 시 response 처리 로직 추가
-                    logger.info { "Successfully fetched price for ${gem.itemName}" }
-                    response
-
-
-
-
-                } catch (ex: Exception) {
-                    logger.error(ex) { "Failed to fetch price for ${gem.itemName}" }
-                    null
+            async {
+                val response = apiClient.fetchItemsAsync(gem.toGemRequest())
+                response?.let { data ->
+                    launch {
+                        processorClient.sendAuctionPriceData(gem.itemCode, data.toDomain())
+                    }
                 }
             }
-        }.awaitAll().filterNotNull()
+        }.awaitAll().let {  }
     }
-
 }
