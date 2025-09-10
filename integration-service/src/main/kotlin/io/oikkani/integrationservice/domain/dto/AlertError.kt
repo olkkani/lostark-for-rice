@@ -1,6 +1,6 @@
 package io.oikkani.integrationservice.domain.dto
 
-class AlertErrorDTO (
+class AlertError (
     val actionName: String,
     val retryAttempts: Int? = 0,
     val errorCode: Int,

@@ -6,7 +6,7 @@ import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
-import io.oikkani.integrationservice.domain.dto.AlertErrorDTO
+import io.oikkani.integrationservice.domain.dto.AlertError
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.JwtTokenClient
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.dto.RefreshToken
 import jakarta.servlet.http.HttpServletRequest
@@ -150,7 +150,7 @@ class JwtTokenProvider(
             !expiration.before(now) && audience.isNotEmpty()
         } catch (e: Exception) {
             logger.error { e.toString() }
-            val alertError = AlertErrorDTO(
+            val alertError = AlertError(
                 actionName = "jwt_token_valiediton_failed",
                 errorCode = e.hashCode(),
                 errorStatus = e.javaClass.simpleName,

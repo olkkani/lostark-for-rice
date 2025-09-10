@@ -1,7 +1,7 @@
 package io.oikkani.integrationservice.infrastructure.adapter.outbound.client
 
 import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
-import io.oikkani.integrationservice.domain.dto.AlertErrorDTO
+import io.oikkani.integrationservice.domain.dto.AlertError
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.client.WebClientResponseException
@@ -62,7 +62,7 @@ abstract class BaseClient(
                     }
                     // Discord 알람 전송
                     exceptionNotification.sendErrorNotification(
-                        AlertErrorDTO(
+                        AlertError(
                             actionName = actionName,
                             retryAttempts = retrySignal.totalRetries().toInt() + 1,
                             errorCode = originalError.hashCode(),

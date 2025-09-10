@@ -1,7 +1,7 @@
 package io.oikkani.integrationservice.infrastructure.adapter.outbound.notofication
 
 import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
-import io.oikkani.integrationservice.domain.dto.AlertErrorDTO
+import io.oikkani.integrationservice.domain.dto.AlertError
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.notofication.dto.DiscordWebhookResponse
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -22,7 +22,7 @@ class DiscordExceptionNotificationImpl(
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val webClient: WebClient = WebClient.builder().baseUrl(webhookUrl).build()
 
-    override fun sendErrorNotification(alertError: AlertErrorDTO) {
+    override fun sendErrorNotification(alertError: AlertError) {
         val message = DiscordWebhookResponse(
             content = "서버 에러 발생",
             embeds = listOf(
