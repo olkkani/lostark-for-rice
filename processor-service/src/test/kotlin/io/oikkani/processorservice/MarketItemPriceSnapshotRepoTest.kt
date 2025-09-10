@@ -1,4 +1,4 @@
-package io.oikkani.integrationservice.service
+package io.oikkani.processorservice
 
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension

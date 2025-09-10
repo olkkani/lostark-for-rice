@@ -20,7 +20,6 @@ class DiscordExceptionNotificationTest : DescribeSpec() {
     private lateinit var notification: DiscordExceptionNotificationImpl
 
     init {
-
         describe("Discord Exception Notification Test") {
             context("Exception Notification Test") {
                 val alertError = AlertErrorDTO(

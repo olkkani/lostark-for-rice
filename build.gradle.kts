@@ -42,7 +42,7 @@ subprojects {
     dependencies {
         implementation(rootProject.libs.bundles.kotlin)
         implementation(rootProject.libs.bundles.common)
-        testImplementation(rootProject.libs.bundles.kotlin.test)
+        testImplementation(rootProject.libs.bundles.test)
 
         val osName = System.getProperty("os.name").lowercase()
         val osArch = System.getProperty("os.arch")
@@ -56,16 +56,17 @@ subprojects {
     }
 
 
-    tasks.withType<Test>().configureEach {
-        useJUnitPlatform()
-        jvmArgs("-Xshare:off")
-    }
+
     if (name in listOf("integration-service", "processor-service")) {
         apply(plugin = "org.springframework.boot")
         apply(plugin = "org.jetbrains.kotlin.plugin.spring")
         apply(plugin = "io.spring.dependency-management")
         apply(plugin = "org.jetbrains.kotlin.kapt")
+
+
+//        val mockitoAgent = configurations.create("mockitoAgent")
         dependencies {
+//            mockitoAgent(rootProject.libs.mockk) { isTransitive = false }
             implementation(rootProject.libs.bundles.spring) {
                 exclude(
                     group = "org.springframework.boot",
@@ -73,6 +74,15 @@ subprojects {
                 )
             }
             testImplementation(rootProject.libs.bundles.spring.test)
+        }
+        tasks.withType<Test>().configureEach {
+            useJUnitPlatform()
+//            jvmArgs("-javaagent:${mockitoAgent.asPath}", "-Xshare:off")
+            jvmArgs(
+                "-Xshare:off",
+                "-XX:+EnableDynamicAgentLoading" // JDK 21+ Mock config. hide warning message
+
+            )
         }
     }
     if (name in listOf("processor-service")) {
