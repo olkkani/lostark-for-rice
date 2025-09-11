@@ -1,7 +1,7 @@
 package io.oikkani.integrationservice.application.service
 
 import io.oikkani.integrationservice.application.port.inbound.MarketRecipeUseCase
-import io.oikkani.integrationservice.domain.dto.MarketDTO
+import io.oikkani.integrationservice.domain.dto.MarketItemCondition
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.lostark.MarketClient
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.lostark.dto.response.MarketResponse
 import kotlinx.coroutines.async
@@ -14,13 +14,13 @@ class MarketRecipeService(
 ) : MarketRecipeUseCase {
 
 
-    val relicEngravingRecipe = MarketDTO(
+    val relicEngravingRecipe = MarketItemCondition(
         categoryCode = 40000,
         itemGrade = "유물"
     )
 
 
-    override suspend fun fetchAndSendPriceDate(isUpdateYesterdayAvgPrice: Boolean) = coroutineScope {
+    override suspend fun fetchAndSendPriceDate(isUpdateOpenPriceAndYesterdayAvgPrice: Boolean) = coroutineScope {
         var pageNo = 1
         val items = mutableListOf<MarketResponse>()
         while (true) {

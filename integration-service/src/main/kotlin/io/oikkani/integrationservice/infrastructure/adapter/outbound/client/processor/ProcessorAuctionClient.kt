@@ -2,10 +2,12 @@ package io.oikkani.integrationservice.infrastructure.adapter.outbound.client.pro
 
 import io.oikkani.integrationservice.domain.dto.AuctionListingPrice
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.BaseClient
+import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.dto.AuctionPriceRequest
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.notofication.DiscordExceptionNotificationImpl
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.reactor.awaitSingle
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -14,21 +16,20 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Component
 class ProcessorAuctionClient(
+    @Value("\${processor.url:must-not-null-processor-url}") processorServiceUrl: String,
     private val exceptionNotification: DiscordExceptionNotificationImpl,
 ) : BaseClient(exceptionNotification) {
 
-    private val baseUrl: String = "http://localhost:8080/api/v1/auctions/prices"
-
     val client: WebClient = WebClient.builder()
-        .baseUrl(baseUrl)
+        .baseUrl(processorServiceUrl)
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .build()
 
-     suspend fun sendAuctionPriceData(itemCode: Int, listingPrices: List<AuctionListingPrice>) = coroutineScope {
+     suspend fun sendAuctionPriceData(request: AuctionPriceRequest) = coroutineScope {
         client.post()
-            .uri(itemCode.toString())
-            .bodyValue(listingPrices)
+            .uri("auction/items/snapshots")
+            .bodyValue(request)
             .retrieve()
             .toBodilessEntity()
             .withCommonRetryAndSubscribe("send_auction_price_data")

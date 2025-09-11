@@ -5,19 +5,6 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming
 import io.oikkani.integrationservice.domain.dto.AuctionListingPrice
 import java.time.LocalDateTime
 
-//todo
-//class AuctionResponse (
-//    val categoryCode: Int = 210000,
-//    val sort: String = "BUY_PRICE",
-//    val sortCondition: String = "ASC",
-//    val itemName: String,
-//    val pageNo: Int = 0,
-//    val itemCode: Int,
-//    val pairItemCode: Int,
-//)
-//
-
-
 @JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
 data class AuctionResponse(
     val items: List<AuctionItem>,

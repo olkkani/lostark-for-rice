@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service
 @Service
 class MarketMaterialService: MarketMaterialUseCase {
 
-    override suspend fun fetchAndSendPriceData(isUpdateYesterdayAvgPrice: Boolean) {
+    override suspend fun fetchAndSendPriceData(isUpdateOpenPriceAndYesterdayAvgPrice: Boolean) {
         TODO("Not yet implemented")
     }
 

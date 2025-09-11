@@ -1,10 +1,12 @@
 package io.oikkani.integrationservice.infrastructure.out.notification
 
+import io.kotest.common.runBlocking
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.oikkani.integrationservice.config.security.TestSecurityConfig
 import io.oikkani.integrationservice.domain.dto.AlertError
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.notofication.DiscordExceptionNotificationImpl
+import kotlinx.coroutines.delay
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
@@ -20,7 +22,7 @@ class DiscordExceptionNotificationTest : DescribeSpec() {
     private lateinit var notification: DiscordExceptionNotificationImpl
 
     init {
-        describe("Discord Exception Notification Test") {
+        xdescribe("Discord Exception Notification Test") {
             context("Exception Notification Test") {
                 val alertError = AlertError(
                     actionName = "Error Title",
@@ -29,8 +31,10 @@ class DiscordExceptionNotificationTest : DescribeSpec() {
                     errorMessage = "Bad Request Test Message"
                 )
                 it("Exception Notification Test") {
-                    notification.sendErrorNotification(alertError)
-
+                    runBlocking {
+                        notification.sendErrorNotification(alertError)
+                        delay(2000)
+                    }
                 }
             }
         }

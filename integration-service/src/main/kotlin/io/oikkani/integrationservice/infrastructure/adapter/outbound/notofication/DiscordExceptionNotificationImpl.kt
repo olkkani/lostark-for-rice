@@ -1,5 +1,6 @@
 package io.oikkani.integrationservice.infrastructure.adapter.outbound.notofication
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
 import io.oikkani.integrationservice.domain.dto.AlertError
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.notofication.dto.DiscordWebhookResponse
@@ -8,6 +9,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.reactor.awaitSingleOrNull
+import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
@@ -21,7 +23,7 @@ class DiscordExceptionNotificationImpl(
 
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val webClient: WebClient = WebClient.builder().baseUrl(webhookUrl).build()
-
+    private val log = KotlinLogging.logger {  }
     override fun sendErrorNotification(alertError: AlertError) {
         val message = DiscordWebhookResponse(
             content = "서버 에러 발생",

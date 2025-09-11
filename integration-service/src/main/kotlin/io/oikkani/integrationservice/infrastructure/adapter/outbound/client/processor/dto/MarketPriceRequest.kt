@@ -3,6 +3,6 @@ package io.oikkani.integrationservice.infrastructure.adapter.outbound.client.pro
 class MarketPriceRequest(
     val itemCode: Int,
     val price: Int,
-    val yDatePrice: Int,
+    val yesterdayAvgPrice: Int = 0,
     val isOpeningJob: Boolean = false,
 )

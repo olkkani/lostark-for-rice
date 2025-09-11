@@ -6,7 +6,7 @@ import io.oikkani.integrationservice.application.port.outbound.ExceptionNotifica
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.lostark.AuctionClient
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.lostark.dto.request.AuctionDTO
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.ProcessorAuctionClient
-import kotlinx.coroutines.Dispatchers
+import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.dto.AuctionPriceRequest
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -37,10 +37,17 @@ class AuctionGemService(
                 val response = apiClient.fetchItemsAsync(gem.toGemRequest())
                 response?.let { data ->
                     launch {
-                        processorClient.sendAuctionPriceData(gem.itemCode, data.toDomain())
+                        processorClient.sendAuctionPriceData(
+                            AuctionPriceRequest(
+                                itemCode = gem.itemCode,
+                                prices = data.toDomain(),
+                                //TODO isOpening job 이 필요한지 확인
+                            )
+                        )
                     }
                 }
             }
         }.awaitAll().let {  }
     }
 }
+

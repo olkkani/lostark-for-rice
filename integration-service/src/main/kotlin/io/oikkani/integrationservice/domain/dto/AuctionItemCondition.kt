@@ -2,7 +2,7 @@ package io.oikkani.integrationservice.domain.dto
 
 import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.lostark.dto.request.AuctionRequest
 
-class AuctionDTO(
+class AuctionItemCondition(
     val categoryCode: Int = 210000,
     val sort: String = "BUY_PRICE",
     val sortCondition: String = "ASC",
