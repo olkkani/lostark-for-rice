@@ -21,6 +21,7 @@ class ItemPreviousPriceChange (
     var priceDiffPairItem: Int? = null,
     var priceDiffRatePairItem: Double? = null,
 ){
+    // todo
 //    fun toResponse() = ItemPreviousChangeResponse(
 //        recordedDate = recordedDate,
 //        price = price,

@@ -5,6 +5,7 @@ import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.mockk.mockk
+import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.AuctionItemOhlcPriceJpaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase
@@ -25,7 +26,7 @@ class LostarkAuctionSchedulerTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
     @Autowired
-    private lateinit var ohlcPriceRepo: DailyAuctionItemOhlcPriceRepo
+    private lateinit var ohlcPriceRepo: AuctionItemOhlcPriceJpaRepository
 
     @Autowired
     private lateinit var todayPriceRepo: AuctionItemPriceSnapshotRepo

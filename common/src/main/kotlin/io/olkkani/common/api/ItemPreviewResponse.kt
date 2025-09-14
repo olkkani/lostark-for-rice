@@ -1,6 +1,6 @@
 package io.olkkani.common.api
 
-class ItemPreviewResponse(
+class ItemPreview(
     val itemCode: Int,
     val price: Int,
     val highPrice: Int,

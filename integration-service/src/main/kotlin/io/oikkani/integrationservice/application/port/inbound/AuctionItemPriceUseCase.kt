@@ -1,9 +1,9 @@
 package io.oikkani.integrationservice.application.port.inbound
 
-import io.oikkani.integrationservice.infrastructure.adapter.inbound.web.dto.ItemPreviewResponse
-import io.olkkani.common.api.ChartResponse
+import io.olkkani.common.api.ItemPreview
+import io.olkkani.common.dto.contract.CandleChart
 
 interface AuctionItemPriceUseCase {
-    fun getAllKindsTodayPrice(): List<ItemPreviewResponse>
-    fun getPriceIndexByItemCode(itemCode: Int): List<ChartResponse>
+    fun getAllKindsTodayPrice(): List<ItemPreview>
+    fun getPriceIndexByItemCode(itemCode: Int): List<CandleChart>
 }

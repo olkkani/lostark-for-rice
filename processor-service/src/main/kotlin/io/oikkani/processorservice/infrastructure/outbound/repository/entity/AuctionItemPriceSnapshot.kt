@@ -1,6 +1,8 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository.entity
 
 import io.hypersistence.utils.hibernate.id.Tsid
+import io.olkkani.common.dto.contract.AuctionPrice
+import io.olkkani.common.dto.contract.AuctionPriceSnapshot
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
@@ -15,3 +17,11 @@ class AuctionItemPriceSnapshot (
     val endDate: LocalDateTime,
     val price: Int,
 )
+
+fun AuctionPriceSnapshot.toEntityList(): List<AuctionItemPriceSnapshot> = this.prices.map {
+    AuctionItemPriceSnapshot(
+        itemCode = this.itemCode,
+        endDate = it.endDate,
+        price = it.price
+    )
+}

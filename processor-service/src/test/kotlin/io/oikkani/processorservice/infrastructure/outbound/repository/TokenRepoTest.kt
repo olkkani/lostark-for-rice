@@ -5,6 +5,7 @@ import io.kotest.matchers.booleans.shouldBeFalse
 import io.kotest.matchers.booleans.shouldBeTrue
 import io.kotest.matchers.longs.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
+import io.oikkani.processorservice.infrastructure.outbound.repository.redis.TokenRepo
 import io.olkkani.lfr.config.RedisTestContainersConfig
 import io.olkkani.lfr.repository.entity.RefreshToken
 import org.springframework.beans.factory.annotation.Autowired
