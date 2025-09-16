@@ -1,4 +1,4 @@
-package io.oikkani.processorservice.domain.outbound
+package io.oikkani.processorservice.application.port.outbound
 
 import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyMarketItemOhlcaPrice
 

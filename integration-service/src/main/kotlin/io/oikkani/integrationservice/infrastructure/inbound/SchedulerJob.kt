@@ -3,8 +3,8 @@ package io.oikkani.integrationservice.infrastructure.inbound
 import io.oikkani.integrationservice.application.port.inbound.AuctionGemUseCase
 import io.oikkani.integrationservice.application.port.inbound.MarketMaterialUseCase
 import io.oikkani.integrationservice.application.port.inbound.MarketRecipeUseCase
-import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.ProcessorAuctionClient
-import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.ProcessorMarketClient
+import io.oikkani.integrationservice.infrastructure.outbound.client.processor.ProcessorAuctionClient
+import io.oikkani.integrationservice.infrastructure.outbound.client.processor.ProcessorMarketClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -23,9 +23,9 @@ class TodayOpeningJob(
 
     override fun executeInternal(context: JobExecutionContext) {
         coroutineScope.launch {
-            auctionGemService.fetchAndSendPriceData(isUpdateOpenPrice = true)
-            marketMaterialService.fetchAndSendPriceData(isUpdateOpenPriceAndYesterdayAvgPrice = true)
-            marketRecipeService.fetchAndSendPriceDate(isUpdateOpenPriceAndYesterdayAvgPrice = true)
+            auctionGemService.fetchAndSendPriceData()
+            marketMaterialService.fetchAndSendPriceData()
+            marketRecipeService.fetchAndSendPriceDate()
         }
     }
 }
@@ -39,9 +39,9 @@ class TodayFetchPricesJob(
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     override fun executeInternal(context: JobExecutionContext) {
         coroutineScope.launch {
-            auctionGemService.fetchAndSendPriceData(isUpdateOpenPrice = false)
-            marketMaterialService.fetchAndSendPriceData(isUpdateOpenPriceAndYesterdayAvgPrice = false)
-            marketRecipeService.fetchAndSendPriceDate(isUpdateOpenPriceAndYesterdayAvgPrice = false)
+            auctionGemService.fetchAndSendPriceData()
+            marketMaterialService.fetchAndSendPriceData()
+            marketRecipeService.fetchAndSendPriceDate()
         }
     }
 }
@@ -50,7 +50,7 @@ class TodayFetchPricesJob(
 @Component
 class TodayLastJob(
     private val processorAuctionClient: ProcessorAuctionClient,
-    private val processorMarketClient: ProcessorMarketClient
+    private val processorMarketClient: ProcessorMarketClient,
 ) : QuartzJobBean() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     override fun executeInternal(context: JobExecutionContext) {

@@ -1,8 +1,8 @@
 package io.oikkani.processorservice.application.service
 
-import io.oikkani.processorservice.application.port.inbound.AuctionItemPriceSnapshotUseCase
-import io.oikkani.processorservice.domain.outbound.AuctionItemOhlcPriceRepositoryPort
-import io.oikkani.processorservice.domain.outbound.AuctionPriceSnapshotRepositoryPort
+import io.oikkani.processorservice.application.port.inbound.AuctionSnapshotUseCase
+import io.oikkani.processorservice.application.port.outbound.AuctionItemOhlcPriceRepositoryPort
+import io.oikkani.processorservice.application.port.outbound.AuctionItemPriceSnapshotRepositoryPort
 import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyAuctionItemOhlcPrice
 import io.oikkani.processorservice.infrastructure.outbound.repository.entity.toEntityList
 import io.olkkani.common.dto.contract.AuctionPriceSnapshot
@@ -11,10 +11,10 @@ import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
 
 @Service
-class AuctionItemPriceSnapshotService(
-    private val snapshotRepo: AuctionPriceSnapshotRepositoryPort,
+class AuctionSnapshotService(
+    private val snapshotRepo: AuctionItemPriceSnapshotRepositoryPort,
     private val ohlcRepo: AuctionItemOhlcPriceRepositoryPort,
-) : AuctionItemPriceSnapshotUseCase {
+) : AuctionSnapshotUseCase {
 
 
     @Transactional
@@ -35,7 +35,7 @@ class AuctionItemPriceSnapshotService(
                 lowPrice = todayLowPrice
                 closePrice = todayClosePrice
                 ohlcRepo.save(this)
-            }?.run {
+            }?:run {
                 // 데이터가 존재하지 않으면 신규 데이터를 생성 및 삽입
                 ohlcRepo.save(
                     DailyAuctionItemOhlcPrice(

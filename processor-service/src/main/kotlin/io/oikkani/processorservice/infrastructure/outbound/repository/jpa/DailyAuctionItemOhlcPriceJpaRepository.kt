@@ -6,7 +6,8 @@ import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
 @Repository
-interface AuctionItemOhlcPriceJpaRepository: JpaRepository<DailyAuctionItemOhlcPrice, Long> {
+interface DailyAuctionItemOhlcPriceJpaRepository: JpaRepository<DailyAuctionItemOhlcPrice, Long> {
+    fun findAllByItemCode(itemCode: Int): List<DailyAuctionItemOhlcPrice>
     fun findAllByItemCodeOrderByRecordedDateAsc(itemCode: Int): MutableList<DailyAuctionItemOhlcPrice>
     fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): DailyAuctionItemOhlcPrice?
     fun findAllByRecordedDate(recordedDate: LocalDate): List<DailyAuctionItemOhlcPrice>

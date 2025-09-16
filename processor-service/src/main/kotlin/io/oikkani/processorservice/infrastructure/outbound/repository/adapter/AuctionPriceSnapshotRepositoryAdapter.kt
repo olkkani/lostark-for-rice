@@ -1,16 +1,16 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository.adapter
 
-import io.oikkani.processorservice.domain.outbound.AuctionPriceSnapshotRepositoryPort
+import io.oikkani.processorservice.application.port.outbound.AuctionItemPriceSnapshotRepositoryPort
 import io.oikkani.processorservice.infrastructure.outbound.repository.entity.AuctionItemPriceSnapshot
 import io.oikkani.processorservice.infrastructure.outbound.repository.jooq.AuctionItemPriceSnapshotJooqRepository
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.AuctionItemPriceSnapshotJpaRepository
-import org.springframework.stereotype.Repository
+import org.springframework.stereotype.Component
 
-@Repository
+@Component
 class AuctionPriceSnapshotRepositoryAdapter(
     private val jpaRepo: AuctionItemPriceSnapshotJpaRepository,
     private val jooqRepo: AuctionItemPriceSnapshotJooqRepository,
-): AuctionPriceSnapshotRepositoryPort {
+): AuctionItemPriceSnapshotRepositoryPort {
 
     override fun saveAllNotExists(itemPriceSnapshots: List<AuctionItemPriceSnapshot>) {
         jooqRepo.insertIgnoreDuplicates(itemPriceSnapshots)

@@ -4,7 +4,6 @@ import io.oikkani.integrationservice.application.port.outbound.ExceptionNotifica
 import io.oikkani.integrationservice.infrastructure.outbound.client.BaseClient
 import io.oikkani.integrationservice.infrastructure.outbound.client.lostark.dto.request.AuctionRequest
 import io.oikkani.integrationservice.infrastructure.outbound.client.lostark.dto.response.AuctionResponse
-import kotlinx.coroutines.reactive.awaitSingleOrNull
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders

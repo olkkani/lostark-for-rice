@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository
 @Repository
 class AuctionItemPriceSnapshotJooqRepository(private val dsl: DSLContext) {
 
+    private val table = Tables.AUCTION_ITEM_PRICE_SNAPSHOTS
+
     fun insertIgnoreDuplicates(itemPriceSnapshots: List<AuctionItemPriceSnapshot>) {
         if (itemPriceSnapshots.isEmpty()) return
         val itemPriceSnapshot = Tables.AUCTION_ITEM_PRICE_SNAPSHOTS
@@ -30,7 +32,9 @@ class AuctionItemPriceSnapshotJooqRepository(private val dsl: DSLContext) {
         query.onDuplicateKeyIgnore().execute()
     }
 
+
+
     fun truncateTable() {
-        dsl.truncateTable(Tables.AUCTION_ITEM_PRICE_SNAPSHOTS).execute()
+        dsl.truncateTable(table).execute()
     }
 }

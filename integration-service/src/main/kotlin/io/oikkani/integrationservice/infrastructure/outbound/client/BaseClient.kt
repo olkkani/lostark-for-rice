@@ -1,10 +1,12 @@
 package io.oikkani.integrationservice.infrastructure.outbound.client
 
+import io.github.oshai.kotlinlogging.KotlinLogging
 import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
 import io.oikkani.integrationservice.domain.dto.AlertError
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.http.HttpStatus
 import org.springframework.web.reactive.function.client.WebClientResponseException
+import reactor.core.publisher.Flux
 import reactor.core.publisher.Mono
 import reactor.util.retry.Retry
 import java.io.IOException
@@ -25,56 +27,62 @@ abstract class BaseClient(
     private val exceptionNotification: ExceptionNotification,
 ) {
 
-    /**
-     * 공통 재시도 정책 Extension Function
-     *
-     * 사용법:
-     * webClient.get().uri("/api").retrieve()
-     *     .bodyToMono(ResponseClass::class.java)
-     *     .withCommonRetry(exceptionNotification, "API_NAME")
-     */
+    private val log = KotlinLogging.logger {  }
+
+    // 공통 재시도 로직을 생성하는 internal 함수
+    private fun createCommonRetry(actionName: String = "unknown api"): Retry {
+        return Retry.backoff(3, Duration.ofSeconds(1))
+            .jitter(0.1) // 10% 지터로 thundering herd 방지
+            .filter { error -> isRetryableError(error) }
+            // 429 Rate Limit 시 1분 비동기 논블로킹 대기
+            .doBeforeRetryAsync { retrySignal ->
+                val error = retrySignal.failure()
+
+                if (isRateLimitError(error)) {
+                    // 🚀 429 Rate Limit: 1분 논블로킹 대기
+                    Mono.delay(Duration.ofMinutes(1)).then()
+                } else {
+                    // 일반 4xx, 5xx: 지연 없음 (기본 백오프 사용)
+                    Mono.empty()
+                }
+            }
+            // 재시도 실패 시 Discord 알람 전송
+            .onRetryExhaustedThrow { _, retrySignal ->
+                val originalError = retrySignal.failure()
+
+                val errorStatus = when (originalError) {
+                    is WebClientResponseException -> "HTTP ${originalError.statusCode.value()}"
+                    else -> originalError.javaClass.simpleName
+                }
+                // Discord 알람 전송
+                exceptionNotification.sendErrorNotification(
+                    AlertError(
+                        actionName = originalError.stackTrace[0].methodName ?: "Unknown Client Method",
+                        retryAttempts = retrySignal.totalRetries().toInt() + 1,
+                        errorCode = originalError.hashCode(),
+                        errorStatus = errorStatus,
+                        errorMessage = originalError.message ?: "Unknown error",
+                    )
+                )
+                originalError
+            }
+    }
+
+    // Mono 확장 함수
     fun <T> Mono<T>.withCommonRetry(
         actionName: String = "Unknown API"
     ): Mono<T> {
-        return this.retryWhen(
-            Retry.backoff(3, Duration.ofSeconds(1))
-                .jitter(0.1) // 10% 지터로 thundering herd 방지
-                .filter { error -> isRetryableError(error) }
-                // 429 Rate Limit 시 1분 비동기 논블로킹 대기
-                .doBeforeRetryAsync { retrySignal ->
-                    val error = retrySignal.failure()
-
-                    if (isRateLimitError(error)) {
-                        // 🚀 429 Rate Limit: 1분 논블로킹 대기
-                        Mono.delay(Duration.ofMinutes(1)).then()
-                    } else {
-                        // 일반 4xx, 5xx: 지연 없음 (기본 백오프 사용)
-                        Mono.empty()
-                    }
-                }
-                // 재시도 실패 시 Discord 알람 전송
-                .onRetryExhaustedThrow { _, retrySignal ->
-                    val originalError = retrySignal.failure()
-
-                    val errorStatus = when (originalError) {
-                        is WebClientResponseException -> "HTTP ${originalError.statusCode.value()}"
-                        else -> originalError.javaClass.simpleName
-                    }
-                    // Discord 알람 전송
-                    exceptionNotification.sendErrorNotification(
-                        AlertError(
-                            actionName = actionName,
-                            retryAttempts = retrySignal.totalRetries().toInt() + 1,
-                            errorCode = originalError.hashCode(),
-                            errorStatus = errorStatus,
-                            errorMessage = originalError.message ?: "Unknown error",
-                        )
-                    )
-                    originalError
-                }
-        )
+        return this.retryWhen(createCommonRetry(actionName))
             // 최종 에러 발생 시 Mono.empty() 반환
             .onErrorResume { Mono.empty() }
+    }
+
+    // Flux 확장 함수
+    fun <T> Flux<T>.withCommonRetry(
+    ): Flux<T> {
+        return this.retryWhen(createCommonRetry())
+            // 최종 에러 발생 시 Flux.empty() 반환
+            .onErrorResume { Flux.empty() }
     }
 
 

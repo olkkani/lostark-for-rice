@@ -7,9 +7,11 @@ import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
-import io.olkkani.lfr.config.PostgresqlTestContainersConfig
-import io.olkkani.lfr.config.TestSecurityConfig
-import io.olkkani.lfr.repository.entity.AuctionItemPriceSnapshot
+import io.oikkani.processorservice.application.port.outbound.AuctionItemPriceSnapshotRepositoryPort
+import io.oikkani.processorservice.infrastructure.config.repository.PostgresqlTestContainersConfig
+import io.oikkani.processorservice.infrastructure.config.security.TestSecurityConfig
+import io.oikkani.processorservice.infrastructure.outbound.repository.entity.AuctionItemPriceSnapshot
+import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.AuctionItemPriceSnapshotJpaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
@@ -23,20 +25,23 @@ class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
     @Autowired
-    private lateinit var auctionItemPriceSnapshotRepo: AuctionItemPriceSnapshotRepo
+    private lateinit var repository: AuctionItemPriceSnapshotRepositoryPort
+
+    @Autowired
+    private lateinit var jpaRepository: AuctionItemPriceSnapshotJpaRepository
 
     val timeNow: LocalDateTime = LocalDateTime.now()
 
     init {
         describe("saveAllIgnoreDuplicates method test") {
             beforeContainer {
-                auctionItemPriceSnapshotRepo.truncateTable()
+                repository.deleteAll()
             }
 
             context("빈 리스트를 전달했을 때") {
-                auctionItemPriceSnapshotRepo.saveAllIgnoreDuplicates(emptyList())
+                repository.saveAllNotExists(emptyList())
                 it("아무것도 저장되지 않아야 함") {
-                    val savedItems = auctionItemPriceSnapshotRepo.findAll()
+                    val savedItems = jpaRepository.findAll()
                     savedItems shouldHaveSize 0
                 }
             }
@@ -63,9 +68,9 @@ class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
                 )
 
                 it("모든 데이터가 정상적으로 저장되어야 함") {
-                    auctionItemPriceSnapshotRepo.saveAllIgnoreDuplicates(testSnapshots)
+                    repository.saveAllNotExists(testSnapshots)
 
-                    val savedItems = auctionItemPriceSnapshotRepo.findAll()
+                    val savedItems = jpaRepository.findAll()
                     savedItems shouldHaveSize 3
                     savedItems.map { it.itemCode } shouldBe listOf(12345, 12346, 12347)
                     savedItems.map { it.price } shouldBe listOf(10000, 15000, 20000)
@@ -89,9 +94,9 @@ class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
                 )
 
                 it("중복을 무시하고 첫 번째 데이터만 저장되어야 함") {
-                    auctionItemPriceSnapshotRepo.saveAllIgnoreDuplicates(testSnapshots)
+                    repository.saveAllNotExists(testSnapshots)
 
-                    val savedItems = auctionItemPriceSnapshotRepo.findAll()
+                    val savedItems = jpaRepository.findAll()
                     savedItems shouldHaveSize 1
                     savedItems.first().itemCode shouldBe 12345
                     savedItems.first().price shouldBe 10000
@@ -106,9 +111,9 @@ class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
                     createTestSnapshot(testItemCode1, 20000),
                     createTestSnapshot(testItemCode2, 10000),
                 )
-                auctionItemPriceSnapshotRepo.saveAllIgnoreDuplicates(testSnapshots)
+                repository.saveAllNotExists(testSnapshots)
                 it("중복을 무시하고 3건만 저장") {
-                    val savedItems = auctionItemPriceSnapshotRepo.findAll()
+                    val savedItems = jpaRepository.findAll()
                     savedItems shouldHaveSize 3
                 }
             }
@@ -129,9 +134,9 @@ class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
                 )
 
                 it("자동으로 ID가 생성되어 저장되어야 함") {
-                    auctionItemPriceSnapshotRepo.saveAllIgnoreDuplicates(testSnapshots)
+                    repository.saveAllNotExists(testSnapshots)
 
-                    val savedItems = auctionItemPriceSnapshotRepo.findAll()
+                    val savedItems = jpaRepository.findAll()
                     savedItems shouldHaveSize 2
                     savedItems.forEach { item ->
                         item.id shouldNotBe null
@@ -142,100 +147,10 @@ class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
 
 
         }
-        describe("findFilteredPriceRangeByItemCode 메서드") {
-            beforeContainer {
-                auctionItemPriceSnapshotRepo.truncateTable()
-            }
-
-
-            val testItemCode = 99999
-
-            context("데이터가 없을 때") {
-                it("PriceRange(0, 0)을 반환해야 함") {
-                    val priceRange = auctionItemPriceSnapshotRepo.findFilteredPriceRangeByItemCode(testItemCode)
-
-                    priceRange.min shouldBe 0
-                    priceRange.max shouldBe 0
-                }
-            }
-
-            context("정상적인 가격 데이터가 있을 때") {
-                val testSnapshots = listOf(
-                    // 정상 범위의 데이터들
-                    createTestSnapshot(testItemCode, 10000),
-                    createTestSnapshot(testItemCode, 11000),
-                    createTestSnapshot(testItemCode, 12000),
-                    createTestSnapshot(testItemCode, 13000),
-                    createTestSnapshot(testItemCode, 14000),
-                    createTestSnapshot(testItemCode, 15000)
-                )
-
-                beforeEach {
-                    auctionItemPriceSnapshotRepo.saveAllIgnoreDuplicates(testSnapshots)
-                }
-
-                it("올바른 최소값과 최대값을 반환해야 함") {
-                    val priceRange = auctionItemPriceSnapshotRepo.findFilteredPriceRangeByItemCode(testItemCode)
-
-                    priceRange.min shouldBe 10000
-                    priceRange.max shouldBe 15000
-                }
-            }
-
-            context("이상치가 포함된 가격 데이터가 있을 때") {
-                val testSnapshots = listOf(
-                    // 정상 범위의 데이터들
-                    createTestSnapshot(testItemCode, 10000),
-                    createTestSnapshot(testItemCode, 11000),
-                    createTestSnapshot(testItemCode, 12000),
-                    createTestSnapshot(testItemCode, 13000),
-                    createTestSnapshot(testItemCode, 14000),
-                    createTestSnapshot(testItemCode, 15000),
-                    // 이상치 데이터들 (IQR 범위를 벗어남)
-                    createTestSnapshot(testItemCode, 1000),   // 너무 낮은 값
-                    createTestSnapshot(testItemCode, 100000), // 너무 높은 값
-                    createTestSnapshot(testItemCode, 200000)  // 너무 높은 값
-                )
-
-                beforeEach {
-                    auctionItemPriceSnapshotRepo.saveAllIgnoreDuplicates(testSnapshots)
-                }
-
-                it("이상치를 제외한 범위를 반환해야 함") {
-                    val priceRange = auctionItemPriceSnapshotRepo.findFilteredPriceRangeByItemCode(testItemCode)
-
-                    // IQR 계산으로 이상치가 제거되어 정상 범위만 반환되어야 함
-                    priceRange.min shouldBe 10000
-                    priceRange.max shouldBe 15000
-                }
-            }
-
-            context("다른 itemCode의 데이터가 섞여 있을 때") {
-                val otherItemCode = 88888
-                val testSnapshots = listOf(
-                    // 테스트 대상 itemCode 데이터
-                    createTestSnapshot(testItemCode, 10000),
-                    createTestSnapshot(testItemCode, 12000),
-                    createTestSnapshot(testItemCode, 14000),
-                    // 다른 itemCode 데이터 (필터링되어야 함)
-                    createTestSnapshot(otherItemCode, 50000),
-                    createTestSnapshot(otherItemCode, 60000)
-                )
-
-                auctionItemPriceSnapshotRepo.saveAllIgnoreDuplicates(testSnapshots)
-
-                it("해당 itemCode의 데이터만 사용하여 범위를 계산해야 함") {
-                    val priceRange = auctionItemPriceSnapshotRepo.findFilteredPriceRangeByItemCode(testItemCode)
-
-                    priceRange.min shouldBe 10000
-                    priceRange.max shouldBe 14000
-                }
-            }
-        }
 
         describe("truncateTable 메서드") {
             beforeContainer {
-                auctionItemPriceSnapshotRepo.truncateTable()
+                repository.deleteAll()
             }
 
             context("데이터가 있는 상태에서 truncate를 실행했을 때") {
@@ -244,28 +159,27 @@ class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
                     createTestSnapshot(12346, 15000),
                     createTestSnapshot(12347, 20000)
                 )
-
-                auctionItemPriceSnapshotRepo.saveAllIgnoreDuplicates(testSnapshots)
+                repository.saveAllNotExists(testSnapshots)
 
                 it("모든 데이터가 삭제되어야 함") {
                     // 데이터가 있는지 확인
-                    auctionItemPriceSnapshotRepo.findAll() shouldHaveSize 3
+                    jpaRepository.findAll() shouldHaveSize 3
 
                     // truncate 실행
-                    auctionItemPriceSnapshotRepo.truncateTable()
+                    repository.deleteAll()
 
                     // 데이터가 모두 삭제되었는지 확인
-                    auctionItemPriceSnapshotRepo.findAll() shouldHaveSize 0
+                    jpaRepository.findAll() shouldHaveSize 0
                 }
             }
 
             context("빈 테이블에서 truncate를 실행했을 때") {
                 it("예외가 발생하지 않아야 함") {
                     // 빈 테이블에서 truncate 실행
-                    auctionItemPriceSnapshotRepo.truncateTable()
+                    repository.deleteAll()
 
                     // 여전히 빈 상태여야 함
-                    auctionItemPriceSnapshotRepo.findAll() shouldHaveSize 0
+                    jpaRepository.findAll() shouldHaveSize 0
                 }
             }
         }

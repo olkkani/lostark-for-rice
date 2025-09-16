@@ -1,8 +1,8 @@
-package io.oikkani.processorservice.domain.outbound
+package io.oikkani.processorservice.application.port.outbound
 
 import io.oikkani.processorservice.infrastructure.outbound.repository.entity.AuctionItemPriceSnapshot
 
-interface AuctionPriceSnapshotRepositoryPort {
+interface AuctionItemPriceSnapshotRepositoryPort {
     fun saveAllNotExists(itemPriceSnapshots: List<AuctionItemPriceSnapshot>)
     fun findAllByItemCode(itemCode: Int): List<AuctionItemPriceSnapshot>
     fun deleteAll()

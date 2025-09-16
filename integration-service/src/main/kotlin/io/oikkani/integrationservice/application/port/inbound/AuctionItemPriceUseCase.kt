@@ -4,6 +4,6 @@ import io.olkkani.common.api.ItemPreview
 import io.olkkani.common.dto.contract.CandleChart
 
 interface AuctionItemPriceUseCase {
-    fun getAllKindsTodayPrice(): List<ItemPreview>
-    fun getPriceIndexByItemCode(itemCode: Int): List<CandleChart>
+    suspend fun getAllTodayItemsPreview(): List<ItemPreview>
+    suspend fun findOhlcPriceChartByItemCode(itemCode: Int): List<CandleChart>
 }

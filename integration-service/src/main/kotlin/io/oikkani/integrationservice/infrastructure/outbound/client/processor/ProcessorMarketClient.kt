@@ -1,8 +1,8 @@
 package io.oikkani.integrationservice.infrastructure.outbound.client.processor
 
+import io.oikkani.integrationservice.infrastructure.outbound.client.BaseClient
+import io.oikkani.integrationservice.infrastructure.outbound.notofication.DiscordExceptionNotificationImpl
 import io.olkkani.common.dto.contract.AuctionPrice
-import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.BaseClient
-import io.oikkani.integrationservice.infrastructure.adapter.outbound.notofication.DiscordExceptionNotificationImpl
 import kotlinx.coroutines.coroutineScope
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders

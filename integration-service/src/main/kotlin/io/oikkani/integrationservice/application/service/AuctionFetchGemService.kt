@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service
 
 
 @Service
-class AuctionGemService(
+class AuctionFetchGemService(
     private val apiClient: AuctionClient,
     private val processorClient: ProcessorAuctionClient,
     private val exceptionNotification: ExceptionNotification
@@ -31,7 +31,7 @@ class AuctionGemService(
         AuctionItemCondition(itemCode = 65031100, pairItemCode = 65032100, itemName = "10레벨 겁화의 보석"),
         AuctionItemCondition(itemCode = 65032100, pairItemCode = 65031100, itemName = "10레벨 작열의 보석")
     )
-    override suspend fun fetchAndSendPriceData(isUpdateOpenPrice: Boolean) = coroutineScope {
+    override suspend fun fetchAndSendPriceData() = coroutineScope {
         gems.map { gem ->
             async {
                 val response = apiClient.fetchItemsAsync(gem.toGemRequest())
@@ -41,7 +41,6 @@ class AuctionGemService(
                             AuctionPriceSnapshot(
                                 itemCode = gem.itemCode,
                                 prices = data.toDomain(),
-                                isUpdateOpenPrice = isUpdateOpenPrice
                             )
                         )
                     }
