@@ -29,13 +29,10 @@ management:
       exposure:
         include: health
         exclude: "*"
+# lostark api key
 lostark:
-  auction:
-    api:
-      key: ${AUCTION_API_KEY:must_not_null_auction_apikey}
-  market:
-    api:
-      key: ${MARKET_API_KEY:must_not_null_market_apikey}
+  api:
+    key: ${LOSTARK_API_KEY:must_not_null_apikey}
 webhook:
   url:
     discord: ${DISCORD_WEBHOOK_URL:must_not_null_url}

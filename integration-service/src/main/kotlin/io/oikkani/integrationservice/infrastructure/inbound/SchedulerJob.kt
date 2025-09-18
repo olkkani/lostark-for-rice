@@ -1,7 +1,7 @@
 package io.oikkani.integrationservice.infrastructure.inbound
 
-import io.oikkani.integrationservice.application.port.inbound.AuctionGemUseCase
-import io.oikkani.integrationservice.application.port.inbound.MarketMaterialUseCase
+import io.oikkani.integrationservice.application.port.inbound.AuctionFetchUseCase
+import io.oikkani.integrationservice.application.port.inbound.MarketFetchUseCase
 import io.oikkani.integrationservice.application.port.inbound.MarketRecipeUseCase
 import io.oikkani.integrationservice.infrastructure.outbound.client.processor.ProcessorAuctionClient
 import io.oikkani.integrationservice.infrastructure.outbound.client.processor.ProcessorMarketClient
@@ -15,8 +15,8 @@ import org.springframework.stereotype.Component
 
 @Component
 class TodayOpeningJob(
-    private val auctionGemService: AuctionGemUseCase,
-    private val marketMaterialService: MarketMaterialUseCase,
+    private val auctionGemService: AuctionFetchUseCase,
+    private val marketMaterialService: MarketFetchUseCase,
     private val marketRecipeService: MarketRecipeUseCase,
 ) : QuartzJobBean() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
@@ -32,8 +32,8 @@ class TodayOpeningJob(
 
 @Component
 class TodayFetchPricesJob(
-    private val auctionGemService: AuctionGemUseCase,
-    private val marketMaterialService: MarketMaterialUseCase,
+    private val auctionGemService: AuctionFetchUseCase,
+    private val marketMaterialService: MarketFetchUseCase,
     private val marketRecipeService: MarketRecipeUseCase,
 ) : QuartzJobBean() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())

@@ -14,7 +14,7 @@ import reactor.core.publisher.Mono
 
 @Component
 class AuctionClient(
-    @Value("\${lostark.auction.api.key:must-not-null-auction-apikey}") apiKey: String,
+    @Value("\${lostark.api.key:must-not-null-auction-apikey}") apiKey: String,
     private val exceptionNotification: ExceptionNotification
 ): BaseClient(exceptionNotification) {
     private val baseUrl: String = "https://developer-lostark.game.onstove.com"

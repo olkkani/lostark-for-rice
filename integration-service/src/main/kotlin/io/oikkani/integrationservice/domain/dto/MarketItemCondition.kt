@@ -1,6 +1,6 @@
 package io.oikkani.integrationservice.domain.dto
 
-import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.lostark.dto.request.MarketRequest
+import io.oikkani.integrationservice.infrastructure.outbound.client.lostark.dto.request.MarketRequest
 
 class MarketItemCondition(
     val categoryCode: Int,

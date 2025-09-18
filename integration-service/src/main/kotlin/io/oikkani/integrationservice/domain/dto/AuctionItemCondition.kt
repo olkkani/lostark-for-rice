@@ -1,6 +1,6 @@
 package io.oikkani.integrationservice.domain.dto
 
-import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.lostark.dto.request.AuctionRequest
+import io.oikkani.integrationservice.infrastructure.outbound.client.lostark.dto.request.AuctionRequest
 
 class AuctionItemCondition(
     val categoryCode: Int = 210000,

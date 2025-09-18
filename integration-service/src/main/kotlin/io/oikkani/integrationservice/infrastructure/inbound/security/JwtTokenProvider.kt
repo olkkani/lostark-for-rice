@@ -7,14 +7,10 @@ import io.jsonwebtoken.io.Decoders
 import io.jsonwebtoken.security.Keys
 import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
 import io.oikkani.integrationservice.domain.dto.AlertError
-import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.JwtTokenClient
-import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.dto.RefreshToken
+import io.oikkani.integrationservice.infrastructure.outbound.client.processor.JwtTokenClient
+import io.olkkani.common.dto.contract.RefreshToken
 import jakarta.servlet.http.HttpServletRequest
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
@@ -24,7 +20,7 @@ import org.springframework.security.core.userdetails.User
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.View
-import java.util.Date
+import java.util.*
 import javax.crypto.SecretKey
 
 @Component

@@ -3,8 +3,8 @@ package io.oikkani.integrationservice.infrastructure.inbound.security
 import com.github.f4b6a3.tsid.TsidCreator
 import io.github.oshai.kotlinlogging.KotlinLogging
 import io.oikkani.integrationservice.domain.dto.DiscordUser
-import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.JwtTokenClient
-import io.oikkani.integrationservice.infrastructure.adapter.outbound.client.processor.dto.RefreshToken
+import io.oikkani.integrationservice.infrastructure.outbound.client.processor.JwtTokenClient
+import io.olkkani.common.dto.contract.RefreshToken
 import jakarta.servlet.http.Cookie
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
@@ -65,7 +65,7 @@ class OAuth2AuthenticationSuccessHandler(
             response.sendRedirect(redirectUrl)
 
         } catch (e: Exception) {
-            logger.error { "OAuth2 Success Handler Error: ${e.message}"}
+            logger.error { "OAuth2 Success Handler Error: ${e.message}" }
             e.printStackTrace()
             // 에러 발생 시 실패 페이지로 리다이렉트
             response.sendRedirect("$frontendSuccessUrl?error=oauth_failed")

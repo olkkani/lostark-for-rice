@@ -1,7 +1,7 @@
 package io.oikkani.integrationservice.application.service
 
 import io.github.oshai.kotlinlogging.KotlinLogging
-import io.oikkani.integrationservice.application.port.inbound.AuctionGemUseCase
+import io.oikkani.integrationservice.application.port.inbound.AuctionFetchUseCase
 import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
 import io.oikkani.integrationservice.domain.dto.AuctionItemCondition
 import io.oikkani.integrationservice.infrastructure.outbound.client.lostark.AuctionClient
@@ -19,7 +19,7 @@ class AuctionFetchGemService(
     private val apiClient: AuctionClient,
     private val processorClient: ProcessorAuctionClient,
     private val exceptionNotification: ExceptionNotification
-) : AuctionGemUseCase {
+) : AuctionFetchUseCase {
 
     private val logger = KotlinLogging.logger {}
 
