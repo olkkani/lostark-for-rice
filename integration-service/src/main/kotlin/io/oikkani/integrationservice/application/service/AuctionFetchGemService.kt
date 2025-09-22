@@ -10,7 +10,6 @@ import io.olkkani.common.dto.contract.AuctionPriceSnapshot
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
-import kotlinx.coroutines.launch
 import org.springframework.stereotype.Service
 
 
@@ -34,16 +33,14 @@ class AuctionFetchGemService(
     override suspend fun fetchAndSendPriceData() = coroutineScope {
         gems.map { gem ->
             async {
-                val response = apiClient.fetchItemsAsync(gem.toGemRequest())
+                val response = apiClient.fetchItems(gem.toGemRequest())
                 response?.let { data ->
-                    launch {
-                        processorClient.sendAuctionPriceData(
-                            AuctionPriceSnapshot(
-                                itemCode = gem.itemCode,
-                                prices = data.toDomain(),
-                            )
+                    processorClient.sendAuctionPriceData(
+                        AuctionPriceSnapshot(
+                            itemCode = gem.itemCode,
+                            prices = data.toDomain(),
                         )
-                    }
+                    )
                 }
             }
         }.awaitAll().let {  }

@@ -30,7 +30,7 @@ abstract class BaseClient(
     private val log = KotlinLogging.logger {  }
 
     // 공통 재시도 로직을 생성하는 internal 함수
-    private fun createCommonRetry(actionName: String = "unknown api"): Retry {
+    private fun createCommonRetry(): Retry {
         return Retry.backoff(3, Duration.ofSeconds(1))
             .jitter(0.1) // 10% 지터로 thundering herd 방지
             .filter { error -> isRetryableError(error) }
@@ -69,17 +69,14 @@ abstract class BaseClient(
     }
 
     // Mono 확장 함수
-    fun <T> Mono<T>.withCommonRetry(
-        actionName: String = "Unknown API"
-    ): Mono<T> {
-        return this.retryWhen(createCommonRetry(actionName))
+    fun <T> Mono<T>.withCommonRetry(): Mono<T> {
+        return this.retryWhen(createCommonRetry())
             // 최종 에러 발생 시 Mono.empty() 반환
             .onErrorResume { Mono.empty() }
     }
 
     // Flux 확장 함수
-    fun <T> Flux<T>.withCommonRetry(
-    ): Flux<T> {
+    fun <T> Flux<T>.withCommonRetry(): Flux<T> {
         return this.retryWhen(createCommonRetry())
             // 최종 에러 발생 시 Flux.empty() 반환
             .onErrorResume { Flux.empty() }
@@ -124,9 +121,8 @@ abstract class BaseClient(
      * 결과를 기다리지 않고 바로 처리하며, 에러 시 Discord 알림만 전송
      */
     suspend fun <T> Mono<T>.withCommonRetryAndSubscribe(
-        actionName: String = "Unknown API"
     ) {
-        this.withCommonRetry(actionName)
+        this.withCommonRetry()
             .awaitSingle()
     }
 }

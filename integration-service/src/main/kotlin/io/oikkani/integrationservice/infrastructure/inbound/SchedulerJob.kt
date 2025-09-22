@@ -1,8 +1,8 @@
 package io.oikkani.integrationservice.infrastructure.inbound
 
 import io.oikkani.integrationservice.application.port.inbound.AuctionFetchUseCase
-import io.oikkani.integrationservice.application.port.inbound.MarketFetchUseCase
-import io.oikkani.integrationservice.application.port.inbound.MarketRecipeUseCase
+import io.oikkani.integrationservice.application.port.inbound.MarketFetchMaterialUseCase
+import io.oikkani.integrationservice.application.port.inbound.MarketFetchRecipeUseCase
 import io.oikkani.integrationservice.infrastructure.outbound.client.processor.ProcessorAuctionClient
 import io.oikkani.integrationservice.infrastructure.outbound.client.processor.ProcessorMarketClient
 import kotlinx.coroutines.CoroutineScope
@@ -16,8 +16,8 @@ import org.springframework.stereotype.Component
 @Component
 class TodayOpeningJob(
     private val auctionGemService: AuctionFetchUseCase,
-    private val marketMaterialService: MarketFetchUseCase,
-    private val marketRecipeService: MarketRecipeUseCase,
+    private val marketMaterialService: MarketFetchMaterialUseCase,
+    private val marketRecipeService: MarketFetchRecipeUseCase,
 ) : QuartzJobBean() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 
@@ -25,7 +25,7 @@ class TodayOpeningJob(
         coroutineScope.launch {
             auctionGemService.fetchAndSendPriceData()
             marketMaterialService.fetchAndSendPriceData()
-            marketRecipeService.fetchAndSendPriceDate()
+            marketRecipeService.fetchAndSendPriceData()
         }
     }
 }
@@ -33,15 +33,15 @@ class TodayOpeningJob(
 @Component
 class TodayFetchPricesJob(
     private val auctionGemService: AuctionFetchUseCase,
-    private val marketMaterialService: MarketFetchUseCase,
-    private val marketRecipeService: MarketRecipeUseCase,
+    private val marketMaterialService: MarketFetchMaterialUseCase,
+    private val marketRecipeService: MarketFetchRecipeUseCase,
 ) : QuartzJobBean() {
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     override fun executeInternal(context: JobExecutionContext) {
         coroutineScope.launch {
             auctionGemService.fetchAndSendPriceData()
             marketMaterialService.fetchAndSendPriceData()
-            marketRecipeService.fetchAndSendPriceDate()
+            marketRecipeService.fetchAndSendPriceData()
         }
     }
 }

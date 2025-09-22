@@ -1,6 +1,7 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository.entity
 
 import io.hypersistence.utils.hibernate.id.Tsid
+import io.olkkani.common.dto.contract.MarketPrice
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
@@ -12,4 +13,9 @@ class MarketItemPriceSnapshot(
     val id: Long? = null,
     val itemCode: Int,
     val price: Int,
+)
+
+fun MarketPrice.toEntity() = MarketItemPriceSnapshot(
+    itemCode = this.itemCode,
+    price = this.price
 )

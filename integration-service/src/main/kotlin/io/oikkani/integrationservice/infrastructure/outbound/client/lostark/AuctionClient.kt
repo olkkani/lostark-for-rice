@@ -10,7 +10,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import reactor.core.publisher.Mono
 
 @Component
 class AuctionClient(
@@ -26,16 +25,13 @@ class AuctionClient(
         .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .build()
 
-    private fun fetchItems(auctionRequest: AuctionRequest): Mono<AuctionResponse> {
+    suspend fun fetchItems(auctionRequest: AuctionRequest): AuctionResponse? {
         return client.post()
             .uri("/auctions/items")
             .bodyValue(auctionRequest)
             .retrieve()
             .bodyToMono(AuctionResponse::class.java)
-            .withCommonRetry("fetch_auction_items")
-    }
-
-    suspend fun fetchItemsAsync(auctionRequest: AuctionRequest): AuctionResponse?{
-        return fetchItems(auctionRequest).awaitSingleOrNull()
+            .withCommonRetry()
+            .awaitSingleOrNull()
     }
 }

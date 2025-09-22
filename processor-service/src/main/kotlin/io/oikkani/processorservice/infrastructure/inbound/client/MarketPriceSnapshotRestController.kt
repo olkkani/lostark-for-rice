@@ -1,6 +1,6 @@
 package io.oikkani.processorservice.infrastructure.inbound.client
 
-import io.oikkani.processorservice.application.port.inbound.MarketItemPriceSnapshotUseCase
+import io.oikkani.processorservice.application.port.inbound.MarketSnapshotUseCase
 import io.olkkani.common.dto.contract.MarketPriceSnapshot
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("market/items/snapshots")
 class MarketPriceSnapshotRestController(
-    private val snapshotService: MarketItemPriceSnapshotUseCase,
+    private val snapshotService: MarketSnapshotUseCase,
 ) {
     @PostMapping()
-    fun saveSnapshot(@RequestBody request: MarketPriceSnapshot): ResponseEntity<Unit> {
-        snapshotService.saveSnapshotAndUpdateHlcaPrice(request)
+    fun saveSnapshot(@RequestBody snapshot : MarketPriceSnapshot): ResponseEntity<Unit> {
+        snapshotService.saveSnapshotAndUpdateHlcaPrice(snapshot)
         return ResponseEntity.noContent().build()
     }
 

@@ -1,5 +1,5 @@
 package io.oikkani.integrationservice.application.port.inbound
 
-fun interface MarketFetchUseCase {
+fun interface MarketFetchRecipeUseCase {
     suspend fun fetchAndSendPriceData()
 }

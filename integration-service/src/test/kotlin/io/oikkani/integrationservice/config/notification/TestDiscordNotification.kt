@@ -2,16 +2,18 @@ package io.oikkani.integrationservice.config.notification
 
 import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
 import io.oikkani.integrationservice.domain.dto.AlertError
-import io.oikkani.integrationservice.infrastructure.outbound.notofication.dto.DiscordWebhookResponse
+import io.oikkani.integrationservice.infrastructure.outbound.notification.dto.DiscordWebhookResponse
 import kotlinx.coroutines.reactor.awaitSingleOrNull
 import kotlinx.coroutines.runBlocking
 import org.springframework.beans.factory.annotation.Value
+import org.springframework.context.annotation.Profile
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 import java.time.LocalDateTime
 
 @Component
+@Profile("test")
 class TestDiscordNotification(
     @param:Value("\${webhook.url.discord:must_not_empty_url}") private val webhookUrl: String
 ) : ExceptionNotification {

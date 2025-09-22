@@ -1,11 +1,10 @@
 package io.oikkani.integrationservice.infrastructure.outbound.client.processor
 
+import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
 import io.oikkani.integrationservice.infrastructure.outbound.client.BaseClient
-import io.oikkani.integrationservice.infrastructure.outbound.notofication.DiscordExceptionNotificationImpl
 import io.olkkani.common.api.ItemPreview
 import io.olkkani.common.dto.contract.AuctionPriceSnapshot
 import io.olkkani.common.dto.contract.CandleChart
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -17,7 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient
 @Component
 class ProcessorAuctionClient(
     @Value("\${processor.url:must-not-null-processor-url}") processorServiceUrl: String,
-    private val exceptionNotification: DiscordExceptionNotificationImpl,
+    private val exceptionNotification: ExceptionNotification,
 ) : BaseClient(exceptionNotification) {
 
     val client: WebClient = WebClient.builder()
@@ -26,13 +25,14 @@ class ProcessorAuctionClient(
         .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .build()
 
-     suspend fun sendAuctionPriceData(request: AuctionPriceSnapshot) = coroutineScope {
+    suspend fun sendAuctionPriceData(request: AuctionPriceSnapshot) {
         client.post()
             .uri("auction/items/snapshots")
             .bodyValue(request)
             .retrieve()
             .toBodilessEntity()
-            .withCommonRetryAndSubscribe("send_auction_price_data")
+            .withCommonRetry()
+            .awaitSingle()
     }
 
     suspend fun getAllTodayItemPreview(): List<ItemPreview> {
@@ -45,7 +45,7 @@ class ProcessorAuctionClient(
             .awaitSingle()
     }
 
-    suspend fun findOhlcPriceChartByItemCode(itemCode: Int): List<CandleChart>{
+    suspend fun findOhlcPriceChartByItemCode(itemCode: Int): List<CandleChart> {
         return client.get()
             .uri("auction/items/$itemCode/ohlc")
             .retrieve()
@@ -55,11 +55,12 @@ class ProcessorAuctionClient(
             .awaitSingle()
     }
 
-    suspend fun deleteTodayPricesSnapshot() = coroutineScope {
+    suspend fun deleteTodayPricesSnapshot() {
         client.delete()
             .uri("auction/items/snapshots")
             .retrieve()
             .toBodilessEntity()
-            .withCommonRetryAndSubscribe()
+            .withCommonRetry()
+            .awaitSingle()
     }
 }

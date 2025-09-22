@@ -10,8 +10,6 @@ import org.springframework.http.HttpHeaders
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
-import reactor.core.publisher.Mono
-import kotlin.jvm.java
 
 @Component
 class MarketClient(
@@ -27,16 +25,13 @@ class MarketClient(
         .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .build()
 
-    private fun fetchItems(marketRequest: MarketRequest): Mono<MarketResponse> {
+    suspend fun fetchItems(marketRequest: MarketRequest): MarketResponse? {
         return client.post()
             .uri("/markets/items")
             .bodyValue(marketRequest)
             .retrieve()
             .bodyToMono(MarketResponse::class.java)
-            .withCommonRetry("fetch_auction_items")
-    }
-
-    suspend fun fetchItemsAsync(marketRequest: MarketRequest): MarketResponse? {
-        return fetchItems(marketRequest).awaitSingleOrNull()
+            .withCommonRetry()
+            .awaitSingleOrNull()
     }
 }

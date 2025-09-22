@@ -24,7 +24,7 @@ class AuctionClientTest: DescribeSpec() {
 
         xdescribe("AuctionClient Test"){
             context("실제 Request 로 데이터를 요청하면 "){
-                val response = client.fetchItemsAsync(gemRequest)
+                val response = client.fetchItems(gemRequest)
                 it("데이터를 가져옴"){
                     print(response.toString())
                 }

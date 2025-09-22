@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface MarketItemPriceSnapshotJpaRepository: JpaRepository<MarketItemPriceSnapshot, Long>{
-
+    fun findAllByItemCode(itemCode: Int): List<MarketItemPriceSnapshot>
 
 }

@@ -1,4 +1,4 @@
-package io.oikkani.integrationservice.infrastructure.outbound.notofication.dto
+package io.oikkani.integrationservice.infrastructure.outbound.notification.dto
 
 data class DiscordWebhookResponse(
     val content: String,
