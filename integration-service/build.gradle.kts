@@ -11,6 +11,7 @@ dependencies {
     implementation(libs.tsid.creator)
     implementation(libs.bundles.kotlin.coroutines)
     implementation(libs.bundles.spring.security)
+    implementation(libs.spring.oauth2)
 
     implementation(libs.jjwt.api)
     runtimeOnly(libs.bundles.jjwt)

@@ -84,6 +84,9 @@ subprojects {
 
             )
         }
+        tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+            archiveVersion.set("")
+        }
     }
     if (name in listOf("processor-service")) {
         apply(plugin = "dev.monosoul.jooq-docker")

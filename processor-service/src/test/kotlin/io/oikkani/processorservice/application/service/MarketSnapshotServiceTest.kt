@@ -52,8 +52,7 @@ class MarketSnapshotServiceTest : DescribeSpec() {
                 )
                 val marketPriceSnapshot = MarketPriceSnapshot(prices = marketPrices)
                 service.saveSnapshotAndUpdateHlcaPrice(marketPriceSnapshot)
-                it("save new ohlc price") {
-                    val savedOhlcPrices = ohlcaRepository.findAllByRecordedDate(today)
+                it("save new ohlc price") { val savedOhlcPrices = ohlcaRepository.findAllByRecordedDate(today)
                     savedOhlcPrices shouldHaveSize 5
                 }
             }
