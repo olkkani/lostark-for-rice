@@ -1,14 +1,14 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository.jpa
 
-import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyAuctionItemOhlcPrice
+import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyAuctionItemOhlcPriceEntity
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import java.time.LocalDate
 
 @Repository
-interface DailyAuctionItemOhlcPriceJpaRepository: JpaRepository<DailyAuctionItemOhlcPrice, Long> {
-    fun findAllByItemCode(itemCode: Int): List<DailyAuctionItemOhlcPrice>
-    fun findAllByItemCodeOrderByRecordedDateAsc(itemCode: Int): MutableList<DailyAuctionItemOhlcPrice>
-    fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): DailyAuctionItemOhlcPrice?
-    fun findAllByRecordedDate(recordedDate: LocalDate): List<DailyAuctionItemOhlcPrice>
+interface DailyAuctionItemOhlcPriceJpaRepository: JpaRepository<DailyAuctionItemOhlcPriceEntity, Long> {
+    fun findAllByItemCode(itemCode: Int): List<DailyAuctionItemOhlcPriceEntity>
+    fun findAllByItemCodeOrderByRecordedDateAsc(itemCode: Int): MutableList<DailyAuctionItemOhlcPriceEntity>
+    fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): DailyAuctionItemOhlcPriceEntity?
+    fun findAllByRecordedDate(recordedDate: LocalDate): List<DailyAuctionItemOhlcPriceEntity>
 }

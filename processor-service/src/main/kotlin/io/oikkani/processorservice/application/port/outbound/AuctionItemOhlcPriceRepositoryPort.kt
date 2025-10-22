@@ -1,12 +1,12 @@
 package io.oikkani.processorservice.application.port.outbound
 
-import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyAuctionItemOhlcPrice
+import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyAuctionItemOhlcPriceEntity
 import java.time.LocalDate
 
 
 interface AuctionItemOhlcPriceRepositoryPort {
-    fun save(ohlcPrice: DailyAuctionItemOhlcPrice)
-    fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): DailyAuctionItemOhlcPrice?
-    fun findAllByItemCode(itemCode: Int): List<DailyAuctionItemOhlcPrice>
-    fun getAllTodayItems(): List<DailyAuctionItemOhlcPrice>
+    fun save(ohlcPrice: DailyAuctionItemOhlcPriceEntity)
+    fun findByItemCodeAndRecordedDate(itemCode: Int, recordedDate: LocalDate): DailyAuctionItemOhlcPriceEntity?
+    fun findAllByItemCode(itemCode: Int): List<DailyAuctionItemOhlcPriceEntity>
+    fun getAllTodayItems(): List<DailyAuctionItemOhlcPriceEntity>
 }

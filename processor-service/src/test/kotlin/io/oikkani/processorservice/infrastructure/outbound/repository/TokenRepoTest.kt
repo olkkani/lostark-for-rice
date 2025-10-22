@@ -7,7 +7,7 @@ import io.kotest.matchers.longs.shouldBeLessThanOrEqual
 import io.kotest.matchers.shouldBe
 import io.oikkani.processorservice.infrastructure.config.repository.RedisTestContainersConfig
 import io.oikkani.processorservice.infrastructure.outbound.repository.entity.RefreshToken
-import io.oikkani.processorservice.infrastructure.outbound.repository.redis.TokenRepo
+import io.oikkani.processorservice.infrastructure.outbound.repository.redis.TokenRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.data.redis.DataRedisTest
 import org.springframework.context.annotation.Import
@@ -25,7 +25,7 @@ class TokenRepoTest: DescribeSpec(){
     private lateinit var redisTemplate: RedisTemplate<String, String>
 
     @Autowired
-    private lateinit var tokenRepo: TokenRepo
+    private lateinit var tokenRepo: TokenRepository
 
     init {
         xdescribe("Token 저장 및 검증 테스트"){

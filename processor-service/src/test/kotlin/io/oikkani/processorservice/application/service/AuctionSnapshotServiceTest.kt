@@ -3,10 +3,11 @@ package io.oikkani.processorservice.application.service
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.extensions.spring.SpringExtension
 import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.oikkani.processorservice.application.port.inbound.AuctionSnapshotUseCase
 import io.oikkani.processorservice.infrastructure.config.repository.PostgresqlTestContainersConfig
-import io.oikkani.processorservice.infrastructure.config.security.TestSecurityConfig
+import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyAuctionItemOhlcPriceEntity
 import io.oikkani.processorservice.infrastructure.outbound.repository.jooq.DailyAuctionItemOhlcPriceJooqRepository
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.AuctionItemPriceSnapshotJpaRepository
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.DailyAuctionItemOhlcPriceJpaRepository
@@ -20,7 +21,7 @@ import java.time.LocalDateTime
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(PostgresqlTestContainersConfig::class, TestSecurityConfig::class)
+@Import(PostgresqlTestContainersConfig::class)
 class AuctionSnapshotServiceTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
@@ -65,17 +66,25 @@ class AuctionSnapshotServiceTest : DescribeSpec() {
             context("오늘의 OHLC Price 가 없는 경우") {
                 service.saveSnapshotAndUpdateHlcPrice(snapshot)
                 it("saved-new-ohlc-price") {
-                    val savedTodayOhlcPrices = jpaRepository.findAllByItemCode(1000)
+                    val savedTodayOhlcPrices = jpaRepository.findAllByRecordedDate(today)
+                    val savedTodayOhlcPrice: DailyAuctionItemOhlcPriceEntity? = savedTodayOhlcPrices.find { it.itemCode == 1000 }
+
                     savedTodayOhlcPrices shouldHaveSize 1
-                    savedTodayOhlcPrices.first().openPrice shouldBe 1000
-                    savedTodayOhlcPrices.first().highPrice shouldBe 10000
-                    savedTodayOhlcPrices.first().lowPrice shouldBe 1000
-                    savedTodayOhlcPrices.first().closePrice shouldBe 1000
+
+                    savedTodayOhlcPrice.shouldNotBeNull()
+                    savedTodayOhlcPrice.let {
+                        it.itemCode shouldBe 1000
+                        it.openPrice shouldBe 1000
+                        it.highPrice shouldBe 10000
+                        it.lowPrice shouldBe 1000
+                        it.closePrice shouldBe 1000
+                        it.recordedDate shouldBe today
+                    }
                 }
             }
             context("오늘의 OHLC Price 가 이미 존재하는 경우") {
                 service.saveSnapshotAndUpdateHlcPrice(snapshot)
-                val savedTodayOhlcPrices = jpaRepository.findAllByItemCode(1000)
+                    val savedPrevOhlcPrices = jpaRepository.findAllByRecordedDate(today)
 
                 val nextTimePriceSnapshot = AuctionPriceSnapshot(
                     itemCode = 1000,
@@ -95,26 +104,39 @@ class AuctionSnapshotServiceTest : DescribeSpec() {
                     )
                 )
                 service.saveSnapshotAndUpdateHlcPrice(nextTimePriceSnapshot)
-                val savedNextTimeOhlcPrices = jpaRepository.findAllByItemCode(1000)
+                val savedNextTimeOhlcPrices = jpaRepository.findAllByRecordedDate(today)
 
                 it("new ohlc price is created") {
-                    savedTodayOhlcPrices shouldHaveSize 1
-                    savedTodayOhlcPrices.first().openPrice shouldBe 1000
-                    savedTodayOhlcPrices.first().highPrice shouldBe 10000
-                    savedTodayOhlcPrices.first().lowPrice shouldBe 1000
-                    savedTodayOhlcPrices.first().closePrice shouldBe 1000
+                    savedPrevOhlcPrices.size.shouldBe(1)
+                    val savedPrevOhlcPrice = savedPrevOhlcPrices.find { it.itemCode == 1000 }
+
+                    savedPrevOhlcPrices.size.shouldBe(1)
+                    savedPrevOhlcPrice.shouldNotBeNull()
+                    savedPrevOhlcPrice.let {
+                        it.itemCode shouldBe 1000
+                        it.openPrice shouldBe 1000
+                        it.highPrice shouldBe 10000
+                        it.lowPrice shouldBe 1000
+                        it.closePrice shouldBe 1000
+                        it.recordedDate shouldBe today
+                    }
                 }
                 it("snapshot data eq 15") {
                     val savedSnapshot = snapshotJpaRepository.findAllByItemCode(itemCode)
                     savedSnapshot shouldHaveSize 15
                 }
                 it("hlc price is updated") {
-                    val updatedOhlcPrice = jpaRepository.findAllByItemCode(itemCode)
-                    updatedOhlcPrice shouldHaveSize 1
-                    updatedOhlcPrice.first().openPrice shouldBe 1000
-                    updatedOhlcPrice.first().highPrice shouldBe 11000
-                    updatedOhlcPrice.first().lowPrice shouldBe 500
-                    updatedOhlcPrice.first().closePrice shouldBe 500
+                    savedNextTimeOhlcPrices shouldHaveSize 1
+                    val savedNextTimeOhlcPrice = savedNextTimeOhlcPrices.find { it.itemCode == 1000 }
+                    savedNextTimeOhlcPrice.shouldNotBeNull()
+
+                    savedNextTimeOhlcPrice.let {
+                        it.openPrice.shouldBe(1000)
+                        it.highPrice.shouldBe(11000)
+                        it.lowPrice.shouldBe(500)
+                        it.closePrice.shouldBe(500)
+                        it.recordedDate.shouldBe(today)
+                    }
                 }
             }
         }

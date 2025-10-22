@@ -1,0 +1,87 @@
+networks:
+  lfr-network:
+    external: true
+services:
+
+  integration-blue:
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
+    container_name: lfr-backend-blue
+    environment:
+      - DB_CONNECTION_URL=${DB_CONNECTION_URL}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_REDIS_HOST=${DB_REDIS_HOST}
+      - DB_REDIS_PORT=${DB_REDIS_PORT}
+      - DB_REDIS_PASSWORD=${DB_REDIS_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+      - "18081:8080"
+    networks:
+      - lfr-network
+    restart: always
+
+  integration-green:
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
+    container_name: lfr-backend-green
+    environment:
+      - DB_CONNECTION_URL=${DB_CONNECTION_URL}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_REDIS_HOST=${DB_REDIS_HOST}
+      - DB_REDIS_PORT=${DB_REDIS_PORT}
+      - DB_REDIS_PASSWORD=${DB_REDIS_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+      - "18082:8080"
+    networks:
+      - lfr-network
+    restart: always
+
+
+  front-green:
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
+    container_name: lfr-frontend-green
+    environment:
+      - API_URL=http://lfr-backend-green:8080
+      - TZ=Asia/Seoul
+    ports:
+      - "18083:80"
+
+#  mongo:
+#    container_name: lfr-mongo
+#    image: mongodb/mongodb-community-server:latest
+#    networks:
+#      - olkkani_network
+#    volumes:
+#      - lfr-mongodb:/data/db
+#    ports:
+#      - "27017:27017"
+#    restart: always
+#    environment:
+#      - MONGODB_INITDB_ROOT_USERNAME=${MONGO_USERNAME}
+#      - MONGODB_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD}
+#      - TZ=Asia/Seoul
+#
+#  postgres:
+#    container_name: lfr-postgres
+#    image: postgres:latest
+#    networks:
+#      - olkkani_network
+#    volumes:
+#      - lfr-postgres:/var/lib/postgresql/data
+#    ports:
+#      - "55431:54327"
+#    restart: always
+#    environment:
+#      - POSTGRES_USER=${POSTGRES_USERNAME}
+#      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#      - POSTGRES_DB=lfr
+#      - TZ=Asia/Seoul

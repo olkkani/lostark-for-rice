@@ -9,6 +9,7 @@ import org.springframework.security.oauth2.client.registration.InMemoryClientReg
 import org.springframework.security.oauth2.core.AuthorizationGrantType
 
 @TestConfiguration
+
 class TestSecurityConfig {
     @Bean
     @Primary

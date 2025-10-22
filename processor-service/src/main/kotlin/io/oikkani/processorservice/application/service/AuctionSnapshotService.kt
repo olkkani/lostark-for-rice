@@ -3,7 +3,7 @@ package io.oikkani.processorservice.application.service
 import io.oikkani.processorservice.application.port.inbound.AuctionSnapshotUseCase
 import io.oikkani.processorservice.application.port.outbound.AuctionItemOhlcPriceRepositoryPort
 import io.oikkani.processorservice.application.port.outbound.AuctionItemPriceSnapshotRepositoryPort
-import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyAuctionItemOhlcPrice
+import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyAuctionItemOhlcPriceEntity
 import io.oikkani.processorservice.infrastructure.outbound.repository.entity.toEntityList
 import io.olkkani.common.dto.contract.AuctionPriceSnapshot
 import org.springframework.stereotype.Service
@@ -38,7 +38,7 @@ class AuctionSnapshotService(
             }?:run {
                 // 데이터가 존재하지 않으면 신규 데이터를 생성 및 삽입
                 ohlcRepo.save(
-                    DailyAuctionItemOhlcPrice(
+                    DailyAuctionItemOhlcPriceEntity(
                         itemCode = auctionPriceSnapshot.itemCode,
                         recordedDate = today,
                         openPrice = todayLowPrice,

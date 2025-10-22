@@ -1,0 +1,47 @@
+networks:
+  lfr-network:
+    external: true
+
+services:
+
+  processor-blue:
+    image:  ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
+    container_name: lfr-backend-blue
+    environment:
+      - DB_CONNECTION_URL=${DB_CONNECTION_URL}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_REDIS_HOST=${DB_REDIS_HOST}
+      - DB_REDIS_PORT=${DB_REDIS_PORT}
+      - DB_REDIS_PASSWORD=${DB_REDIS_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+      - "18081:8080"
+    networks:
+      - lfr-network
+    restart: always
+
+  processor-green:
+    image:  ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
+    container_name: lfr-backend-green
+    environment:
+      - DB_CONNECTION_URL=${DB_CONNECTION_URL}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_REDIS_HOST=${DB_REDIS_HOST}
+      - DB_REDIS_PORT=${DB_REDIS_PORT}
+      - DB_REDIS_PASSWORD=${DB_REDIS_PASSWORD}
+      - JWT_SECRET=${JWT_SECRET}
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=prod
+    ports:
+      - "18082:8080"
+    networks:
+      - lfr-network
+    restart: always

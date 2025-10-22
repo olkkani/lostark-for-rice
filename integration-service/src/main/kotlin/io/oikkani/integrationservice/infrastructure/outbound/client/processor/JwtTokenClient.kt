@@ -35,7 +35,7 @@ class JwtTokenClient(
     //todo fire-forget 형식으로 변환
     suspend fun delete(token: String) {
         client.delete()
-            .uri("/tokens?token=$token")
+            .uri("/token/{token}", token)
             .retrieve()
             .toBodilessEntity()
             .withCommonRetry()
@@ -44,7 +44,7 @@ class JwtTokenClient(
 
     suspend fun isExpired(tokenEntity: RefreshToken): Boolean {
         return client.post()
-            .uri("/tokens/isExpired")
+            .uri("/token/isExpired")
             .bodyValue(tokenEntity)
             .retrieve()
             .bodyToMono(Boolean::class.java)

@@ -8,7 +8,6 @@ import io.kotest.matchers.shouldNotBe
 import io.oikkani.processorservice.application.port.inbound.MarketSnapshotUseCase
 import io.oikkani.processorservice.application.port.outbound.MarketItemOhlcaRepositoryPort
 import io.oikkani.processorservice.infrastructure.config.repository.PostgresqlTestContainersConfig
-import io.oikkani.processorservice.infrastructure.config.security.TestSecurityConfig
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.DailyMarketItemOhlcaPriceJpaRepository
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.MarketItemPriceSnapshotJpaRepository
 import io.olkkani.common.dto.contract.MarketPrice
@@ -21,7 +20,7 @@ import java.time.LocalDate
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(TestSecurityConfig::class, PostgresqlTestContainersConfig::class)
+@Import(PostgresqlTestContainersConfig::class)
 class MarketSnapshotServiceTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 

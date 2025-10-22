@@ -1,10 +1,10 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository
 
 import io.kotest.core.spec.style.DescribeSpec
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.oikkani.processorservice.application.port.outbound.MarketItemPriceSnapshotRepositoryPort
 import io.oikkani.processorservice.infrastructure.config.repository.PostgresqlTestContainersConfig
-import io.oikkani.processorservice.infrastructure.config.security.TestSecurityConfig
 import io.oikkani.processorservice.infrastructure.outbound.repository.entity.MarketItemPriceSnapshot
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.MarketItemPriceSnapshotJpaRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -14,7 +14,7 @@ import org.springframework.test.context.ActiveProfiles
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(TestSecurityConfig::class, PostgresqlTestContainersConfig::class)
+@Import( PostgresqlTestContainersConfig::class)
 class MarketItemPriceSnapshotRepoTest : DescribeSpec() {
 
     @Autowired
@@ -25,6 +25,9 @@ class MarketItemPriceSnapshotRepoTest : DescribeSpec() {
 
     init {
         describe("delete test") {
+            beforeContainer {
+                repository.deleteAll()
+            }
             context("10개의 레코드가 있는 상태에서 삭제하면") {
                 val testData = listOf<MarketItemPriceSnapshot>(
                     MarketItemPriceSnapshot(itemCode = 1000, price = 1000),
@@ -40,7 +43,8 @@ class MarketItemPriceSnapshotRepoTest : DescribeSpec() {
                 )
                 repository.saveAllNotExists(testData)
                 it("삭제 전 데이터는 10개") {
-                    jpaRepository.findAll().size shouldBe 10
+                    val savedData = jpaRepository.findAll()
+                    savedData.shouldHaveSize(10)
                 }
 
                 repository.deleteAll()
@@ -50,6 +54,9 @@ class MarketItemPriceSnapshotRepoTest : DescribeSpec() {
             }
         }
         describe("save test") {
+            beforeContainer {
+                repository.deleteAll()
+            }
             context("if total 10 duplicate records 5 save") {
                 val testData = listOf<MarketItemPriceSnapshot>(
                     MarketItemPriceSnapshot(itemCode = 1000, price = 1000),

@@ -9,7 +9,6 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.oikkani.processorservice.application.port.outbound.AuctionItemPriceSnapshotRepositoryPort
 import io.oikkani.processorservice.infrastructure.config.repository.PostgresqlTestContainersConfig
-import io.oikkani.processorservice.infrastructure.config.security.TestSecurityConfig
 import io.oikkani.processorservice.infrastructure.outbound.repository.entity.AuctionItemPriceSnapshot
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.AuctionItemPriceSnapshotJpaRepository
 import org.springframework.beans.factory.annotation.Autowired
@@ -20,7 +19,7 @@ import java.time.LocalDateTime
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(PostgresqlTestContainersConfig::class, TestSecurityConfig::class)
+@Import(PostgresqlTestContainersConfig::class)
 class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
     override fun extensions() = listOf(SpringExtension)
 
