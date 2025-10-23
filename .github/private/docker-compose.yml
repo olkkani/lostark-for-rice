@@ -6,7 +6,7 @@ services:
 
   processor-blue:
     image:  ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
-    container_name: lfr-backend-blue
+    container_name: processor-blue
     environment:
       - DB_CONNECTION_URL=${DB_CONNECTION_URL}
       - DB_USER=${DB_USER}
@@ -23,11 +23,16 @@ services:
       - "18081:8080"
     networks:
       - lfr-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: always
 
   processor-green:
     image:  ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
-    container_name: lfr-backend-green
+    container_name: processor-green
     environment:
       - DB_CONNECTION_URL=${DB_CONNECTION_URL}
       - DB_USER=${DB_USER}
@@ -44,4 +49,9 @@ services:
       - "18082:8080"
     networks:
       - lfr-network
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     restart: always

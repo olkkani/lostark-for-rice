@@ -2,7 +2,6 @@ networks:
   lfr-network:
     external: true
 services:
-
   integration-blue:
     image: ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
     container_name: lfr-backend-blue
@@ -21,8 +20,13 @@ services:
     ports:
       - "18081:8080"
     networks:
-      - lfr-network
-    restart: always
+      - network-processor
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: unless-stopped
 
   integration-green:
     image: ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
@@ -42,8 +46,13 @@ services:
     ports:
       - "18082:8080"
     networks:
-      - lfr-network
-    restart: always
+      - network-processor
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    restart: unless-stopped
 
 
   front-green:
