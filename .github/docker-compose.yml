@@ -1,32 +1,150 @@
 networks:
-  olkkani_network:
+  network-integration:
     external: true
+
 services:
-  blue:
-    container_name: lfr-backend-blue
-    image:  ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
+  nginx:
+    image: nginx:1.29.3-alpine3.22
+    container_name: nginx
+    restart: unless-stopped
+
+    networks:
+      - network-integration
+
+    ports:
+      - "80:80"
+      - "443:443"
+
+    volumes:
+      - /home/deploy/lfr/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf
+      - /home/deploy/lfr/nginx/integration-active-upstream.conf:/etc/nginx/integration-active-upstream.conf:ro
+      - /home/deploy/lfr/nginx/processor-active-upstream.conf:/etc/nginx/processor-active-upstream.conf:ro
+      - /home/deploy/lfr/nginx/frontend-active-upstream.conf:/etc/nginx/frontend-active-upstream.conf:ro
+
     environment:
-      - DB_CONNECTION_URL=${DB_CONNECTION_URL}
-      - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_REDIS_HOST=${DB_REDIS_HOST}
-      - DB_REDIS_PORT=${DB_REDIS_PORT}
-      - DB_REDIS_PASSWORD=${DB_REDIS_PASSWORD}
-      - JWT_SECRET=${JWT_SECRET}
-      - AUCTION_API_KEY=${AUCTION_API_KEY}
-      - MARKET_API_KEY=${MARKET_API_KEY}
-      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
       - TZ=Asia/Seoul
-      - SPRING_PROFILES_ACTIVE=prod
+
+    deploy:
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 512M
+        reservations:
+          memory: 512M
+
+    security_opt:
+      - no-new-privileges:true
+
+    cap_drop:
+      - ALL
+
+    cap_add:
+      - NET_BIND_SERVICE
+      - CHOWN
+      - SETUID
+      - SETGID
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+
+  front-blue:
+    container_name: frontend-blue
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/frontend:latest}
+    ports:
+      - "3000:3000"
+    networks:
+      - network-processor
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - TZ=Asia/Seoul
+
+  front-green:
+    container_name: frontend-green
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/frontend:latest}
+    ports:
+      - "3001:3000"
+    networks:
+      - network-processor
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - TZ=Asia/Seoul
+
+  integration-blue:
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/integration:latest}
+    container_name: integration-blue
     ports:
       - "18081:8080"
     networks:
-      - olkkani_network
-    restart: always
+      - network-processor
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=prod
 
-  green:
-    container_name: lfr-backend-green
-    image:  ${IMAGE_NAME:-ghcr.io/olkkani/lostark-for-rice:latest}
+  integration-green:
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/integration:latest}
+    container_name: integration-green
+    ports:
+      - "18082:8080"
+    networks:
+      - network-processor
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=prod
+
+  processor-blue:
+    image:  ${IMAGE_NAME:-ghcr.io/olkkani/processor:latest}
+    container_name: processor-blue
+    networks:
+      - network-integration
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
     environment:
       - DB_CONNECTION_URL=${DB_CONNECTION_URL}
       - DB_USER=${DB_USER}
@@ -34,17 +152,29 @@ services:
       - DB_REDIS_HOST=${DB_REDIS_HOST}
       - DB_REDIS_PORT=${DB_REDIS_PORT}
       - DB_REDIS_PASSWORD=${DB_REDIS_PASSWORD}
-      - JWT_SECRET=${JWT_SECRET}
-      - AUCTION_API_KEY=${AUCTION_API_KEY}
-      - MARKET_API_KEY=${MARKET_API_KEY}
-      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
       - TZ=Asia/Seoul
       - SPRING_PROFILES_ACTIVE=prod
-    ports:
-      - "18082:8080"
+
+  processor-green:
+    image:  ${IMAGE_NAME:-ghcr.io/olkkani/processor:latest}
+    container_name: processor-green
     networks:
-      - olkkani_network
-    restart: always
+      - network-integration
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - DB_CONNECTION_URL=${DB_CONNECTION_URL}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_REDIS_HOST=${DB_REDIS_HOST}
+      - DB_REDIS_PORT=${DB_REDIS_PORT}
+      - DB_REDIS_PASSWORD=${DB_REDIS_PASSWORD}
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=prod
 
 #  mongo:
 #    container_name: lfr-mongo

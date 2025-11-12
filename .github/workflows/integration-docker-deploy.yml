@@ -1,0 +1,177 @@
+name: integration-docker-deploy.yml
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  IMAGE_NAME: "ghcr.io/${{ github.repository_owner }}/integration"
+  WORK_DIR: "/home/${{ secrets.USERNAME }}/lfr/integration"
+  NGINX_DIR: "/home/${{ secrets.USERNAME }}/lfr/nginx"
+jobs:
+  detect-changes:
+    runs-on: ubuntu-24.04
+    outputs:
+      integration-deploy: ${{ steps.changes.outputs.common == 'true' || steps.changes.outputs.integration-service == 'true' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Detect changes
+        uses: dorny/paths-filter@v3
+        id: changes
+        with:
+          filters: |
+            common:
+              - 'common/**'
+            integration-service:
+              - 'integration-service/**'
+  build-integration:
+    runs-on: ubuntu-24.04
+    needs: detect-changes
+    if: needs.detect-changes.outputs.integration-deploy == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Get short SHA for image tag
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build integration-service
+        run: ./gradlew :integration-service:build
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.OLKK_GITHUB_TOKEN }}
+
+      - name: Build and push integration-service Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: ./integration-service
+          push: true
+          tags: ${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }}
+
+
+  serve-upstream-files:
+    runs-on: ubuntu-24.04
+    needs: [ detect-changes, build-integration ]
+    if: needs.detect-changes.outputs.integration-deploy == 'true'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get short SHA
+        run: echo "SHORT_SHA=$(git rev-parse --short HEAD)" >> $GITHUB_ENV
+
+      - name: Copy upstream conf files
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          source: "./.github/integration/upstream/"
+          target: "${{ env.WORK_DIR }}"
+          overwrite: true
+          rm: true
+          strip_components: 3
+      - name: Copy docker-compose.yml to server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          source: "./.github/docker-compose.yml"
+          target: "${{ env.WORK_DIR }}"
+          overwrite: true
+          strip_components: 1
+
+      - name: Setup environment variables
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            cd ${{ env.WORK_DIR }}
+            
+            cat > .env << EOF
+            JWT_SECRET=${{ secrets.JWT_SECRET}}
+            DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}
+            LOSTARK_API_KEY=${{ secrets.LOSTARK_API_KEY }}
+            DISCORD_CLIENT_ID=${{ secrets.DISCORD_CLIENT_ID }}
+            DISCORD_CLIENT_SECRET=${{ secrets.DISCORD_CLIENT_SECRET }}
+            EOF
+
+  deploy-integration:
+    runs-on: ubuntu-24.04
+    needs: [ detect-changes, serve-upstream-files ]
+    if: needs.detect-changes.outputs.integration-deploy == 'true'
+    steps:
+      - name: Deploy integration-service
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.PORT }}
+          script: |
+            COMPOSE_PATH="${{ env.WORK_DIR }}/docker-compose.yml"
+            
+            # 실행 중인 integration-service 확인
+            ACTIVE_SERVICE=$(docker ps --format "{{.Names}}" | grep -E "integration-blue|integration-green" | head -n1)
+            if [ "$ACTIVE_SERVICE" = "integration-blue" ]; then
+              NEW_SERVICE="integration-green"
+              OLD_SERVICE="integration-blue"
+              mv "${{ env.WORK_DIR }}/upstream/integration-green.conf" "${{ env.NGINX_DIR }}/integration-active-upstream.conf"
+            else
+              NEW_SERVICE="integration-blue"
+              OLD_SERVICE="integration-green"
+              mv "${{ env.WORK_DIR }}/upstream/integration-blue.conf" "${{ env.NGINX_DIR }}/integration-active-upstream.conf"
+            fi
+            
+            # 기존 서비스 종료
+            docker compose -f "$COMPOSE_PATH" stop "$OLD_SERVICE" || true
+            docker compose -f "$COMPOSE_PATH" rm -f "$OLD_SERVICE" || true
+            
+            # 새 서비스 실행
+            docker compose -f "$COMPOSE_PATH" pull "$NEW_SERVICE"
+            docker compose -f "$COMPOSE_PATH" up -d "$NEW_SERVICE"
+            
+            # Health check
+            sleep 15 
+            
+            # Reload nginx config
+            docker exec nginx nginx -s reload || true
+            
+            # 사용하지 않는 이미지 삭제
+            docker image prune -f

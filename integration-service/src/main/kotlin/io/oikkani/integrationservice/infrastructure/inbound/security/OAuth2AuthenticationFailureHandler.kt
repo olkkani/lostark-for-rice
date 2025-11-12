@@ -9,8 +9,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class OAuth2AuthenticationFailureHandler(
-    @param:Value("\${frontend.domain:http://localhost:5173}")
-    private val frontendDomain: String
+    @param:Value("\${service.domain}") private val serviceDomain: String,
 ) : AuthenticationFailureHandler {
 
     override fun onAuthenticationFailure(
@@ -18,7 +17,7 @@ class OAuth2AuthenticationFailureHandler(
         response: HttpServletResponse,
         exception: AuthenticationException
     ) {
-        val frontendFailureUrl = "$frontendDomain/auth/failure"
+        val frontendFailureUrl = "$serviceDomain/auth/failure"
         response.sendRedirect("$frontendFailureUrl?error=${exception.message}")
     }
 }

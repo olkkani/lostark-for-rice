@@ -12,12 +12,12 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Component
 class ProcessorMarketClient(
-    @Value("\${processor.url:must-not-null-processor-url}") processorServiceUrl: String,
+    @param:Value("\${service.domain}") private val serviceDomain: String,
     private val exceptionNotification: ExceptionNotification,
 ) : BaseClient(exceptionNotification) {
 
     val client: WebClient = WebClient.builder()
-        .baseUrl(processorServiceUrl)
+        .baseUrl(serviceDomain)
         .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
         .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .build()
