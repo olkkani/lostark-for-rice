@@ -11,7 +11,7 @@ import org.testcontainers.utility.DockerImageName
 class PostgresqlTestContainersConfig {
 
     companion object {
-        val postgresContainer: PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:17-alpine"))
+        val postgresContainer: PostgreSQLContainer<*> = PostgreSQLContainer(DockerImageName.parse("postgres:18.0-alpine3.22"))
             .withDatabaseName("test_db")
             .withUsername("test")
             .withPassword("test")
@@ -37,7 +37,7 @@ class PostgresqlTestContainersConfig {
 class RedisTestContainersConfig {
 
     companion object {
-        val redisContainer: RedisContainer = RedisContainer(DockerImageName.parse("redis:7-alpine"))
+        val redisContainer: RedisContainer = RedisContainer(DockerImageName.parse("redis:8.2.3-alpine3.22"))
             .withReuse(true)
 
         init {
