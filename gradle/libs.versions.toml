@@ -1,45 +1,49 @@
+# https://docs.gradle.org/current/userguide/platforms.html#sub::toml-dependencies-format
 [versions]
 # Plugin versions
-kotlin = "2.1.20"
-spring = "6.2.5"  # sync springBoot version
-springBoot = "3.4.4" # sync spring version
-dependencyManagement = "1.1.7"
+kotlin = "1.9.25"
+spring = "6.2.8"  # sync spring-boot version, check spring-security test
+spring-boot = "3.5.3" # sync spring version
+dependency-management = "1.1.7"
 osDetector = "1.7.3"
-coroutines = "1.10.1"
+coroutines = "1.8.1"
 # Library versions
 jacksonKotlin = "2.18.2"
 tsidCreator = "5.2.6"
 hypersistenceUtils = "3.9.0"
 p6spy = "1.10.0"
 kotestExtensionsSpring = "1.3.0"
-junitLauncher = "1.11.3"
 kotest = "5.9.1"
-jooq = "3.19.21" # See spring-boot-stater-jooq and sync spring version
+junit = "5.13.4"
+junit-platform = "1.13.4" # See Junit and Sync Version
+jooq = "3.20.4" # See spring-boot-stater-jooq and sync spring version, but sync for monsoul
 flyway = "11.8.1"
 testcontainer = "1.20.6" # See spring-boot-testcontainers and sync spring version
 jjwt = "0.12.6"
 [libraries]
+# kotlin
+kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 # Spring
-spring-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "springBoot" }
-spring-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "springBoot" }
-spring-config-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "springBoot" }
-spring-quartz = { module = "org.springframework.boot:spring-boot-starter-quartz", version.ref = "springBoot" }
-spring-undertow = { module = "org.springframework.boot:spring-boot-starter-undertow", version.ref = "springBoot" }
-spring-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "springBoot" }
-spring-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "springBoot" }
+spring-web = { module = "org.springframework.boot:spring-boot-starter-web", version.ref = "spring-boot" }
+spring-webflux = { module = "org.springframework.boot:spring-boot-starter-webflux", version.ref = "spring-boot" }
+spring-config-processor = { module = "org.springframework.boot:spring-boot-configuration-processor", version.ref = "spring-boot" }
+spring-quartz = { module = "org.springframework.boot:spring-boot-starter-quartz", version.ref = "spring-boot" }
+spring-undertow = { module = "org.springframework.boot:spring-boot-starter-undertow", version.ref = "spring-boot" }
+spring-actuator = { module = "org.springframework.boot:spring-boot-starter-actuator", version.ref = "spring-boot" }
+spring-devtools = { module = "org.springframework.boot:spring-boot-devtools", version.ref = "spring-boot" }
 
 # security
-spring-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBoot" }
-spring-oauth2 = { module = "org.springframework.boot:spring-boot-starter-oauth2-client", version.ref = "springBoot"}
-jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref="jjwt"}
-jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref="jjwt"}
-jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref="jjwt"}
+spring-security = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "spring-boot" }
+spring-oauth2 = { module = "org.springframework.boot:spring-boot-starter-oauth2-client", version.ref = "spring-boot" }
+jjwt-api = { module = "io.jsonwebtoken:jjwt-api", version.ref = "jjwt" }
+jjwt-impl = { module = "io.jsonwebtoken:jjwt-impl", version.ref = "jjwt" }
+jjwt-jackson = { module = "io.jsonwebtoken:jjwt-jackson", version.ref = "jjwt" }
 
 # Persistence and DB
-spring-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "springBoot" }
-spring-jooq = { module = "org.springframework.boot:spring-boot-starter-jooq", version.ref = "springBoot" }
-jooq-entensions-hibernate = { module = "org.jooq:jooq-meta-extensions-hibernate", version.ref = "jooq" }
-spring-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis", version.ref = "springBoot" }
+spring-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa", version.ref = "spring-boot" }
+spring-jooq = { module = "org.springframework.boot:spring-boot-starter-jooq", version.ref = "spring-boot" }
+spring-redis = { module = "org.springframework.boot:spring-boot-starter-data-redis", version.ref = "spring-boot" }
 hibernate-utils = { module = "io.hypersistence:hypersistence-utils-hibernate-60", version.ref = "hypersistenceUtils" }
 hibernate-core = { module = "org.hibernate.orm:hibernate-core", version = "6.6.14.Final" }
 hikaricp = { module = "com.zaxxer:HikariCP", version = "6.3.0" }
@@ -48,53 +52,65 @@ flyway-postgresql = { module = "org.flywaydb:flyway-database-postgresql", versio
 postgresql = { module = "org.postgresql:postgresql", version = "42.7.5" }
 jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
 jooq-codgen = { module = "org.jooq:jooq-codegen", version.ref = "jooq" }
+jooq-entensions-hibernate = { module = "org.jooq:jooq-meta-extensions-hibernate", version.ref = "jooq" }
 
 # Test and logging
-spring-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springBoot" }
-spring-testcontainer = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref="springBoot"}
+spring-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
+spring-testcontainer = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "spring-boot" }
+# Junit and Kotest libs
+junit = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+junit-platform-common = { module = "org.junit.platform:junit-platform-commons", version.ref = "junit-platform"}
+junit-platform-engine = { module = "org.junit.platform:junit-platform-engine", version.ref= "junit-platform"}
+junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
+junit-kotlin = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
+junit-kotlin-runner = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
+kotest-extensions-spring = { module = "io.kotest.extensions:kotest-extensions-spring", version.ref = "kotestExtensionsSpring" }
+mockk = { module = "io.mockk:mockk", version = "1.13.17" }
+
 testcontainer-junit = { module = "org.testcontainers:junit-jupiter", version.ref = "testcontainer" }
 testcontainer-postgresql = { module = "org.testcontainers:postgresql", version.ref = "testcontainer" }
 testcontainer-redis = { module = "com.redis:testcontainers-redis", version = "2.2.4" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging", version = "7.0.0" }
 p6spy = { module = "com.github.gavlyukovskiy:p6spy-spring-boot-starter", version.ref = "p6spy" }
-kotest-junit-runner = { module = "io.kotest:kotest-runner-junit5-jvm", version.ref = "kotest" }
-kotest-extensions-spring = { module = "io.kotest.extensions:kotest-extensions-spring", version.ref = "kotestExtensionsSpring" }
-junit-kotlin = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version = "1.9.25" }
-junit-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junitLauncher" }
-mockk = { module = "io.mockk:mockk", version = "1.13.17" }
-spring-security-test = { module = "org.springframework.security:spring-security-test", version = "6.4.4" }
+spring-security-test = { module = "org.springframework.security:spring-security-test", version.ref = "spring" }
 h2 = { module = "com.h2database:h2", version = "2.3.232" }
 reactor-test = { module = "io.projectreactor:reactor-test", version = "3.7.4" }
 embedded-redis = { module = "com.github.codemonstur:embedded-redis", version = "1.4.3" }
 
 # Other
-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core-jvm", version.ref = "coroutines" }
 coroutines-reactor = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-reactor", version.ref = "coroutines" }
-reactor-kotlin-extensions = { module = "io.projectreactor.kotlin:reactor-kotlin-extensions", version = "1.2.3" }
+kotlin-reactor-extensions = { module = "io.projectreactor.kotlin:reactor-kotlin-extensions", version = "1.2.3" }
+kotlin-jackson = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jacksonKotlin" }
 tsid-creator = { module = "com.github.f4b6a3:tsid-creator", version.ref = "tsidCreator" }
 commons-text = { module = "org.apache.commons:commons-text", version = "1.13.0" }
-jackson-kotlin = { module = "com.fasterxml.jackson.module:jackson-module-kotlin", version.ref = "jacksonKotlin" }
 dns-native-mac = { module = "io.netty:netty-resolver-dns-native-macos", version = "4.1.115.Final" }
-reflect-kotlin = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+
 
 
 [bundles]
-spring = ["spring-web", "spring-config-processor", "spring-actuator", "spring-security", "spring-undertow", "spring-webflux", "spring-quartz"]
+common = ["commons-text", "kotlin-jackson"]
+test = ["junit", "junit-engine", "junit-platform-common","junit-platform-engine", "junit-platform-launcher", "junit-kotlin", "junit-kotlin-runner", "mockk"]
+kotlin = ["kotlin-stdlib", "kotlin-logging"]
+kotlin-coroutines = ["kotlin-reflect", "coroutines-core", "coroutines-reactor", "kotlin-reactor-extensions"]
+kotlin-coroutines-test = ["reactor-test"]
+spring = ["spring-web", "spring-config-processor", "spring-actuator", "spring-undertow", "spring-webflux", "spring-quartz", "spring-devtools"]
 spring-test = ["spring-test", "spring-security-test", "kotest-extensions-spring"]
-persistence = ["spring-jpa", "hibernate-utils", "hibernate-core", "tsid-creator", "hikaricp", "flyway", "flyway-postgresql"]
+spring-security = ["spring-security", "spring-security-test"]
+jjwt = ["jjwt-impl", "jjwt-jackson"]
+persistence = ["spring-jpa", "hibernate-utils", "hibernate-core", "tsid-creator", "hikaricp", "flyway", "flyway-postgresql", "jooq", "spring-jooq", "jooq-codgen"]
 persistence-database = ["postgresql", "spring-redis"]
 persistence-database-embedded = ["h2", "embedded-redis"]
-security = ["spring-security", "jjwt-api", "spring-oauth2"]
-test = ["kotest-junit-runner", "mockk", "reactor-test", "junit-kotlin", "junit-launcher"]
-testcontainer = ["spring-testcontainer", "testcontainer-junit", "testcontainer-postgresql", "testcontainer-redis"]
+persistence-test-testcontainer = ["spring-testcontainer", "testcontainer-junit", "testcontainer-postgresql", "testcontainer-redis"]
 
 [plugins]
-kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-springBoot = { id = "org.springframework.boot", version.ref = "springBoot" }
-dependencyManagement = { id = "io.spring.dependency-management", version.ref = "dependencyManagement" }
-osDetector = { id = "com.google.osdetector", version.ref = "osDetector" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
+dependency-management = { id = "io.spring.dependency-management", version.ref = "dependency-management" }
+#osdetector = { id = "com.google.osdetector", version.ref = "osDetector" }
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
-jooq = { id = "nu.studer.jooq", version = "10.1" }
+#jooq = { id = "nu.studer.jooq", version = "10.1" }
 jooq-monosoul = { id = "dev.monosoul.jooq-docker", version = "7.0.9" }

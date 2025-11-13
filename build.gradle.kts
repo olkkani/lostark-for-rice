@@ -1,115 +1,97 @@
 plugins {
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.springBoot)
-    alias(libs.plugins.dependencyManagement)
-    alias(libs.plugins.osDetector)
-    alias(libs.plugins.kapt)
-    alias(libs.plugins.spring)
-    alias(libs.plugins.jpa)
-    alias(libs.plugins.jooq.monosoul)
-}
-
-group = "io.oikkani"
-//version = "0.0.1-SNAPSHOT"
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-allOpen {
-    annotation("jakarta.persistence.Entity")
-    annotation("jakarta.persistence.MappedSuperclass")
-    annotation("jakarta.persistence.Embeddable")
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.spring) apply false
+    alias(libs.plugins.spring.boot) apply false
+    alias(libs.plugins.dependency.management) apply false
+    alias(libs.plugins.kapt) apply false
+    alias(libs.plugins.kotlin.jpa) apply false
+    alias(libs.plugins.jooq.monosoul) apply false
 }
 
 repositories {
     mavenCentral()
 }
 
-dependencies {
-    // Spring
-    implementation(libs.bundles.spring) {
-        exclude(
-            group = "org.springframework.boot",
-            module = "spring-boot-starter-tomcat"
-        )
+allprojects {
+    group = "io.olkkani"
+    version = "1.0.0"
+
+    repositories {
+        mavenCentral()
     }
-    kapt("org.springframework.boot:spring-boot-configuration-processor")
-    developmentOnly(libs.spring.devtools)
-    // DB
-    implementation(libs.bundles.persistence)
-    implementation(libs.bundles.persistence.database)
-    implementation(libs.jooq)
-    jooqCodegen(libs.postgresql)
-    jooqCodegen(libs.jooq.codgen)
-
-    // security
-    implementation(libs.bundles.security)
-    runtimeOnly(libs.jjwt.impl)
-    runtimeOnly(libs.jjwt.jackson)
-
-    // Test and Logging
-    implementation(libs.kotlin.logging)
-    implementation(libs.p6spy)
-    testImplementation(libs.bundles.test)
-    testImplementation(libs.bundles.spring.test)
-    implementation(libs.bundles.persistence.database.embedded)
-    testImplementation(libs.bundles.testcontainer)
-    // the other
-    implementation(libs.jackson.kotlin)
-    implementation(libs.reactor.kotlin.extensions)
-    implementation(libs.commons.text)
-    implementation(libs.coroutines.core)
-    implementation(libs.coroutines.reactor)
-    implementation(libs.reflect.kotlin)
+}
+subprojects {
+    apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "java")
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(21)
+        }
+    }
+    kotlin {
+        jvmToolchain(21)
+        compilerOptions {
+            freeCompilerArgs.addAll("-Xjsr305=strict")
+        }
+    }
 
     configurations.all {
         exclude(group = "org.slf4j", module = "slf4j-simple")
     }
 
-    if (osdetector.arch.equals("aarch_64")) {
-        implementation(libs.dns.native.mac) {
-            artifact {
-                classifier = "osx-aarch_64"
+    dependencies {
+        implementation(rootProject.libs.bundles.kotlin)
+        implementation(rootProject.libs.bundles.common)
+        testImplementation(rootProject.libs.bundles.test)
+
+        val osName = System.getProperty("os.name").lowercase()
+        val osArch = System.getProperty("os.arch")
+        if (osName.contains("mac") && osArch == "aarch64") {
+            implementation(rootProject.libs.dns.native.mac) {
+                artifact {
+                    classifier = "osx-aarch_64"
+                }
             }
         }
     }
-}
-val jooqGeneratedOutput = project.layout.buildDirectory.dir("generated-jooq") // 경로 변수화
-sourceSets {
-    main {
-        kotlin.srcDirs(jooqGeneratedOutput)
-    }
-}
-tasks.named("clean") {
-    doLast {
-        jooqGeneratedOutput.get().asFile.deleteRecursively()
-    }
-}
-kotlin {
-    compilerOptions {
-        freeCompilerArgs.addAll("-Xjsr305=strict")
-    }
-}
-tasks.withType<Test>().configureEach {
-    useJUnitPlatform()
-    jvmArgs("-Xshare:off")
-}
-tasks {
-    generateJooqClasses {
-        schemas.set(listOf("public"))
-        basePackageName.set("org.jooq.generated")
-        migrationLocations.setFromFilesystem("src/main/resources/db/migration")
-        outputDirectory.set(project.layout.buildDirectory.dir("generated-jooq"))
-        flywayProperties.put("flyway.placeholderReplacement", "false")
-        includeFlywayTable.set(true)
-        outputSchemaToDefault.add("public")
-        schemaToPackageMapping.put("public", "model")
 
-        usingJavaConfig {
-            /* "this" here is the org.jooq.meta.jaxb.Generator configure it as you please */
+
+
+    if (name in listOf("integration-service", "processor-service")) {
+        apply(plugin = "org.springframework.boot")
+        apply(plugin = "org.jetbrains.kotlin.plugin.spring")
+        apply(plugin = "io.spring.dependency-management")
+        apply(plugin = "org.jetbrains.kotlin.kapt")
+
+
+//        val mockitoAgent = configurations.create("mockitoAgent")
+        dependencies {
+//            mockitoAgent(rootProject.libs.mockk) { isTransitive = false }
+            implementation(rootProject.libs.bundles.spring) {
+                exclude(
+                    group = "org.springframework.boot",
+                    module = "spring-boot-starter-tomcat"
+                )
+            }
+            testImplementation(rootProject.libs.bundles.spring.test)
+        }
+        tasks.withType<Test>().configureEach {
+            useJUnitPlatform()
+//            jvmArgs("-javaagent:${mockitoAgent.asPath}", "-Xshare:off")
+            jvmArgs(
+                "-Xshare:off",
+                "-XX:+EnableDynamicAgentLoading" // JDK 21+ Mock config. hide warning message
+
+            )
+        }
+        tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
+            archiveVersion.set("")
         }
     }
+    if (name in listOf("processor-service")) {
+        apply(plugin = "dev.monosoul.jooq-docker")
+    }
+
 }
+
+

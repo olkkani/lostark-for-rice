@@ -1,0 +1,96 @@
+spring:
+  profiles:
+    group:
+      local:
+        - common
+        - security
+        - persistence-common
+        - persistence-local
+        - database-redis-local
+        - server-local
+      prod:
+        - common
+        - security
+        - persistence-common
+        - persistence-prod
+        - database-redis-server
+        - server-prod
+--- # common
+spring:
+  config:
+    activate:
+      on-profile: common
+  thymeleaf:
+    prefix: classpath:templates/
+    suffix: .html
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+        exclude: "*"
+service:
+  domain: http://nginx:80
+# lostark api key
+lostark:
+  api:
+    key: ${LOSTARK_API_KEY:must_not_null_apikey}
+webhook:
+  url:
+    discord: ${DISCORD_WEBHOOK_URL:must_not_null_url}
+
+
+--- # security
+spring:
+  config:
+    activate:
+      on-profile: security
+  security:
+    oauth2:
+      client:
+        registration:
+          discord:
+            client-id: ${DISCORD_CLIENT_ID}
+            client-secret: ${DISCORD_CLIENT_SECRET}
+            client-authentication-method: client_secret_post
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/discord"
+            scope:
+              - identify
+              - email
+        provider:
+          discord:
+            authorization-uri: https://discord.com/api/oauth2/authorize
+            token-uri: https://discord.com/api/oauth2/token
+            user-info-uri: https://discord.com/api/users/@me
+            user-name-attribute: id
+secret:
+  jwt:
+    secret: ${JWT_SECRET:dVyUSSGqhfyWt5d23IZ1gS0P0OkjgZl03t20V32jfsjg}
+    expiration: 2592000000 # 30days
+--- # local-server
+spring:
+  config:
+    activate:
+      on-profile: server-local
+  devtools:
+    livereload:
+      enabled: true
+    restart:
+      enabled: true
+server:
+  port: 8080
+--- # prod-server
+spring:
+  config:
+    activate:
+      on-profile: server-prod
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+server:
+  shutdown: graceful
+logging:
+  level:
+    org.quartz: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"

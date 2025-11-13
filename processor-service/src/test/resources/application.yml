@@ -1,0 +1,23 @@
+spring:
+  profiles:
+    group:
+      test:
+        - common
+        - discord-alert
+
+--- # common
+spring:
+  config:
+    activate:
+      on-profile: common
+logging:
+  level:
+    root: info
+---
+spring:
+  config:
+    activate:
+      on-profile: discord-alert
+webhook:
+  url:
+    discord: ${DISCORD_WEBHOOK_URL:must_not_empty_key}

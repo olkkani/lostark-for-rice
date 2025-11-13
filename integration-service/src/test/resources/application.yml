@@ -1,0 +1,124 @@
+spring:
+  profiles:
+    group:
+      test:
+        - common
+        - security
+        - api
+        - persistence-common
+        - db-test-container
+        - db-redis-container
+--- # common
+spring:
+  config:
+    activate:
+      on-profile: common
+logging:
+  level:
+    root: info
+# lostark api key
+lostark:
+  api:
+    key: ${LOSTARK_API_KEY:must_not_null_apikey}
+--- # security
+spring:
+  config:
+    activate:
+      on-profile: security
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration
+      - org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration
+    oauth2:
+      client:
+        registration:
+          test:
+            client-id: test-client-id
+            client-secret: test-client-secret
+            provider: test
+        provider:
+          test:
+            authorization-uri: https://example.com/auth
+            token-uri: https://example.com/token
+            user-info-uri: https://example.com/userinfo
+secret:
+  jwt:
+    secret: ${JWT_DISCORD_SECRET:dVyUSSGqhfyWt5d23IZ1gS0P0OkjgZl03t20V32jfsjg}
+    expiration: 604800000 # 7days
+---
+spring:
+  config:
+    activate:
+      on-profile: api
+lostark:
+    api:
+      key: ${API_KEY:must_not_null_apikey}
+webhook:
+  url:
+    discord: ${DISCORD_WEBHOOK_URL:must_not_empty_key}
+--- # db-prod
+spring:
+  config:
+    activate:
+      on-profile: db-prod
+  datasource:
+    url: ${DB_CONNECTION_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+--- # persistence-common
+spring:
+  config:
+    activate:
+      on-profile: persistence-common
+#  jpa:
+#    hibernate:
+#      naming:
+#        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
+#        implicit-strategy: org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy
+--- # db-h2
+spring:
+  config:
+    activate:
+      on-profile: db-h2
+  datasource:
+    url: jdbc:h2:mem:local;MODE=PostgreSQL
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+--- # db-test_container
+spring:
+  config:
+    activate:
+      on-profile: db-test-container
+  datasource:
+    # 아래 URL은 실제로 사용되지 않지만, 설정은 필요함
+    url: jdbc:postgresql://localhost:5432/non_existent_db
+    username: test
+    password: test
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  flyway:
+    enabled: true
+    baseline-on-migrate: true # springboot 2 이상에서 안되는 문제가 있어. 명시적 선언
+    locations: classpath:db/migration
+---
+spring:
+  config:
+    activate:
+      on-profile: db-redis-container
+redis:
+  host: localhost
+  port: 6379
