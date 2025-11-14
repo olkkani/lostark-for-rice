@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldNotBe
 import io.oikkani.integrationservice.config.security.TestSecurityConfig
 import io.oikkani.integrationservice.domain.dto.MarketItemCondition
 import io.oikkani.integrationservice.infrastructure.outbound.client.lostark.MarketClient
-import io.olkkani.common.dto.contract.MarketPrice
+import io.olkkani.common.dto.contract.MarketItemPrice
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
@@ -44,7 +44,7 @@ class MarketClientTest : DescribeSpec() {
                 }
             }
             context("다 건 조회를 하면") {
-                val prices = mutableListOf<MarketPrice>()
+                val prices = mutableListOf<MarketItemPrice>()
                 val itemCondition = MarketItemCondition(
                     categoryCode = 40000,
                     itemGrade = "유물"
@@ -54,7 +54,7 @@ class MarketClientTest : DescribeSpec() {
                     val response = client.fetchItems(request)
 
                     response?.let { responseMarketPrices ->
-                        prices.addAll(responseMarketPrices.toDomain())
+                        prices.addAll(responseMarketPrices.extractPrices())
                     }
                 }
                 it("데이터 매핑") {

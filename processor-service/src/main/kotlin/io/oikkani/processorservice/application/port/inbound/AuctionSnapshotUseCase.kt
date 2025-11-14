@@ -1,8 +1,8 @@
 package io.oikkani.processorservice.application.port.inbound
 
-import io.olkkani.common.dto.contract.AuctionPriceSnapshot
+import io.olkkani.common.dto.contract.AuctionItemPrice
 
 interface AuctionSnapshotUseCase {
-    fun saveSnapshotAndUpdateHlcPrice(auctionPriceSnapshot: AuctionPriceSnapshot)
+    fun saveSnapshotAndUpdateHlcPrice(auctionItemPrice: AuctionItemPrice)
     fun deleteAll()
 }

@@ -3,7 +3,7 @@ package io.oikkani.integrationservice.infrastructure.outbound.client.processor
 import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
 import io.oikkani.integrationservice.infrastructure.outbound.client.BaseClient
 import io.olkkani.common.api.ItemPreview
-import io.olkkani.common.dto.contract.AuctionPriceSnapshot
+import io.olkkani.common.dto.contract.AuctionItemPrice
 import io.olkkani.common.dto.contract.CandleChart
 import kotlinx.coroutines.reactive.awaitSingle
 import org.springframework.beans.factory.annotation.Value
@@ -25,7 +25,7 @@ class ProcessorAuctionClient(
         .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .build()
 
-    suspend fun sendAuctionPriceData(request: AuctionPriceSnapshot) {
+    suspend fun sendAuctionPriceData(request: AuctionItemPrice) {
         client.post()
             .uri("auction/items/snapshots")
             .bodyValue(request)

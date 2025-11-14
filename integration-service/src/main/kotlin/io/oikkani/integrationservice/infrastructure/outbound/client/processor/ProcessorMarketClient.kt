@@ -2,7 +2,7 @@ package io.oikkani.integrationservice.infrastructure.outbound.client.processor
 
 import io.oikkani.integrationservice.application.port.outbound.ExceptionNotification
 import io.oikkani.integrationservice.infrastructure.outbound.client.BaseClient
-import io.olkkani.common.dto.contract.MarketPrice
+import io.olkkani.common.dto.contract.MarketPriceSnapshotRequest
 import kotlinx.coroutines.reactor.awaitSingle
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.HttpHeaders
@@ -22,10 +22,10 @@ class ProcessorMarketClient(
         .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .build()
 
-    suspend fun sendMarketPriceData(marketPrices: List<MarketPrice>) {
+    suspend fun saveMarketPriceData(snapshotRequest: MarketPriceSnapshotRequest) {
         client.post()
             .uri("market/items/snapshots")
-            .bodyValue(marketPrices)
+            .bodyValue(snapshotRequest)
             .retrieve()
             .toBodilessEntity()
             .withCommonRetry()

@@ -1,8 +1,8 @@
 package io.oikkani.processorservice.application.port.inbound
 
-import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyAuctionItemOhlcPriceEntity
+import io.oikkani.processorservice.domain.model.DailyAuctionItemOhlcPriceDTO
 
 interface AuctionUseCase {
-    fun getAllTodayItems(): List<DailyAuctionItemOhlcPriceEntity>
-    fun findAllOhlcByItemCode(itemCode: Int): List<DailyAuctionItemOhlcPriceEntity>
+    fun getAllTodayItems(): List<DailyAuctionItemOhlcPriceDTO>
+    fun findAllOhlcByItemCode(itemCode: Int): List<DailyAuctionItemOhlcPriceDTO>
 }

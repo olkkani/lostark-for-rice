@@ -3,6 +3,7 @@ package io.oikkani.integrationservice.application.service
 import io.oikkani.integrationservice.application.port.inbound.MarketFetchMaterialUseCase
 import io.oikkani.integrationservice.domain.dto.MarketItemCondition
 import io.oikkani.integrationservice.infrastructure.outbound.client.lostark.MarketClient
+import io.oikkani.integrationservice.infrastructure.outbound.client.lostark.dto.response.MarketResponse
 import io.oikkani.integrationservice.infrastructure.outbound.client.processor.ProcessorMarketClient
 import org.springframework.stereotype.Service
 
@@ -13,16 +14,16 @@ class MarketFetchMaterialService(
 ) : MarketFetchMaterialUseCase {
 
 
-    override suspend fun fetchAndSendPriceData() {
+    override suspend fun fetchAndSendPriceData(isUpdateYesterdayAvgPrice: Boolean) {
         val abidos = MarketItemCondition(
             categoryCode = 50010,
             itemCode = 6861012,
             itemName = "아비도스 융화 재료"
         )
 
-        val response = marketClient.fetchItems(abidos.toFusionMaterialRequest())
+        val response: MarketResponse? = marketClient.fetchItems(abidos.toFusionMaterialRequest())
         response?.let {
-            processorMarketClient.sendMarketPriceData(it.toDomain())
+            processorMarketClient.saveMarketPriceData(it.toSnapshotRequest(isUpdateYesterdayAvgPrice))
         }
     }
 

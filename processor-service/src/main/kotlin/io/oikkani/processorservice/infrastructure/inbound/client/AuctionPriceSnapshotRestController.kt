@@ -1,7 +1,7 @@
 package io.oikkani.processorservice.infrastructure.inbound.client
 
 import io.oikkani.processorservice.application.port.inbound.AuctionSnapshotUseCase
-import io.olkkani.common.dto.contract.AuctionPriceSnapshot
+import io.olkkani.common.dto.contract.AuctionItemPrice
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 
@@ -11,7 +11,7 @@ class AuctionPriceSnapshotRestController(
     private val snapshotService : AuctionSnapshotUseCase
 ) {
     @PostMapping()
-    fun saveSnapshot(@RequestBody request: AuctionPriceSnapshot): ResponseEntity<Unit> {
+    fun saveSnapshot(@RequestBody request: AuctionItemPrice): ResponseEntity<Unit> {
         snapshotService.saveSnapshotAndUpdateHlcPrice(request)
         return ResponseEntity.noContent().build()
     }

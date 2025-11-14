@@ -20,6 +20,8 @@ logging:
 lostark:
   api:
     key: ${LOSTARK_API_KEY:must_not_null_apikey}
+service:
+  domain: http://nginx:80
 --- # security
 spring:
   config:
