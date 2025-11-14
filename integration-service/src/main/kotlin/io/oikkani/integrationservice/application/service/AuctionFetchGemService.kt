@@ -6,7 +6,7 @@ import io.oikkani.integrationservice.application.port.outbound.ExceptionNotifica
 import io.oikkani.integrationservice.domain.dto.AuctionItemCondition
 import io.oikkani.integrationservice.infrastructure.outbound.client.lostark.AuctionClient
 import io.oikkani.integrationservice.infrastructure.outbound.client.processor.ProcessorAuctionClient
-import io.olkkani.common.dto.contract.AuctionPriceSnapshot
+import io.olkkani.common.dto.contract.AuctionItemPrice
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
@@ -36,9 +36,9 @@ class AuctionFetchGemService(
                 val response = apiClient.fetchItems(gem.toGemRequest())
                 response?.let { data ->
                     processorClient.sendAuctionPriceData(
-                        AuctionPriceSnapshot(
+                        AuctionItemPrice(
                             itemCode = gem.itemCode,
-                            prices = data.toDomain(),
+                            prices = data.toAuctionPrices(),
                         )
                     )
                 }

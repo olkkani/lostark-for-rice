@@ -1,7 +1,7 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository.jooq
 
 import com.github.f4b6a3.tsid.TsidCreator
-import io.oikkani.processorservice.infrastructure.outbound.repository.entity.AuctionItemPriceSnapshot
+import io.oikkani.processorservice.domain.model.AuctionItemPriceSnapshotDTO
 import org.jooq.DSLContext
 import org.jooq.generated.Tables
 import org.springframework.stereotype.Repository
@@ -11,7 +11,7 @@ class AuctionItemPriceSnapshotJooqRepository(private val dsl: DSLContext) {
 
     private val table = Tables.AUCTION_ITEM_PRICE_SNAPSHOTS
 
-    fun insertIgnoreDuplicates(itemPriceSnapshots: List<AuctionItemPriceSnapshot>) {
+    fun insertIgnoreDuplicates(itemPriceSnapshots: List<AuctionItemPriceSnapshotDTO>) {
         if (itemPriceSnapshots.isEmpty()) return
         val itemPriceSnapshot = Tables.AUCTION_ITEM_PRICE_SNAPSHOTS
         val query = dsl.insertInto(

@@ -4,7 +4,8 @@ import io.oikkani.integrationservice.application.port.inbound.MarketFetchRecipeU
 import io.oikkani.integrationservice.domain.dto.MarketItemCondition
 import io.oikkani.integrationservice.infrastructure.outbound.client.lostark.MarketClient
 import io.oikkani.integrationservice.infrastructure.outbound.client.processor.ProcessorMarketClient
-import io.olkkani.common.dto.contract.MarketPrice
+import io.olkkani.common.dto.contract.MarketItemPrice
+import io.olkkani.common.dto.contract.MarketPriceSnapshotRequest
 import org.springframework.stereotype.Service
 
 @Service
@@ -18,15 +19,20 @@ class MarketFetchRecipeService(
         itemGrade = "유물"
     )
 
-    override suspend fun fetchAndSendPriceData() {
+    override suspend fun fetchAndSendPriceData(isUpdateYesterdayAvgPrice: Boolean) {
         //TODO 비동기, 논블로킹, 병렬 처리로 변경
-        val prices = mutableListOf<MarketPrice>()
-        (1..5).map { // 실제 각인수 개수에 따른 페이지
+        val prices = mutableListOf<MarketItemPrice>()
+        (1..5).map { // Pages based on the actual number of recipes
             val response = apiClient.fetchItems(itemCondition.toRelicEngravingRecipeRequest(it))
             response?.let { responseMarketPrices ->
-                prices.addAll(responseMarketPrices.toDomain())
+                prices.addAll(responseMarketPrices.extractPrices())
             }
         }
-        processorMarketClient.sendMarketPriceData(prices)
+        processorMarketClient.saveMarketPriceData(
+            MarketPriceSnapshotRequest(
+                isUpdateYesterdayAvgPrice = isUpdateYesterdayAvgPrice,
+                prices = prices
+            )
+        )
     }
 }

@@ -1,6 +1,6 @@
 package io.olkkani.common.dto.contract
 
-class AuctionPriceSnapshot(
+class AuctionItemPrice(
     val itemCode: Int,
     val prices: List<AuctionPrice>,
 )

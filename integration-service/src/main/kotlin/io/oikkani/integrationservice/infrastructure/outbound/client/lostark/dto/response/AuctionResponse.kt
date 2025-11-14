@@ -9,7 +9,7 @@ import java.time.LocalDateTime
 data class AuctionResponse(
     val items: List<AuctionItem>,
 ) {
-    fun toDomain() = items.map {
+    fun toAuctionPrices() = items.map {
         AuctionPrice(
             price = it.auctionInfo.buyPrice,
             endDate = it.auctionInfo.endDate,

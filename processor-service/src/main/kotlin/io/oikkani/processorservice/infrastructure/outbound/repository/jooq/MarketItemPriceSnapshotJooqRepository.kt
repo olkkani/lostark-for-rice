@@ -1,7 +1,7 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository.jooq
 
 import com.github.f4b6a3.tsid.TsidCreator
-import io.oikkani.processorservice.infrastructure.outbound.repository.entity.MarketItemPriceSnapshot
+import io.oikkani.processorservice.domain.model.MarketItemPriceSnapshotDTO
 import org.jooq.DSLContext
 import org.jooq.generated.Tables
 import org.springframework.stereotype.Repository
@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository
 class MarketItemPriceSnapshotJooqRepository(private val dsl: DSLContext) {
     private val table = Tables.MARKET_ITEM_PRICE_SNAPSHOTS
 
-    fun insertIgnoreDuplicates(itemPriceSnapshots: List<MarketItemPriceSnapshot>) {
+    fun insertIgnoreDuplicates(itemPriceSnapshots: List<MarketItemPriceSnapshotDTO>) {
         if (itemPriceSnapshots.isEmpty()) return
 
         val query = dsl.insertInto(

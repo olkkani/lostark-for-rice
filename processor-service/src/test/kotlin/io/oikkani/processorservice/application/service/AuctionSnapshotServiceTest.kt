@@ -12,7 +12,7 @@ import io.oikkani.processorservice.infrastructure.outbound.repository.jooq.Daily
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.AuctionItemPriceSnapshotJpaRepository
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.DailyAuctionItemOhlcPriceJpaRepository
 import io.olkkani.common.dto.contract.AuctionPrice
-import io.olkkani.common.dto.contract.AuctionPriceSnapshot
+import io.olkkani.common.dto.contract.AuctionItemPrice
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
@@ -57,7 +57,7 @@ class AuctionSnapshotServiceTest : DescribeSpec() {
                     )
                 )
             }
-            val snapshot = AuctionPriceSnapshot(
+            val snapshot = AuctionItemPrice(
                 itemCode = 1000,
                 prices = prices
             )
@@ -86,7 +86,7 @@ class AuctionSnapshotServiceTest : DescribeSpec() {
                 service.saveSnapshotAndUpdateHlcPrice(snapshot)
                     val savedPrevOhlcPrices = jpaRepository.findAllByRecordedDate(today)
 
-                val nextTimePriceSnapshot = AuctionPriceSnapshot(
+                val nextTimePriceSnapshot = AuctionItemPrice(
                     itemCode = 1000,
                     prices = listOf(
                         // duplication price

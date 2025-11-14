@@ -3,9 +3,9 @@ package io.oikkani.processorservice.application.service
 import io.oikkani.processorservice.application.port.inbound.AuctionSnapshotUseCase
 import io.oikkani.processorservice.application.port.outbound.AuctionItemOhlcPriceRepositoryPort
 import io.oikkani.processorservice.application.port.outbound.AuctionItemPriceSnapshotRepositoryPort
-import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyAuctionItemOhlcPriceEntity
-import io.oikkani.processorservice.infrastructure.outbound.repository.entity.toEntityList
-import io.olkkani.common.dto.contract.AuctionPriceSnapshot
+import io.oikkani.processorservice.domain.model.DailyAuctionItemOhlcPriceDTO
+import io.oikkani.processorservice.domain.model.toSnapshots
+import io.olkkani.common.dto.contract.AuctionItemPrice
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDate
@@ -18,17 +18,17 @@ class AuctionSnapshotService(
 
 
     @Transactional
-    override fun saveSnapshotAndUpdateHlcPrice(auctionPriceSnapshot: AuctionPriceSnapshot) {
-        snapshotRepo.saveAllNotExists(auctionPriceSnapshot.toEntityList())
+    override fun saveSnapshotAndUpdateHlcPrice(auctionItemPrice: AuctionItemPrice) {
+        snapshotRepo.saveAllNotExists(auctionItemPrice.toSnapshots())
 
         // TODO 이상치 제거 로직 추가
         // Update HLC Price
-        val priceSnapshot = snapshotRepo.findAllByItemCode(auctionPriceSnapshot.itemCode)
+        val priceSnapshot = snapshotRepo.findAllByItemCode(auctionItemPrice.itemCode)
         val todayLowPrice = priceSnapshot.minOf { it.price }
         val todayHighPrice = priceSnapshot.maxOf { it.price }
-        val todayClosePrice = auctionPriceSnapshot.prices.minOf { it.price }
+        val todayClosePrice = auctionItemPrice.prices.minOf { it.price }
         val today = LocalDate.now()
-        ohlcRepo.findByItemCodeAndRecordedDate(itemCode = auctionPriceSnapshot.itemCode, recordedDate = today)
+        ohlcRepo.findByItemCodeAndRecordedDate(itemCode = auctionItemPrice.itemCode, recordedDate = today)
             ?.apply {
                 // 기존 데이터가 존재하면 오늘자 데이터를 수정
                 highPrice = todayHighPrice
@@ -38,8 +38,8 @@ class AuctionSnapshotService(
             }?:run {
                 // 데이터가 존재하지 않으면 신규 데이터를 생성 및 삽입
                 ohlcRepo.save(
-                    DailyAuctionItemOhlcPriceEntity(
-                        itemCode = auctionPriceSnapshot.itemCode,
+                    DailyAuctionItemOhlcPriceDTO(
+                        itemCode = auctionItemPrice.itemCode,
                         recordedDate = today,
                         openPrice = todayLowPrice,
                         highPrice = todayHighPrice,

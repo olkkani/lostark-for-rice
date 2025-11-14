@@ -1,6 +1,6 @@
 package io.olkkani.common.dto.contract
 
-class MarketPriceSnapshot(
+class MarketPriceSnapshotRequest(
     val isUpdateYesterdayAvgPrice: Boolean = false,
     val prices: List<MarketItemPrice>
 )

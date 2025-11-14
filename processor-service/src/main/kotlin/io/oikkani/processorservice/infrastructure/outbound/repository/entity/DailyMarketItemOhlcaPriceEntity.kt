@@ -1,6 +1,7 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository.entity
 
 import io.hypersistence.utils.hibernate.id.Tsid
+import io.oikkani.processorservice.domain.model.DailyMarketItemOhlcaPriceDTO
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table
@@ -8,7 +9,7 @@ import java.time.LocalDate
 
 @Entity
 @Table(name = "daily_market_item_ohlca_prices")
-class DailyMarketItemOhlcaPrice (
+class DailyMarketItemOhlcaPriceEntity (
     @Id @Tsid
     val id: Long? = null,
     val itemCode: Int,
@@ -18,4 +19,14 @@ class DailyMarketItemOhlcaPrice (
     var lowPrice: Int,
     var closePrice: Int,
     var avgPrice: Float = 0F,
-)
+){
+    fun toDomain() = DailyMarketItemOhlcaPriceDTO(
+        id = id,
+        itemCode = itemCode,
+        recordedDate = recordedDate,
+        openPrice = openPrice,
+        highPrice = highPrice,
+        lowPrice = lowPrice,
+        closePrice = closePrice,
+    )
+}

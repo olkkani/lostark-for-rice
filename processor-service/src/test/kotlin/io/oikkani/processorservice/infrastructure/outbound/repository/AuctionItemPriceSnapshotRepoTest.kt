@@ -8,8 +8,8 @@ import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.oikkani.processorservice.application.port.outbound.AuctionItemPriceSnapshotRepositoryPort
+import io.oikkani.processorservice.domain.model.AuctionItemPriceSnapshotDTO
 import io.oikkani.processorservice.infrastructure.config.repository.PostgresqlTestContainersConfig
-import io.oikkani.processorservice.infrastructure.outbound.repository.entity.AuctionItemPriceSnapshot
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.AuctionItemPriceSnapshotJpaRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
@@ -46,19 +46,19 @@ class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
             }
             context("새로운 데이터 리스트를 전달했을 때") {
                 val testSnapshots = listOf(
-                    AuctionItemPriceSnapshot(
+                    AuctionItemPriceSnapshotDTO(
                         id = TsidCreator.getTsid().toLong(),
                         itemCode = 12345,
                         endDate = LocalDateTime.now(),
                         price = 10000
                     ),
-                    AuctionItemPriceSnapshot(
+                    AuctionItemPriceSnapshotDTO(
                         id = TsidCreator.getTsid().toLong(),
                         itemCode = 12346,
                         endDate = LocalDateTime.now(),
                         price = 15000
                     ),
-                    AuctionItemPriceSnapshot(
+                    AuctionItemPriceSnapshotDTO(
                         id = TsidCreator.getTsid().toLong(),
                         itemCode = 12347,
                         endDate = LocalDateTime.now(),
@@ -78,13 +78,13 @@ class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
             context("중복된 ID가 포함된 데이터를 전달했을 때") {
                 val duplicateId = TsidCreator.getTsid().toLong()
                 val testSnapshots = listOf(
-                    AuctionItemPriceSnapshot(
+                    AuctionItemPriceSnapshotDTO(
                         id = duplicateId,
                         itemCode = 12345,
                         endDate = LocalDateTime.now(),
                         price = 10000
                     ),
-                    AuctionItemPriceSnapshot(
+                    AuctionItemPriceSnapshotDTO(
                         id = duplicateId, // 중복된 ID
                         itemCode = 12346,
                         endDate = LocalDateTime.now(),
@@ -118,13 +118,13 @@ class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
             }
             context("ID가 null인 데이터를 전달했을 때") {
                 val testSnapshots = listOf(
-                    AuctionItemPriceSnapshot(
+                    AuctionItemPriceSnapshotDTO(
                         id = null, // ID가 null
                         itemCode = 12345,
                         endDate = LocalDateTime.now(),
                         price = 10000
                     ),
-                    AuctionItemPriceSnapshot(
+                    AuctionItemPriceSnapshotDTO(
                         id = null, // ID가 null
                         itemCode = 12346,
                         endDate = LocalDateTime.now(),
@@ -184,8 +184,8 @@ class AuctionItemPriceSnapshotRepoTest : DescribeSpec() {
         }
     }
 
-    private fun createTestSnapshot(itemCode: Int, price: Int): AuctionItemPriceSnapshot {
-        return AuctionItemPriceSnapshot(
+    private fun createTestSnapshot(itemCode: Int, price: Int): AuctionItemPriceSnapshotDTO {
+        return AuctionItemPriceSnapshotDTO(
             id = TsidCreator.getTsid().toLong(),
             itemCode = itemCode,
             endDate = timeNow,

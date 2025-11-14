@@ -29,6 +29,9 @@ class DailyAuctionItemOhlcPriceRepositoryPortTest : DescribeSpec() {
         val today = LocalDate.now()
 
         describe("get-all-today-ohlc-prices") {
+            beforeContainer {
+                jpaRepository.deleteAll()
+            }
             context("today-get-ohlc-price") {
                 val ohlcPrices = mutableListOf<DailyAuctionItemOhlcPriceEntity>()
 
@@ -36,7 +39,7 @@ class DailyAuctionItemOhlcPriceRepositoryPortTest : DescribeSpec() {
                 for(i in 1..5) {
                     ohlcPrices.add(
                         DailyAuctionItemOhlcPriceEntity(
-                            itemCode = 1000*i,
+                            itemCode = 1001*i,
                             recordedDate = today,
                             openPrice = 1000*i,
                             highPrice = 1000*i,
@@ -50,7 +53,7 @@ class DailyAuctionItemOhlcPriceRepositoryPortTest : DescribeSpec() {
                 for (i in 1..5) {
                     ohlcPrices.add(
                         DailyAuctionItemOhlcPriceEntity(
-                            itemCode = 1000*i,
+                            itemCode = 1001*i,
                             recordedDate = today.minusDays(i.toLong()),
                             openPrice = 1000*i,
                             highPrice = 1000*i,
@@ -62,6 +65,7 @@ class DailyAuctionItemOhlcPriceRepositoryPortTest : DescribeSpec() {
                 jpaRepository.saveAll(ohlcPrices)
 
                 it("get_total_count_5") {
+                    println(auctionRepository.getAllTodayItems())
                     auctionRepository.getAllTodayItems() shouldHaveSize 5
                 }
             }

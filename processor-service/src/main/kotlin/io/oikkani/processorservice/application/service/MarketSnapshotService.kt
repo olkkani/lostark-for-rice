@@ -3,10 +3,10 @@ package io.oikkani.processorservice.application.service
 import io.oikkani.processorservice.application.port.inbound.MarketSnapshotUseCase
 import io.oikkani.processorservice.application.port.outbound.MarketItemOhlcaRepositoryPort
 import io.oikkani.processorservice.application.port.outbound.MarketItemPriceSnapshotRepositoryPort
-import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyMarketItemOhlcaPrice
-import io.oikkani.processorservice.infrastructure.outbound.repository.entity.toEntity
-import io.olkkani.common.dto.contract.MarketPrice
-import io.olkkani.common.dto.contract.MarketPriceSnapshot
+import io.oikkani.processorservice.domain.model.DailyMarketItemOhlcaPriceDTO
+import io.oikkani.processorservice.domain.model.toSnapshot
+import io.olkkani.common.dto.contract.MarketItemPrice
+import io.olkkani.common.dto.contract.MarketPriceSnapshotRequest
 import org.springframework.stereotype.Service
 import java.time.LocalDate
 
@@ -16,11 +16,13 @@ class MarketSnapshotService(
     private val ohlcaRepository: MarketItemOhlcaRepositoryPort,
 ) : MarketSnapshotUseCase {
 
-    override fun saveSnapshotAndUpdateHlcaPrice(snapshot: MarketPriceSnapshot) {
-        snapshotRepository.saveAllNotExists(snapshot.prices.map { it.toEntity() })
-        updateOhlcPrice(snapshot.prices)
-        if (snapshot.isUpdateYesterdayAvgPrice) {
-            updateYesterdayAvgPrices(snapshot.prices)
+    override fun saveSnapshotAndUpdateHlcaPrice(snapshotRequest: MarketPriceSnapshotRequest) {
+        snapshotRepository.saveAllNotExists(snapshotRequest.prices.map { it.toSnapshot() })
+        // update today ohlc price
+        updateOhlcPrice(snapshotRequest.prices)
+        // update yesterday avg price when open scheduler
+        if (snapshotRequest.isUpdateYesterdayAvgPrice) {
+            updateYesterdayAvgPrices(snapshotRequest.prices)
         }
     }
 
@@ -28,11 +30,11 @@ class MarketSnapshotService(
         snapshotRepository.deleteAll()
     }
 
-    private fun updateOhlcPrice(marketPrices: List<MarketPrice>) {
+    private fun updateOhlcPrice(marketItemPrices: List<MarketItemPrice>) {
         val today = LocalDate.now()
         val ohlcPrices = ohlcaRepository.findAllByRecordedDate(today)
 
-        marketPrices.forEach { marketPrice ->
+        marketItemPrices.forEach { marketPrice ->
             val closePrice = marketPrice.price
 
             ohlcPrices.find { it.itemCode == marketPrice.itemCode }
@@ -43,7 +45,7 @@ class MarketSnapshotService(
                     this.closePrice = closePrice
                     ohlcaRepository.save(this)
                 } ?: run {
-                val todayOhlc = DailyMarketItemOhlcaPrice(
+                val todayOhlc = DailyMarketItemOhlcaPriceDTO(
                     itemCode = marketPrice.itemCode,
                     recordedDate = today,
                     openPrice = marketPrice.price,
@@ -58,12 +60,12 @@ class MarketSnapshotService(
         }
     }
 
-    private fun updateYesterdayAvgPrices(marketPrices: List<MarketPrice>) {
+    private fun updateYesterdayAvgPrices(marketItemPrices: List<MarketItemPrice>) {
         val yesterday = LocalDate.now().minusDays(1)
         val yesterdayOhlc = ohlcaRepository.findAllByRecordedDate(yesterday)
 
         yesterdayOhlc.map { ohlc ->
-            marketPrices.find { it.itemCode == ohlc.itemCode }
+            marketItemPrices.find { it.itemCode == ohlc.itemCode }
                 ?.apply {
                     ohlc.avgPrice = this.yDateAvgPrice
                     ohlcaRepository.save(ohlc)

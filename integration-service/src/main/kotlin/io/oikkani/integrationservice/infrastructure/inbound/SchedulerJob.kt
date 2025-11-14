@@ -24,8 +24,8 @@ class TodayOpeningJob(
     override fun executeInternal(context: JobExecutionContext) {
         coroutineScope.launch {
             auctionGemService.fetchAndSendPriceData()
-            marketMaterialService.fetchAndSendPriceData()
-            marketRecipeService.fetchAndSendPriceData()
+            marketMaterialService.fetchAndSendPriceData(isUpdateYesterdayAvgPrice = true)
+            marketRecipeService.fetchAndSendPriceData(isUpdateYesterdayAvgPrice = true)
         }
     }
 }
