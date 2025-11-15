@@ -1,0 +1,48 @@
+networks:
+  network-integration:
+    external: true
+
+services:
+  integration-blue:
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/integration:latest}
+    container_name: integration-blue
+    ports:
+      - "18081:8080"
+    networks:
+      - network-processor
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=prod
+
+  integration-green:
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/integration:latest}
+    container_name: integration-green
+    ports:
+      - "18082:8080"
+    networks:
+      - network-processor
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - DISCORD_WEBHOOK_URL=${DISCORD_WEBHOOK_URL}
+      - LOSTARK_API_KEY=${LOSTARK_API_KEY}
+      - JWT_SECRET=${JWT_SECRET}
+      - DISCORD_CLIENT_ID=${DISCORD_CLIENT_ID}
+      - DISCORD_CLIENT_SECRET=${DISCORD_CLIENT_SECRET}
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=prod

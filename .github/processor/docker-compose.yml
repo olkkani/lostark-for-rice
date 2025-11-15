@@ -1,0 +1,46 @@
+networks:
+  network-integration:
+    external: true
+
+services:
+  processor-blue:
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/processor:latest}
+    container_name: processor-blue
+    networks:
+      - network-integration
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - DB_CONNECTION_URL=${DB_CONNECTION_URL}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_REDIS_HOST=${DB_REDIS_HOST}
+      - DB_REDIS_PORT=${DB_REDIS_PORT}
+      - DB_REDIS_PASSWORD=${DB_REDIS_PASSWORD}
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=prod
+
+  processor-green:
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/processor:latest}
+    container_name: processor-green
+    networks:
+      - network-integration
+    restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    environment:
+      - DB_CONNECTION_URL=${DB_CONNECTION_URL}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_REDIS_HOST=${DB_REDIS_HOST}
+      - DB_REDIS_PORT=${DB_REDIS_PORT}
+      - DB_REDIS_PASSWORD=${DB_REDIS_PASSWORD}
+      - TZ=Asia/Seoul
+      - SPRING_PROFILES_ACTIVE=prod
