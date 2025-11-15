@@ -87,7 +87,7 @@ jobs:
 
   serve-nginx-upstream-and-docker-compose-files:
     runs-on: ubuntu-24.04
-    needs: [ detect-changes, build-integration ]
+    needs: [ detect-changes ]
     if: needs.detect-changes.outputs.deploy-script == 'true'
     steps:
       - name: Checkout
@@ -139,8 +139,9 @@ jobs:
 
   deploy-integration:
     runs-on: ubuntu-24.04
-    needs: [ build-integration ]
-    if: needs.detect-changes.outputs.integration-deploy == 'true'
+    needs: [ build-integration, serve-nginx-upstream-and-docker-compose-files ]
+    if: needs.detect-changes.outputs.integration-deploy == 'true' &&
+      (needs.serve-nginx-upstream-and-docker-compose-files.result == 'success' || needs.serve-nginx-upstream-and-docker-compose-files.result == 'skipped')
     steps:
       - name: Deploy integration-service
         uses: appleboy/ssh-action@v1.0.3
