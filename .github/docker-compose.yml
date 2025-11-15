@@ -64,7 +64,7 @@ services:
     ports:
       - "3000:3000"
     networks:
-      - network-processor
+      - network-integration
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -80,7 +80,7 @@ services:
     ports:
       - "3001:3000"
     networks:
-      - network-processor
+      - network-integration
     restart: unless-stopped
     logging:
       driver: "json-file"

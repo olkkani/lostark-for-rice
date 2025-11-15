@@ -15,7 +15,9 @@ jobs:
   detect-changes:
     runs-on: ubuntu-24.04
     outputs:
-      processor-deploy: ${{ steps.changes.outputs.common == 'true' || steps.changes.outputs.processor-service == 'true' || steps.changes.outputs.deploy-script }}
+      processor-deploy: ${{ steps.changes.outputs.common == 'true'
+        || steps.changes.outputs.processor-service == 'true' 
+        || steps.changes.outputs.deploy-script  == 'true'}}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -135,12 +137,12 @@ jobs:
             DB_REDIS_PASSWORD=${{ secrets.DB_REDIS_PASSWORD }}
             EOF
 
-  deploy-integration:
+  deploy-processor:
     runs-on: ubuntu-24.04
     needs: [ detect-changes, serve-upstream-files ]
     if: needs.detect-changes.outputs.processor-deploy == 'true'
     steps:
-      - name: Deploy integration-service
+      - name: Deploy processor-service
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.HOST }}
