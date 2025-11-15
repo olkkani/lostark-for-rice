@@ -139,7 +139,7 @@ jobs:
 
   deploy-integration:
     runs-on: ubuntu-24.04
-    needs: [ detect-changes, serve-nginx-upstream-and-docker-compose-files ]
+    needs: [ build-integration ]
     if: needs.detect-changes.outputs.integration-deploy == 'true'
     steps:
       - name: Deploy integration-service
