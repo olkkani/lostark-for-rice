@@ -85,7 +85,7 @@ jobs:
           tags: ${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }}
 
 
-  serve-nginx-upstream-and-dockercompose-files:
+  serve-nginx-upstream-and-docker-compose-files:
     runs-on: ubuntu-24.04
     needs: [ detect-changes, build-processor ]
     if: needs.detect-changes.outputs.deploy-script == 'true'
@@ -141,7 +141,7 @@ jobs:
 
   deploy-processor:
     runs-on: ubuntu-24.04
-    needs: [ detect-changes, serve-upstream-files ]
+    needs: [ detect-changes, serve-nginx-upstream-and-docker-compose-files ]
     if: needs.detect-changes.outputs.processor-deploy == 'true'
     steps:
       - name: Deploy processor-service
