@@ -18,6 +18,7 @@ jobs:
       integration-deploy: ${{ steps.changes.outputs.common == 'true'
         || steps.changes.outputs.integration-service == 'true'
         || steps.changes.outputs.deploy-script == 'true' }}
+      deploy-script: ${{ steps.changes.outputs.deploy-script == 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,6 +32,7 @@ jobs:
           filters: |
             deploy-script:
               - '.github/workflows/integration-docker-deploy.yml'
+              - '.github/docker-compose.yml'
             common:
               - 'common/**'
             integration-service:
@@ -83,10 +85,10 @@ jobs:
           tags: ${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }}
 
 
-  serve-upstream-files:
+  serve-nginx-upstream-and-dockercompose-files:
     runs-on: ubuntu-24.04
     needs: [ detect-changes, build-integration ]
-    if: needs.detect-changes.outputs.integration-deploy == 'true'
+    if: needs.detect-changes.outputs.deploy-script == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -103,9 +105,9 @@ jobs:
           port: ${{ secrets.PORT }}
           source: "./.github/integration/upstream/*"
           target: "${{ env.WORK_DIR }}"
-          overwrite: true
-          rm: true
           strip_components: 3
+          rm: true
+
       - name: Copy docker-compose.yml to server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -115,8 +117,8 @@ jobs:
           port: ${{ secrets.PORT }}
           source: "./.github/docker-compose.yml"
           target: "${{ env.WORK_DIR }}"
-          overwrite: true
-          strip_components: 1
+          strip_components: 2
+          rm: true
 
       - name: Setup environment variables
         uses: appleboy/ssh-action@v1.0.3
@@ -156,11 +158,11 @@ jobs:
             if [ "$ACTIVE_SERVICE" = "integration-blue" ]; then
               NEW_SERVICE="integration-green"
               OLD_SERVICE="integration-blue"
-              mv "${{ env.WORK_DIR }}/upstream/integration-green.conf" "${{ env.NGINX_DIR }}/integration-active-upstream.conf"
+              mv "${{ env.WORK_DIR }}/integration-green.conf" "${{ env.NGINX_DIR }}/integration-active-upstream.conf"
             else
               NEW_SERVICE="integration-blue"
               OLD_SERVICE="integration-green"
-              mv "${{ env.WORK_DIR }}/upstream/integration-blue.conf" "${{ env.NGINX_DIR }}/integration-active-upstream.conf"
+              mv "${{ env.WORK_DIR }}/integration-blue.conf" "${{ env.NGINX_DIR }}/integration-active-upstream.conf"
             fi
             
             # 기존 서비스 종료
