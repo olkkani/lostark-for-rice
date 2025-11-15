@@ -15,7 +15,7 @@ jobs:
   detect-changes:
     runs-on: ubuntu-24.04
     outputs:
-      processor-deploy: ${{ steps.changes.outputs.common == 'true' || steps.changes.outputs.processor-service == 'true' || step.changes.outputs.deploy-script }}
+      processor-deploy: ${{ steps.changes.outputs.common == 'true' || steps.changes.outputs.processor-service == 'true' || steps.changes.outputs.deploy-script }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
