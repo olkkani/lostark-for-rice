@@ -159,11 +159,11 @@ jobs:
             if [ "$ACTIVE_SERVICE" = "processor-blue" ]; then
               NEW_SERVICE="processor-green"
               OLD_SERVICE="processor-blue"
-              mv "${{ env.WORK_DIR }}/upstream/processor-green.conf" "${{ env.NGINX_DIR }}/processor-active-upstream.conf"
+              mv "${{ env.WORK_DIR }}/processor-green.conf" "${{ env.NGINX_DIR }}/processor-active-upstream.conf"
             else
               NEW_SERVICE="processor-blue"
               OLD_SERVICE="processor-green"
-              mv "${{ env.WORK_DIR }}/upstream/processor-blue.conf" "${{ env.NGINX_DIR }}/processor-active-upstream.conf"
+              mv "${{ env.WORK_DIR }}/processor-blue.conf" "${{ env.NGINX_DIR }}/processor-active-upstream.conf"
             fi
             
             # 기존 서비스 종료
