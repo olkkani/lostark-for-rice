@@ -9,7 +9,7 @@ services:
     ports:
       - "18081:8080"
     networks:
-      - network-processor
+      - network-integration
     restart: unless-stopped
     logging:
       driver: "json-file"
@@ -31,7 +31,7 @@ services:
     ports:
       - "18082:8080"
     networks:
-      - network-processor
+      - network-integration
     restart: unless-stopped
     logging:
       driver: "json-file"
