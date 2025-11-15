@@ -25,7 +25,7 @@ class ProcessorAuctionClient(
         .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
         .build()
 
-    suspend fun sendAuctionPriceData(request: AuctionItemPrice) {
+    suspend fun saveAuctionPriceData(request: AuctionItemPrice) {
         client.post()
             .uri("auction/items/snapshots")
             .bodyValue(request)

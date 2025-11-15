@@ -35,7 +35,7 @@ class AuctionFetchGemService(
             async {
                 val response = apiClient.fetchItems(gem.toGemRequest())
                 response?.let { data ->
-                    processorClient.sendAuctionPriceData(
+                    processorClient.saveAuctionPriceData(
                         AuctionItemPrice(
                             itemCode = gem.itemCode,
                             prices = data.toAuctionPrices(),

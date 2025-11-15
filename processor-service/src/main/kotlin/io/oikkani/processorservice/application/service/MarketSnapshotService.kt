@@ -55,8 +55,6 @@ class MarketSnapshotService(
                 )
                 ohlcaRepository.save(todayOhlc)
             }
-
-
         }
     }
 
