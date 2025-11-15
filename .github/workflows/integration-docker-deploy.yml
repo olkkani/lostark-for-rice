@@ -17,7 +17,7 @@ jobs:
     outputs:
       integration-deploy: ${{ steps.changes.outputs.common == 'true'
         || steps.changes.outputs.integration-service == 'true'
-        || steps.changes.outputs.deploy-script = 'true' }}
+        || steps.changes.outputs.deploy-script == 'true' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
