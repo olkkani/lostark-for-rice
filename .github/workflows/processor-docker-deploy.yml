@@ -105,7 +105,7 @@ jobs:
           port: ${{ secrets.PORT }}
           source: "./.github/processor/upstream/*"
           target: "${{ env.WORK_DIR }}"
-          strip_components: 2
+          strip_components: 3
           rm: true
 
       - name: Copy docker-compose.yml to server
