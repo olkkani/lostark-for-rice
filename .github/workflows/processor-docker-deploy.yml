@@ -31,8 +31,8 @@ jobs:
         with:
           filters: |
             deploy-script:
-            - '.github/workflows/processor-docker-deploy.yml'
-            - '.github/docker-compose.yml'
+              - '.github/workflows/processor-docker-deploy.yml'
+              - '.github/processor/**'
             common:
               - 'common/**'
             processor-service:

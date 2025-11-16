@@ -32,7 +32,7 @@ jobs:
           filters: |
             deploy-script:
               - '.github/workflows/integration-docker-deploy.yml'
-              - '.github/docker-compose.yml'
+              - '.github/integration/**'
             common:
               - 'common/**'
             integration-service:
