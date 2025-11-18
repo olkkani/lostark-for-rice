@@ -131,6 +131,7 @@ jobs:
             cd ${{ env.WORK_DIR }}
             
             cat > .env << EOF
+            IMAGE_TAG=${{ env.SHORT_SHA }}
             DB_CONNECTION_URL=${{ secrets.DB_CONNECTION_URL }}
             DB_USER=${{ secrets.DB_USER }}
             DB_PASSWORD=${{ secrets.DB_PASSWORD }}

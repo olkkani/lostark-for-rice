@@ -130,6 +130,7 @@ jobs:
             cd ${{ env.WORK_DIR }}
             
             cat > .env << EOF
+            IMAGE_TAG=${{ env.SHORT_SHA }}
             JWT_SECRET=${{ secrets.JWT_SECRET}}
             DISCORD_WEBHOOK_URL=${{ secrets.DISCORD_WEBHOOK_URL }}
             LOSTARK_API_KEY=${{ secrets.LOSTARK_API_KEY }}

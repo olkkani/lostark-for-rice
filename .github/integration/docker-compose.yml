@@ -4,7 +4,7 @@ networks:
 
 services:
   integration-blue:
-    image: ${IMAGE_NAME:-ghcr.io/olkkani/integration:latest}
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/integration}:${IMAGE_TAG:-latest}
     container_name: integration-blue
     ports:
       - "18081:8080"
@@ -26,7 +26,7 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
 
   integration-green:
-    image: ${IMAGE_NAME:-ghcr.io/olkkani/integration:latest}
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/integration}:${IMAGE_TAG:-latest}
     container_name: integration-green
     ports:
       - "18082:8080"

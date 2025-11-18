@@ -4,7 +4,7 @@ networks:
 
 services:
   processor-blue:
-    image: ${IMAGE_NAME:-ghcr.io/olkkani/processor:latest}
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/processor}:${IMAGE_TAG:-latest}
     container_name: processor-blue
     networks:
       - network-integration
@@ -25,7 +25,7 @@ services:
       - SPRING_PROFILES_ACTIVE=prod
 
   processor-green:
-    image: ${IMAGE_NAME:-ghcr.io/olkkani/processor:latest}
+    image: ${IMAGE_NAME:-ghcr.io/olkkani/processor}:${IMAGE_TAG:-latest}
     container_name: processor-green
     networks:
       - network-integration
