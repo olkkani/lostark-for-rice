@@ -25,7 +25,7 @@ import javax.crypto.SecretKey
 
 @Component
 class JwtTokenProvider(
-    @param:Value("\${secret.jwt.secret:dVyUSSGqhfyWt5d23IZ1gS0P0OkjgZl03t20V32jfsjg}") private val secret: String,
+    @param:Value("\${secret.jwt.secret:dVyUSSGqhfyWt5d23IZ1gS0P0OkjgZl03t20V32jfsjgidz}") private val secret: String,
     @param:Value("\${secret.jwt.expiration:604800000}") private val validityInMilliseconds: Long,
     private val tokenClient: JwtTokenClient,
     private val exceptionNotification: ExceptionNotification,
