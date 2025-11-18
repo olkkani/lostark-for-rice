@@ -82,6 +82,7 @@ jobs:
         with:
           context: ./processor-service
           push: true
+          platforms: linux/arm64
           tags: ${{ env.IMAGE_NAME }}:${{ env.SHORT_SHA }}
 
 
