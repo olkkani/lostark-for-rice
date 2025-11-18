@@ -89,7 +89,7 @@ jobs:
   serve-nginx-upstream-and-docker-compose-files:
     runs-on: ubuntu-24.04
     needs: [ detect-changes ]
-    if: needs.detect-changes.outputs.deploy-script == 'true'
+    if: needs.detect-changes.outputs.integration-deploy == 'true'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
