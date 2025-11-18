@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component
 
 @Component
 class OAuth2AuthenticationFailureHandler(
-    @param:Value("\${service.domain}") private val serviceDomain: String,
+    @param:Value("\${service.domain:localhost:8080}") private val serviceDomain: String,
 ) : AuthenticationFailureHandler {
 
     override fun onAuthenticationFailure(

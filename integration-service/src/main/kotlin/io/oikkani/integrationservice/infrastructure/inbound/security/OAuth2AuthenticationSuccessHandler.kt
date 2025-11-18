@@ -27,7 +27,7 @@ class OAuth2AuthenticationSuccessHandler(
     private val oauth2client: JwtTokenClient,
     //TODO: 토큰의 만료기간을 5분으로 제한
     @param:Value("\${secret.jwt.expiration:2592000000}") private val refreshTokenExpiration: Long,
-    @param:Value("\${service.domain}") private val serviceDomain: String,
+    @param:Value("\${service.domain:localhost:8080}") private val serviceDomain: String,
 ) : AuthenticationSuccessHandler {
     private val coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
     private val logger = KotlinLogging.logger { }

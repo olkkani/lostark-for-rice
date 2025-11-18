@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.client.WebClient
 
 @Component
 class ProcessorMarketClient(
-    @param:Value("\${service.domain}") private val serviceDomain: String,
+    @param:Value("\${service.domain:localhost:8080}") private val serviceDomain: String,
     private val exceptionNotification: ExceptionNotification,
 ) : BaseClient(exceptionNotification) {
 
