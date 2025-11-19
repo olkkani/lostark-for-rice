@@ -104,9 +104,9 @@ jobs:
           username: ${{ secrets.USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.PORT }}
-          source: "./.github/processor/upstream/*"
+          source: "./.github/processor/upstream/"
           target: "${{ env.WORK_DIR }}"
-          strip_components: 2
+          strip_components: 2 # remove 2 steps up directory. final path: work_dir/upstream
           rm: true
 
       - name: Copy docker-compose.yml to server
