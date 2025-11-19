@@ -1,6 +1,6 @@
 package io.oikkani.processorservice.application.port.inbound
 
-import io.oikkani.processorservice.domain.model.DailyAuctionItemOhlcPriceDTO
+import io.oikkani.processorservice.application.dto.DailyAuctionItemOhlcPriceDTO
 
 interface AuctionUseCase {
     fun getAllTodayItems(): List<DailyAuctionItemOhlcPriceDTO>

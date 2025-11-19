@@ -1,6 +1,6 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository.jooq
 
-import io.oikkani.processorservice.domain.model.DailyAuctionItemOhlcPriceDTO
+import io.oikkani.processorservice.application.dto.DailyAuctionItemOhlcPriceDTO
 import org.jooq.DSLContext
 import org.jooq.generated.Tables
 import org.springframework.stereotype.Repository

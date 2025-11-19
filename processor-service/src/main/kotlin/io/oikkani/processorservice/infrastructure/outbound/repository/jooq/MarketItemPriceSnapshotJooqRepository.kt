@@ -1,7 +1,7 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository.jooq
 
 import com.github.f4b6a3.tsid.TsidCreator
-import io.oikkani.processorservice.domain.model.MarketItemPriceSnapshotDTO
+import io.oikkani.processorservice.application.dto.MarketItemPriceSnapshotDTO
 import org.jooq.DSLContext
 import org.jooq.generated.Tables
 import org.springframework.stereotype.Repository

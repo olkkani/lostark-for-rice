@@ -1,4 +1,4 @@
-package io.oikkani.processorservice.domain.model
+package io.oikkani.processorservice.application.dto
 
 import io.oikkani.processorservice.application.util.PercentageCalculation
 import io.oikkani.processorservice.infrastructure.outbound.repository.entity.DailyAuctionItemOhlcPriceEntity

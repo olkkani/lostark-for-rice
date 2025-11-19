@@ -1,7 +1,7 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository.entity
 
 import io.hypersistence.utils.hibernate.id.Tsid
-import io.oikkani.processorservice.domain.model.DailyMarketItemOhlcaPriceDTO
+import io.oikkani.processorservice.application.dto.DailyMarketItemOhlcaPriceDTO
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
 import jakarta.persistence.Table

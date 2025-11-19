@@ -8,7 +8,7 @@ import io.kotest.matchers.longs.shouldBeGreaterThan
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.oikkani.processorservice.application.port.outbound.AuctionItemPriceSnapshotRepositoryPort
-import io.oikkani.processorservice.domain.model.AuctionItemPriceSnapshotDTO
+import io.oikkani.processorservice.application.dto.AuctionItemPriceSnapshotDTO
 import io.oikkani.processorservice.infrastructure.config.repository.PostgresqlTestContainersConfig
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.AuctionItemPriceSnapshotJpaRepository
 import org.springframework.beans.factory.annotation.Autowired

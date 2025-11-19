@@ -1,6 +1,6 @@
 package io.oikkani.processorservice.application.port.outbound
 
-import io.oikkani.processorservice.domain.model.MarketItemPriceSnapshotDTO
+import io.oikkani.processorservice.application.dto.MarketItemPriceSnapshotDTO
 
 interface MarketItemPriceSnapshotRepositoryPort {
     fun saveAllNotExists(itemPriceSnapshots: List<MarketItemPriceSnapshotDTO>)

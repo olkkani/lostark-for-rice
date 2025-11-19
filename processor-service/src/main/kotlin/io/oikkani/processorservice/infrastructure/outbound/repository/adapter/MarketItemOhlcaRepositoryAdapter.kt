@@ -1,7 +1,7 @@
 package io.oikkani.processorservice.infrastructure.outbound.repository.adapter
 
 import io.oikkani.processorservice.application.port.outbound.MarketItemOhlcaRepositoryPort
-import io.oikkani.processorservice.domain.model.DailyMarketItemOhlcaPriceDTO
+import io.oikkani.processorservice.application.dto.DailyMarketItemOhlcaPriceDTO
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.DailyMarketItemOhlcaPriceJpaRepository
 import org.springframework.stereotype.Component
 import java.time.LocalDate

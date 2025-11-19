@@ -3,8 +3,8 @@ package io.oikkani.processorservice.application.service
 import io.oikkani.processorservice.application.port.inbound.AuctionSnapshotUseCase
 import io.oikkani.processorservice.application.port.outbound.AuctionItemOhlcPriceRepositoryPort
 import io.oikkani.processorservice.application.port.outbound.AuctionItemPriceSnapshotRepositoryPort
-import io.oikkani.processorservice.domain.model.DailyAuctionItemOhlcPriceDTO
-import io.oikkani.processorservice.domain.model.toSnapshots
+import io.oikkani.processorservice.application.dto.DailyAuctionItemOhlcPriceDTO
+import io.oikkani.processorservice.application.dto.toSnapshots
 import io.olkkani.common.dto.contract.AuctionItemPrice
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional

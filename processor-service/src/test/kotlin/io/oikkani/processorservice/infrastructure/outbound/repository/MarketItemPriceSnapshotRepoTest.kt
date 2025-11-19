@@ -4,7 +4,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.shouldBe
 import io.oikkani.processorservice.application.port.outbound.MarketItemPriceSnapshotRepositoryPort
-import io.oikkani.processorservice.domain.model.MarketItemPriceSnapshotDTO
+import io.oikkani.processorservice.application.dto.MarketItemPriceSnapshotDTO
 import io.oikkani.processorservice.infrastructure.config.repository.PostgresqlTestContainersConfig
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.MarketItemPriceSnapshotJpaRepository
 import org.springframework.beans.factory.annotation.Autowired

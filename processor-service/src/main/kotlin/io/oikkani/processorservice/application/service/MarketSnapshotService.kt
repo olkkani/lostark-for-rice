@@ -3,8 +3,8 @@ package io.oikkani.processorservice.application.service
 import io.oikkani.processorservice.application.port.inbound.MarketSnapshotUseCase
 import io.oikkani.processorservice.application.port.outbound.MarketItemOhlcaRepositoryPort
 import io.oikkani.processorservice.application.port.outbound.MarketItemPriceSnapshotRepositoryPort
-import io.oikkani.processorservice.domain.model.DailyMarketItemOhlcaPriceDTO
-import io.oikkani.processorservice.domain.model.toSnapshot
+import io.oikkani.processorservice.application.dto.DailyMarketItemOhlcaPriceDTO
+import io.oikkani.processorservice.application.dto.toSnapshot
 import io.olkkani.common.dto.contract.MarketItemPrice
 import io.olkkani.common.dto.contract.MarketPriceSnapshotRequest
 import org.springframework.stereotype.Service

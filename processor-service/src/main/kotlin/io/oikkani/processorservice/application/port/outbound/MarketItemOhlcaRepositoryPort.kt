@@ -1,6 +1,6 @@
 package io.oikkani.processorservice.application.port.outbound
 
-import io.oikkani.processorservice.domain.model.DailyMarketItemOhlcaPriceDTO
+import io.oikkani.processorservice.application.dto.DailyMarketItemOhlcaPriceDTO
 import java.time.LocalDate
 
 interface MarketItemOhlcaRepositoryPort {

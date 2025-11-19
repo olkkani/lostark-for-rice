@@ -1,4 +1,4 @@
-package io.oikkani.processorservice.domain.model
+package io.oikkani.processorservice.application.dto
 
 import io.oikkani.processorservice.infrastructure.outbound.repository.entity.AuctionItemPriceSnapshotEntity
 import io.olkkani.common.dto.contract.AuctionItemPrice
