@@ -5,16 +5,11 @@ import io.oikkani.integrationservice.infrastructure.inbound.security.JwtAuthenti
 import io.oikkani.integrationservice.infrastructure.inbound.security.JwtTokenProvider
 import io.oikkani.integrationservice.infrastructure.inbound.security.OAuth2AuthenticationFailureHandler
 import io.oikkani.integrationservice.infrastructure.inbound.security.OAuth2AuthenticationSuccessHandler
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty
-import org.springframework.boot.autoconfigure.security.servlet.PathRequest
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
-import org.springframework.context.annotation.Profile
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
-import org.springframework.security.config.annotation.web.builders.WebSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
@@ -72,7 +67,7 @@ class SecurityConfig(
     @Bean
     fun corsConfigurationSourceLocal(): CorsConfigurationSource {
         val configuration = CorsConfiguration().apply {
-            allowedOrigins = listOf("http://localhost:5173, https://gemspi.kro.kr/")
+            allowedOrigins = listOf("http://localhost:80, https://gemspi.kro.kr/, http://ngnix:80")
             allowedMethods = listOf("GET", "POST", "PUT", "DELETE", "OPTIONS")
             allowedHeaders = listOf("*")
             allowCredentials = true
@@ -87,15 +82,5 @@ class SecurityConfig(
         val copy = objectMapper.copy()
         copy.factory.characterEscapes = HtmlCharacterEscapes()
         return MappingJackson2HttpMessageConverter(copy)
-    }
-
-    @Bean
-    @ConditionalOnProperty(name = ["spring.h2.console.enabled"], havingValue = "true")
-    @Profile("local")
-    fun configureH2ConsoleEnable(): WebSecurityCustomizer {
-        return WebSecurityCustomizer { web: WebSecurity? ->
-            web!!.ignoring()
-                .requestMatchers(PathRequest.toH2Console())
-        }
     }
 }
