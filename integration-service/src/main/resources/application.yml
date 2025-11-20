@@ -29,8 +29,6 @@ management:
       exposure:
         include: health
         exclude: "*"
-service:
-  domain: http://nginx:80
 # lostark api key
 lostark:
   api:
@@ -79,7 +77,9 @@ spring:
     restart:
       enabled: true
 server:
-  port: 8080
+  port: 9011
+service:
+  domain: http://localhost:80
 --- # prod-server
 spring:
   config:
@@ -94,3 +94,5 @@ logging:
     org.quartz: INFO
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+service:
+  domain: http://nginx:80
