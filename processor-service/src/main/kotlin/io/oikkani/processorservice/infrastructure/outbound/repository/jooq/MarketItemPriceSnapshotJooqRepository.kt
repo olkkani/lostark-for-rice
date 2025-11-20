@@ -26,7 +26,7 @@ class MarketItemPriceSnapshotJooqRepository(private val dsl: DSLContext) {
                 snapshot.price,
             )
         }
-        query.onDuplicateKeyIgnore().execute()
+        query.onConflictDoNothing().execute()
     }
 
     fun truncateTable() {

@@ -35,7 +35,7 @@ spring:
     restart:
       enabled: true
 server:
-  port: 8081
+  port: 9021
 --- # prod-server
 spring:
   config:
@@ -66,7 +66,7 @@ spring:
     locations: classpath:db/migration, classpath:db/seed
     baseline-version: 1
   datasource:
-    url: jdbc:h2:mem:local;MODE=PostgreSQL
+    url: jdbc:h2:mem:testdb;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;DEFAULT_NULL_ORDERING=HIGH;
     username: sa
     password:
   h2:
