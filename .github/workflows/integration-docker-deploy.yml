@@ -3,10 +3,13 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'backend/**'
   pull_request:
     branches:
       - main
-
+    paths:
+      - 'backend/**'
 env:
   IMAGE_NAME: "ghcr.io/${{ github.repository_owner }}/integration"
   WORK_DIR: "/home/${{ secrets.USERNAME }}/lfr/integration"
