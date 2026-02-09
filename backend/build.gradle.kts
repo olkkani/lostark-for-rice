@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.kapt) apply false
     alias(libs.plugins.kotlin.jpa) apply false
     alias(libs.plugins.jooq.monosoul) apply false
+    alias(libs.plugins.ktlint) apply false
+    alias(libs.plugins.detekt) apply false
 }
 
 repositories {
@@ -23,6 +25,8 @@ allprojects {
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "java")
+    apply(plugin = "org.jlleitschuh.gradle.ktlint")
+    apply(plugin = "io.gitlab.arturbosch.detekt")
     java {
         toolchain {
             languageVersion = JavaLanguageVersion.of(21)
@@ -38,7 +42,24 @@ subprojects {
     configurations.all {
         exclude(group = "org.slf4j", module = "slf4j-simple")
     }
+    configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+        version.set("1.8.0")
+        debug.set(false)
+        verbose.set(false)
+        android.set(false)
+        outputToConsole.set(true)
+        ignoreFailures.set(false)
 
+        filter {
+            exclude("**/generated/**")
+            exclude("**/build/**")
+        }
+    }
+    tasks {
+        check {
+            dependsOn("ktlintCheck")
+        }
+    }
     dependencies {
         implementation(rootProject.libs.bundles.kotlin)
         implementation(rootProject.libs.bundles.common)
