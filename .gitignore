@@ -55,6 +55,7 @@ out/
 .idea/**/usage.statistics.xml
 .idea/**/dictionaries
 .idea/**/shelf
+.fleet/**
 
 # AWS User-specific
 .idea/**/aws.xml
