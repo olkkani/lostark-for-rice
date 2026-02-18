@@ -3,7 +3,7 @@
 # Plugin versions
 kotlin = "1.9.25"
 ktlint = "14.0.1"
-detekt = "1.23.7"
+detekt = "1.23.8"
 spring = "6.2.8"  # sync spring-boot version, check spring-security test
 spring-boot = "3.5.3" # sync spring version
 dependency-management = "1.1.7"
@@ -56,9 +56,13 @@ jooq = { module = "org.jooq:jooq", version.ref = "jooq" }
 jooq-codgen = { module = "org.jooq:jooq-codegen", version.ref = "jooq" }
 jooq-entensions-hibernate = { module = "org.jooq:jooq-meta-extensions-hibernate", version.ref = "jooq" }
 
+# Code Quility
+detekt-rules-ktlint-wrapper = { module = "io.gitlab.arturbosch.detekt:detekt-rules-ktlint-wrapper", version.ref = "detekt" }
+
 # Test and logging
 spring-test = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "spring-boot" }
 spring-testcontainer = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "spring-boot" }
+
 # Junit and Kotest libs
 junit = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
@@ -116,5 +120,6 @@ dependency-management = { id = "io.spring.dependency-management", version.ref = 
 kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 #jooq = { id = "nu.studer.jooq", version = "10.1" }
 jooq-monosoul = { id = "dev.monosoul.jooq-docker", version = "7.0.9" }
+#
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

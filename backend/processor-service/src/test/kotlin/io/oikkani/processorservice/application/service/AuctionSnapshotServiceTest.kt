@@ -11,8 +11,8 @@ import io.oikkani.processorservice.infrastructure.outbound.repository.entity.Dai
 import io.oikkani.processorservice.infrastructure.outbound.repository.jooq.DailyAuctionItemOhlcPriceJooqRepository
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.AuctionItemPriceSnapshotJpaRepository
 import io.oikkani.processorservice.infrastructure.outbound.repository.jpa.DailyAuctionItemOhlcPriceJpaRepository
-import io.olkkani.common.dto.contract.AuctionPrice
 import io.olkkani.common.dto.contract.AuctionItemPrice
+import io.olkkani.common.dto.contract.AuctionPrice
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.context.annotation.Import
@@ -46,22 +46,21 @@ class AuctionSnapshotServiceTest : DescribeSpec() {
                 service.deleteAll()
             }
 
-
             // snapshot date. lowPrice = 1_000, howPrice = 10_000
             val prices = mutableListOf<AuctionPrice>()
             for (i in 1..10) {
                 prices.add(
                     AuctionPrice(
                         price = 1000 * i,
-                        endDate = now
-                    )
+                        endDate = now,
+                    ),
                 )
             }
-            val snapshot = AuctionItemPrice(
-                itemCode = 1000,
-                prices = prices
-            )
-
+            val snapshot =
+                AuctionItemPrice(
+                    itemCode = 1000,
+                    prices = prices,
+                )
 
             context("오늘의 OHLC Price 가 없는 경우") {
                 service.saveSnapshotAndUpdateHlcPrice(snapshot)
@@ -84,25 +83,27 @@ class AuctionSnapshotServiceTest : DescribeSpec() {
             }
             context("오늘의 OHLC Price 가 이미 존재하는 경우") {
                 service.saveSnapshotAndUpdateHlcPrice(snapshot)
-                    val savedPrevOhlcPrices = jpaRepository.findAllByRecordedDate(today)
+                val savedPrevOhlcPrices = jpaRepository.findAllByRecordedDate(today)
 
-                val nextTimePriceSnapshot = AuctionItemPrice(
-                    itemCode = 1000,
-                    prices = listOf(
-                        // duplication price
-                        AuctionPrice(price = 3000, endDate = now),
-                        AuctionPrice(price = 3000, endDate = now),
-                        AuctionPrice(price = 4000, endDate = now),
-                        AuctionPrice(price = 5000, endDate = now),
-                        AuctionPrice(price = 6000, endDate = now),
-                        // new price
-                        AuctionPrice(price = 500, endDate = now),
-                        AuctionPrice(price = 1000, endDate = now.plusMinutes(1)),
-                        AuctionPrice(price = 1100, endDate = now.plusMinutes(1)),
-                        AuctionPrice(price = 2400, endDate = now.plusMinutes(1)),
-                        AuctionPrice(price = 11000, endDate = now.plusMinutes(1)),
+                val nextTimePriceSnapshot =
+                    AuctionItemPrice(
+                        itemCode = 1000,
+                        prices =
+                            listOf(
+                                // duplication price
+                                AuctionPrice(price = 3000, endDate = now),
+                                AuctionPrice(price = 3000, endDate = now),
+                                AuctionPrice(price = 4000, endDate = now),
+                                AuctionPrice(price = 5000, endDate = now),
+                                AuctionPrice(price = 6000, endDate = now),
+                                // new price
+                                AuctionPrice(price = 500, endDate = now),
+                                AuctionPrice(price = 1000, endDate = now.plusMinutes(1)),
+                                AuctionPrice(price = 1100, endDate = now.plusMinutes(1)),
+                                AuctionPrice(price = 2400, endDate = now.plusMinutes(1)),
+                                AuctionPrice(price = 11000, endDate = now.plusMinutes(1)),
+                            ),
                     )
-                )
                 service.saveSnapshotAndUpdateHlcPrice(nextTimePriceSnapshot)
                 val savedNextTimeOhlcPrices = jpaRepository.findAllByRecordedDate(today)
 

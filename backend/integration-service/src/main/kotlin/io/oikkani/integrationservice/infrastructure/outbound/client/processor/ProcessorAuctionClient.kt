@@ -12,21 +12,22 @@ import org.springframework.http.MediaType
 import org.springframework.stereotype.Component
 import org.springframework.web.reactive.function.client.WebClient
 
-
 @Component
 class ProcessorAuctionClient(
     @param:Value("\${service.domain:localhost:8080}") private val serviceDomain: String,
     private val exceptionNotification: ExceptionNotification,
 ) : BaseClient(exceptionNotification) {
-
-    val client: WebClient = WebClient.builder()
-        .baseUrl(serviceDomain)
-        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .build()
+    val client: WebClient =
+        WebClient
+            .builder()
+            .baseUrl(serviceDomain)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            .build()
 
     suspend fun saveAuctionPriceData(request: AuctionItemPrice) {
-        client.post()
+        client
+            .post()
             .uri("auction/items/snapshots")
             .bodyValue(request)
             .retrieve()
@@ -35,28 +36,29 @@ class ProcessorAuctionClient(
             .awaitSingle()
     }
 
-    suspend fun getAllTodayItemPreview(): List<ItemPreview> {
-        return client.get()
+    suspend fun getAllTodayItemPreview(): List<ItemPreview> =
+        client
+            .get()
             .uri("auction/items/preview/today")
             .retrieve()
             .bodyToFlux(ItemPreview::class.java)
             .withCommonRetry()
             .collectList()
             .awaitSingle()
-    }
 
-    suspend fun findOhlcPriceChartByItemCode(itemCode: Int): List<CandleChart> {
-        return client.get()
+    suspend fun findOhlcPriceChartByItemCode(itemCode: Int): List<CandleChart> =
+        client
+            .get()
             .uri("auction/items/$itemCode/ohlc")
             .retrieve()
             .bodyToFlux(CandleChart::class.java)
             .withCommonRetry()
             .collectList()
             .awaitSingle()
-    }
 
     suspend fun deleteTodayPricesSnapshot() {
-        client.delete()
+        client
+            .delete()
             .uri("auction/items/snapshots")
             .retrieve()
             .toBodilessEntity()

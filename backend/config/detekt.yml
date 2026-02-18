@@ -1,0 +1,326 @@
+# =============================================================================
+# Detekt Configuration for Kotlin + Spring Boot Backend Projects
+# =============================================================================
+# buildUponDefaultConfig = true 와 함께 사용하세요.
+# 이 파일은 기본 설정을 오버라이드하는 항목만 포함합니다.
+# =============================================================================
+
+config:
+  validation: true
+  warningsAsErrors: false
+
+# =============================================================================
+# Complexity - 복잡도 관련 규칙
+# =============================================================================
+complexity:
+  ComplexCondition:
+    active: true
+    threshold: 4 # 조건문 복잡도 허용 임계값
+
+  CyclomaticComplexMethod:
+    active: true
+    threshold: 15 # 순환 복잡도 임계값
+
+  LongMethod:
+    active: true
+    threshold: 60 # 메서드 최대 라인 수
+    ignoreAnnotated:
+      - 'Bean' # Spring @Bean 메서드는 길어질 수 있음
+
+  LongParameterList:
+    active: true
+    functionThreshold: 6
+    constructorThreshold: 12 # Spring DI 생성자 주입은 파라미터가 많을 수 있음
+    ignoreDefaultParameters: true
+    ignoreAnnotated:
+      - 'RequestMapping'
+      - 'GetMapping'
+      - 'PostMapping'
+      - 'PutMapping'
+      - 'DeleteMapping'
+      - 'PatchMapping'
+      - 'JsonCreator'
+
+  NestedBlockDepth:
+    active: true
+    threshold: 4
+
+  TooManyFunctions:
+    active: true
+    thresholdInFiles: 20
+    thresholdInClasses: 20
+    thresholdInInterfaces: 10
+    thresholdInObjects: 10
+    thresholdInEnums: 10
+    ignoreDeprecated: true
+    ignorePrivate: false
+    ignoreOverridden: false
+
+# =============================================================================
+# Coroutines - 코루틴 관련 규칙
+# =============================================================================
+coroutines:
+  active: true
+  GlobalCoroutineUsage:
+    active: true
+  SuspendFunSwallowedCancellation:
+    active: true
+
+# =============================================================================
+# Empty Blocks - 빈 블록 규칙
+# =============================================================================
+empty-blocks:
+  active: true
+  EmptyCatchBlock:
+    active: true
+    allowedExceptionNameRegex: '_|(ignore|expected).*'
+  EmptyFunctionBlock:
+    active: true
+    ignoreOverridden: true
+
+# =============================================================================
+# Exceptions - 예외 처리 규칙
+# =============================================================================
+exceptions:
+  active: true
+  NotImplementedDeclaration:
+    active: true
+  PrintStackTrace:
+    active: true
+  RethrowCaughtException:
+    active: true
+  ReturnFromFinally:
+    active: true
+  SwallowedException:
+    active: true
+    ignoredExceptionTypes:
+      - 'InterruptedException'
+      - 'NumberFormatException'
+      - 'ParseException'
+  ThrowingExceptionsWithoutMessageOrCause:
+    active: true
+  TooGenericExceptionCaught:
+    active: true
+    exceptionNames:
+      - 'ArrayIndexOutOfBoundsException'
+      - 'Error'
+      - 'IllegalMonitorStateException'
+      - 'IndexOutOfBoundsException'
+      - 'NullPointerException'
+      - 'RuntimeException'
+    allowedExceptionNameRegex: '_|(ignore|expected).*'
+  TooGenericExceptionThrown:
+    active: true
+    exceptionNames:
+    - 'Exception'     # 너무 포괄적인 예외 catch 금지
+    - 'Throwable'
+    - 'RuntimeException'
+    - 'Error'
+
+# =============================================================================
+# Naming - 네이밍 규칙
+# =============================================================================
+naming:
+  active: true
+  ClassNaming:
+    active: true
+    classPattern: '[A-Z][a-zA-Z0-9]*'
+  FunctionNaming:
+    active: true
+    functionPattern: '[a-z][a-zA-Z0-9]*'
+    excludeClassPattern: '.*Test$|.*Spec$' # 테스트 클래스 내 메서드 전체 허용
+#    ignoreAnnotated:
+#      - 'Test' # JUnit @Test 메서드는 백틱 네이밍 허용
+#      - 'ParameterizedTest'
+#      - 'RepeatedTest'
+#    excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt']
+  TopLevelPropertyNaming:
+    active: true
+    constantPattern: '[A-Z][_A-Z0-9]*'
+    propertyPattern: '[A-Za-z][_A-Za-z0-9]*'
+    privatePropertyPattern: '_?[A-Za-z][_A-Za-z0-9]*'
+  VariableNaming:
+    active: true
+    variablePattern: '[a-z][A-Za-z0-9]*'
+#    privateVariablePattern: '(_)?[a-z][A-Za-z0-9]*'
+
+# =============================================================================
+# Performance - 성능 관련 규칙
+# =============================================================================
+performance:
+  active: true
+  SpreadOperator:
+    active: false # Spring Boot에서 vararg 사용이 흔하므로 비활성화
+  UnnecessaryPartOfBinaryExpression:
+    active: true
+
+# =============================================================================
+# Potential Bugs - 잠재적 버그 규칙
+# =============================================================================
+potential-bugs:
+  active: true
+  CastToNullableType:
+    active: true
+  DoubleMutabilityForCollection:
+    active: true
+  ElseCaseInsteadOfExhaustiveWhen:
+    active: true
+  EqualsAlwaysReturnsTrueOrFalse:
+    active: true
+  HasPlatformType:
+    active: true
+  ImplicitDefaultLocale:
+    active: true
+  NullableToStringCall:
+    active: true
+  UnconditionalJumpStatementInLoop:
+    active: true
+  UnnecessaryNotNullOperator:
+    active: true
+  UnnecessarySafeCall:
+    active: true
+  UselessPostfixExpression:
+    active: true
+
+# =============================================================================
+# Style - 코드 스타일 규칙
+# =============================================================================
+style:
+  active: true
+  ClassOrdering:
+    active: true
+  DestructuringDeclarationWithTooManyEntries:
+    active: true
+    maxDestructuringEntries: 5
+  ExplicitItLambdaParameter:
+    active: true
+  ForbiddenComment:
+    active: true
+    values:
+      - reason: 'FIXME 코멘트는 릴리스 전에 해결해주세요.'
+        value: 'FIXME:'
+      - reason: 'STOPSHIP 코멘트가 남아있습니다.'
+        value: 'STOPSHIP'
+    allowedPatterns: 'TODO:' # TODO는 허용
+  ForbiddenMethodCall:
+    active: true
+    methods:
+      - reason: 'println 대신 로거를 사용하세요.'
+        value: 'kotlin.io.println'
+      - reason: 'print 대신 로거를 사용하세요.'
+        value: 'kotlin.io.print'
+  MagicNumber:
+    active: true
+    excludes: ['**/test/**', '**/*Test.kt', '**/*Spec.kt']
+    ignoreNumbers:
+      - '-1'
+      - '0'
+      - '1'
+      - '2'
+      - '100'
+      - '1000'
+    ignoreHashCodeFunction: true
+    ignorePropertyDeclaration: true
+    ignoreLocalVariableDeclaration: false
+    ignoreConstantDeclaration: true
+    ignoreCompanionObjectPropertyDeclaration: true
+    ignoreAnnotation: true
+    ignoreNamedArgument: true
+    ignoreEnums: true
+    ignoreRanges: true
+    ignoreExtensionFunctions: true
+  MaxLineLength:
+    active: true
+    maxLineLength: 150 # 긴 Spring 어노테이션 등을 고려
+    excludePackageStatements: true
+    excludeImportStatements: true
+    excludeCommentStatements: true
+    excludeRawStringLiterals: true
+  MandatoryBracesIfStatements:
+    active: true
+  MandatoryBracesLoops:
+    active: true
+  ReturnCount:
+    active: true
+    max: 4
+    excludeLabeled: true
+    excludeReturnFromLambda: true
+    excludeGuardClauses: true
+  ThrowsCount:
+    active: true
+    max: 3
+  UnnecessaryAbstractClass:
+    active: true
+  UnnecessaryApply:
+    active: true
+  UnnecessaryLet:
+    active: true
+  UnusedImports:
+    active: true
+  UnusedPrivateMember:
+    active: true
+    allowedNames: '(_|ignored|expected|serialVersionUID)'
+    ignoreAnnotated:
+      - 'Preview' # 필요 시 추가
+  UseCheckOrError:
+    active: true
+  UseRequire:
+    active: true
+  WildcardImport:
+    active: true
+    excludeImports:
+      - 'java.util.*'
+      - 'org.assertj.core.api.Assertions.*'
+      - 'org.junit.jupiter.api.Assertions.*'
+      - 'org.mockito.Mockito.*'
+      - 'org.mockito.kotlin.*'
+
+# =============================================================================
+# Formatting (detekt-formatting 플러그인 필요)
+# =============================================================================
+formatting:
+  active: true
+  android: false
+  autoCorrect: true # CI에서는 false, 로컬에서 --auto-correct 옵션으로 사용
+  AnnotationOnSeparateLine:
+    active: true
+  ChainWrapping:
+    active: true
+  CommentSpacing:
+    active: true
+  Indentation:
+    active: true
+    indentSize: 4
+  MaximumLineLength:
+    active: true
+    maxLineLength: 150
+  NoBlankLineBeforeRbrace:
+    active: true
+  NoConsecutiveBlankLines:
+    active: true
+  NoEmptyFirstLineInMethodBlock:
+    active: true
+  NoTrailingSpaces:
+    active: true
+  NoWildcardImports:
+    active: true
+  SpacingAroundColon:
+    active: true
+  SpacingAroundComma:
+    active: true
+  SpacingAroundCurly:
+    active: true
+  SpacingAroundDot:
+    active: true
+  SpacingAroundKeyword:
+    active: true
+  SpacingAroundOperators:
+    active: true
+  SpacingAroundParens:
+    active: true
+  TrailingCommaOnCallSite:
+    active: true
+    useTrailingCommaOnCallSite: true
+  TrailingCommaOnDeclarationSite:
+    active: true
+    useTrailingCommaOnDeclarationSite: true

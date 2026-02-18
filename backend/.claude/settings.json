@@ -1,0 +1,28 @@
+{
+  "description": "Backend code quality hooks - ktlint, detekt, Flyway SQL validation for Kotlin Spring Boot",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_FILE_PATH\" == *.kt ]]; then cd \"$(dirname \"$CLAUDE_TOOL_FILE_PATH\")\" && cd \"$(git rev-parse --show-toplevel)/backend\" && ./gradlew detekt --auto-correct -q 2>&1 | head -30 || true; fi",
+
+            "description": "2. detekt - Kotlin 정적 분석"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_FILE_PATH\" == */db/migration/*.sql ]]; then cd \"$(dirname \"$CLAUDE_TOOL_FILE_PATH\")\" && cd \"$(git rev-parse --show-toplevel)/backend\" && ./gradlew flywayValidate -q 2>&1 | head -20 || true; fi",
+            "description": "6. Flyway 검증 - migration SQL 파일 문법 체크"
+          }
+        ]
+      }
+    ]
+  }
+}

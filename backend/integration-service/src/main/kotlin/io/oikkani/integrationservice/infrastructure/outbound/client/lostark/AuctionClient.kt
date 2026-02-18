@@ -14,24 +14,26 @@ import org.springframework.web.reactive.function.client.WebClient
 @Component
 class AuctionClient(
     @Value("\${lostark.api.key:must-not-null-auction-apikey}") apiKey: String,
-    private val exceptionNotification: ExceptionNotification
-): BaseClient(exceptionNotification) {
+    private val exceptionNotification: ExceptionNotification,
+) : BaseClient(exceptionNotification) {
     private val baseUrl: String = "https://developer-lostark.game.onstove.com"
 
-    val client: WebClient = WebClient.builder()
-        .baseUrl(baseUrl)
-        .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-        .defaultHeader(HttpHeaders.AUTHORIZATION, "bearer $apiKey")
-        .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-        .build()
+    val client: WebClient =
+        WebClient
+            .builder()
+            .baseUrl(baseUrl)
+            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+            .defaultHeader(HttpHeaders.AUTHORIZATION, "bearer $apiKey")
+            .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
+            .build()
 
-    suspend fun fetchItems(auctionRequest: AuctionRequest): AuctionResponse? {
-        return client.post()
+    suspend fun fetchItems(auctionRequest: AuctionRequest): AuctionResponse? =
+        client
+            .post()
             .uri("/auctions/items")
             .bodyValue(auctionRequest)
             .retrieve()
             .bodyToMono(AuctionResponse::class.java)
             .withCommonRetry()
             .awaitSingleOrNull()
-    }
 }

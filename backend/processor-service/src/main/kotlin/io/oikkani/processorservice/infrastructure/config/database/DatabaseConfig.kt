@@ -16,7 +16,6 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
 
-
 @Configuration
 @EnableRedisRepositories
 class RedisConfiguration(
@@ -26,13 +25,14 @@ class RedisConfiguration(
 ) {
     @Bean
     fun redisConnectionFactory(): LettuceConnectionFactory {
-        val config = RedisStandaloneConfiguration().apply {
-            hostName = host
-            port = redisPort
-            if (redisPassword.isNotEmpty()) {
-                setPassword(redisPassword)
+        val config =
+            RedisStandaloneConfiguration().apply {
+                hostName = host
+                port = redisPort
+                if (redisPassword.isNotEmpty()) {
+                    setPassword(redisPassword)
+                }
             }
-        }
         return LettuceConnectionFactory(config)
     }
 
@@ -42,15 +42,14 @@ class RedisConfiguration(
         template.connectionFactory = redisConnectionFactory
         return template
     }
-
 }
 
 @Profile("local")
 @Configuration
 class RedisEmbeddedConfig(
-    @param:Value("\${redis.port:0}") private var redisPort: Int
+    @param:Value("\${redis.port:0}") private var redisPort: Int,
 ) {
-    private val logger = KotlinLogging.logger {  }
+    private val logger = KotlinLogging.logger { }
     private lateinit var redisServer: RedisServer
 
     @PostConstruct
@@ -68,9 +67,7 @@ class RedisEmbeddedConfig(
     }
 
     @Throws(IOException::class)
-    private fun isRedisRunning(): Boolean {
-        return isRunning(executeGrepProcessCommand(redisPort))
-    }
+    private fun isRedisRunning(): Boolean = isRunning(executeGrepProcessCommand(redisPort))
 
     @Throws(IOException::class)
     fun findAvailablePort(): Int {
@@ -100,7 +97,7 @@ class RedisEmbeddedConfig(
                 }
             }
         } catch (e: Exception) {
-            logger.error{e.message}
+            logger.error { e.message }
         }
         return pidInfo.isNotEmpty()
     }

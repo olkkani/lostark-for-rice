@@ -1,3 +1,6 @@
+import io.gitlab.arturbosch.detekt.Detekt
+import org.gradle.internal.impldep.org.jsoup.nodes.Document
+
 plugins {
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.spring) apply false
@@ -42,6 +45,7 @@ subprojects {
     configurations.all {
         exclude(group = "org.slf4j", module = "slf4j-simple")
     }
+    // ktlint setting for multi module project
     configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
         version.set("1.8.0")
         debug.set(false)
@@ -55,7 +59,22 @@ subprojects {
             exclude("**/build/**")
         }
     }
+    // Detekt setting for multi module project
+    configure<io.gitlab.arturbosch.detekt.extensions.DetektExtension> {
+        buildUponDefaultConfig = true // preconfigure defaults
+        allRules = false // activate all available (even unstable) rules.
+        config.setFrom("$projectDir/config/detekt.yml") // point to your custom config defining rules to run, overwriting default behavior
+        baseline = file("$projectDir/config/baseline.xml") // a way of suppressing issues before introducing detekt
+    }
+
     tasks {
+        withType<Detekt>().configureEach {
+            dependsOn("ktlintFormat")
+            reports {
+                html.required.set(true)
+                sarif.required.set(true)
+            }
+        }
         check {
             dependsOn("ktlintCheck")
         }
@@ -64,6 +83,7 @@ subprojects {
         implementation(rootProject.libs.bundles.kotlin)
         implementation(rootProject.libs.bundles.common)
         testImplementation(rootProject.libs.bundles.test)
+        "detektPlugins"(rootProject.libs.detekt.rules.ktlint.wrapper)
 
         val osName = System.getProperty("os.name").lowercase()
         val osArch = System.getProperty("os.arch")
@@ -76,14 +96,11 @@ subprojects {
         }
     }
 
-
-
     if (name in listOf("integration-service", "processor-service")) {
         apply(plugin = "org.springframework.boot")
         apply(plugin = "org.jetbrains.kotlin.plugin.spring")
         apply(plugin = "io.spring.dependency-management")
         apply(plugin = "org.jetbrains.kotlin.kapt")
-
 
 //        val mockitoAgent = configurations.create("mockitoAgent")
         dependencies {
@@ -91,7 +108,7 @@ subprojects {
             implementation(rootProject.libs.bundles.spring) {
                 exclude(
                     group = "org.springframework.boot",
-                    module = "spring-boot-starter-tomcat"
+                    module = "spring-boot-starter-tomcat",
                 )
             }
             testImplementation(rootProject.libs.bundles.spring.test)
@@ -101,8 +118,7 @@ subprojects {
 //            jvmArgs("-javaagent:${mockitoAgent.asPath}", "-Xshare:off")
             jvmArgs(
                 "-Xshare:off",
-                "-XX:+EnableDynamicAgentLoading" // JDK 21+ Mock config. hide warning message
-
+                "-XX:+EnableDynamicAgentLoading", // JDK 21+ Mock config. hide warning message
             )
         }
         tasks.withType<org.springframework.boot.gradle.tasks.bundling.BootJar> {
@@ -112,7 +128,4 @@ subprojects {
     if (name in listOf("processor-service")) {
         apply(plugin = "dev.monosoul.jooq-docker")
     }
-
 }
-
-

@@ -1,0 +1,77 @@
+{
+  "description": "Frontend + Backend code quality hooks - Prettier, ESLint, TypeScript, Vite, ktlint, detekt, Flyway",
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_FILE_PATH\" == *.ts || \"$CLAUDE_TOOL_FILE_PATH\" == *.tsx || \"$CLAUDE_TOOL_FILE_PATH\" == *.js || \"$CLAUDE_TOOL_FILE_PATH\" == *.jsx || \"$CLAUDE_TOOL_FILE_PATH\" == *.json || \"$CLAUDE_TOOL_FILE_PATH\" == *.css ]]; then cd \"$(dirname \"$CLAUDE_TOOL_FILE_PATH\")\" && cd \"$(git rev-parse --show-toplevel)/frontend\" && npx prettier --write \"$CLAUDE_TOOL_FILE_PATH\" 2>&1 || true; fi",
+            "description": "1. [FE] Prettier - 코드 포맷팅"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_FILE_PATH\" == *.ts || \"$CLAUDE_TOOL_FILE_PATH\" == *.tsx || \"$CLAUDE_TOOL_FILE_PATH\" == *.js || \"$CLAUDE_TOOL_FILE_PATH\" == *.jsx ]]; then cd \"$(dirname \"$CLAUDE_TOOL_FILE_PATH\")\" && cd \"$(git rev-parse --show-toplevel)/frontend\" && npx eslint \"$CLAUDE_TOOL_FILE_PATH\" --fix 2>&1 || true; fi",
+            "description": "2. [FE] ESLint + import 정렬 (eslint-plugin-import)"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_FILE_PATH\" == *.ts || \"$CLAUDE_TOOL_FILE_PATH\" == *.tsx ]]; then cd \"$(dirname \"$CLAUDE_TOOL_FILE_PATH\")\" && cd \"$(git rev-parse --show-toplevel)/frontend\" && npx tsc --noEmit 2>&1 | head -20 || true; fi",
+            "description": "3. [FE] TypeScript 전체 프로젝트 타입 체크"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_FILE_PATH\" == *package.json ]]; then cd \"$(dirname \"$CLAUDE_TOOL_FILE_PATH\")\" && cd \"$(git rev-parse --show-toplevel)/frontend\" && npm audit --audit-level=moderate 2>&1 | head -30 || true; fi",
+            "description": "4. [FE] npm audit - 보안 취약점 체크 (package.json 변경 시)"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_FILE_PATH\" == *package.json || \"$CLAUDE_TOOL_FILE_PATH\" == *vite.config.ts || \"$CLAUDE_TOOL_FILE_PATH\" == *tsconfig*.json ]]; then cd \"$(dirname \"$CLAUDE_TOOL_FILE_PATH\")\" && cd \"$(git rev-parse --show-toplevel)/frontend\" && timeout 15 npx vite build --mode development 2>&1 | tail -20 || echo 'Build check skipped or timed out'; fi",
+            "description": "5. [FE] Vite build check - 설정 파일 변경 시 빌드 검증 (15초 타임아웃)"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_FILE_PATH\" == *.kt ]]; then cd \"$(dirname \"$CLAUDE_TOOL_FILE_PATH\")\" && cd \"$(git rev-parse --show-toplevel)/backend\" && ./gradlew detekt --auto-correct -q 2>&1 | head -30 || true; fi",
+            "description": "6. [BE] detekt - Kotlin 정적 분석"
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|MultiEdit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if [[ \"$CLAUDE_TOOL_FILE_PATH\" == */db/migration/*.sql ]]; then cd \"$(dirname \"$CLAUDE_TOOL_FILE_PATH\")\" && cd \"$(git rev-parse --show-toplevel)/backend\" && ./gradlew flywayValidate -q 2>&1 | head -20 || true; fi",
+            "description": "7. [BE] Flyway 검증 - migration SQL 파일 문법 체크"
+          }
+        ]
+      }
+    ]
+  }
+}

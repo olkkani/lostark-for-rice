@@ -9,12 +9,13 @@ import java.time.LocalDateTime
 data class AuctionResponse(
     val items: List<AuctionItem>,
 ) {
-    fun toAuctionPrices() = items.map {
-        AuctionPrice(
-            price = it.auctionInfo.buyPrice,
-            endDate = it.auctionInfo.endDate,
-        )
-    }
+    fun toAuctionPrices() =
+        items.map {
+            AuctionPrice(
+                price = it.auctionInfo.buyPrice,
+                endDate = it.auctionInfo.endDate,
+            )
+        }
 }
 
 @JsonNaming(PropertyNamingStrategies.UpperCamelCaseStrategy::class)
@@ -27,4 +28,3 @@ data class AuctionInfo(
     val buyPrice: Int,
     val endDate: LocalDateTime,
 )
-
